@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { mockDateDecorator } from '~utils/storybook'
 
@@ -13,18 +13,17 @@ export default {
   },
 } as Meta<DateRangePickerProps>
 
-const Template: Story<DateRangePickerProps> = (args) => (
-  <DateRangePicker {...args} />
-)
-export const Default = Template.bind({})
+export const Default = {}
 
-export const DateRangePickerWithValue = Template.bind({})
-DateRangePickerWithValue.args = {
-  defaultValue: [new Date('2001-01-01'), null],
+export const DateRangePickerWithValue = {
+  args: {
+    defaultValue: [new Date('2001-01-01'), null],
+  },
 }
 
-export const DateRangePickerDisallowManualInput = Template.bind({})
-DateRangePickerDisallowManualInput.args = {
-  allowManualInput: false,
-  defaultValue: [new Date('2021-09-13'), null],
+export const DateRangePickerDisallowManualInput = {
+  args: {
+    allowManualInput: false,
+    defaultValue: [new Date('2021-09-13'), null],
+  },
 }

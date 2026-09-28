@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { userHandlers } from '~/mocks/msw/handlers/user'
 
@@ -21,7 +21,7 @@ export default {
   },
 } as Meta
 
-const Template: Story<CreateWorkspaceModalProps> = (args) => {
+const Template: StoryFn<CreateWorkspaceModalProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   return (
@@ -33,7 +33,11 @@ const Template: Story<CreateWorkspaceModalProps> = (args) => {
   )
 }
 
-export const CreateWorkspace = Template.bind({})
+export const CreateWorkspace = {
+  render: Template,
+}
 
-export const CreateWorkspaceMobile = Template.bind({})
-CreateWorkspaceMobile.parameters = getMobileViewParameters()
+export const CreateWorkspaceMobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}

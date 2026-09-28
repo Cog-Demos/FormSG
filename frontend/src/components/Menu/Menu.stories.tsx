@@ -9,7 +9,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 
 import { MenuVariant } from '~theme/components/Menu'
 
@@ -25,7 +25,7 @@ type MenuGroupTemplateProps = {
   variant: MenuVariant
 }
 
-const MenuTemplate: Story<MenuTemplateProps> = ({
+const MenuTemplate: StoryFn<MenuTemplateProps> = ({
   variant,
   children,
   isStretch,
@@ -49,7 +49,7 @@ const MenuTemplate: Story<MenuTemplateProps> = ({
   )
 }
 
-const MenuGroupTemplate: Story<MenuGroupTemplateProps> = ({ variant }) => {
+const MenuGroupTemplate: StoryFn<MenuGroupTemplateProps> = ({ variant }) => {
   return (
     <SimpleGrid
       columns={2}
@@ -86,20 +86,28 @@ const MenuGroupTemplate: Story<MenuGroupTemplateProps> = ({ variant }) => {
     </SimpleGrid>
   )
 }
-export const Default = MenuTemplate.bind({})
-Default.args = {
-  children: 'Menu Default',
-  variant: 'outline',
-  isStretch: false,
+
+export const Default = {
+  render: MenuTemplate,
+
+  args: {
+    children: 'Menu Default',
+    variant: 'outline',
+    isStretch: false,
+  },
 }
 
-export const Outline = MenuGroupTemplate.bind({})
-Outline.args = { variant: 'outline' }
+export const Outline = {
+  render: MenuGroupTemplate,
+  args: { variant: 'outline' },
+}
 
-export const Clear = MenuGroupTemplate.bind({})
-Clear.args = { variant: 'clear' }
+export const Clear = {
+  render: MenuGroupTemplate,
+  args: { variant: 'clear' },
+}
 
-export const Playground: Story = () => {
+export const Playground: StoryFn = () => {
   return (
     <Box>
       <Menu>

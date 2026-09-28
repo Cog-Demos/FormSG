@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { StoryObj, Meta, StoryFn } from '@storybook/react'
 
 import {
   getBillingInfo,
@@ -30,28 +30,38 @@ export default {
 
 // BillingPage
 
-const PageTemplate: Story = () => <BillingPage />
+const PageTemplate: StoryFn = () => <BillingPage />
 
-export const DesktopDefault = PageTemplate.bind({})
-DesktopDefault.parameters = {
-  msw: [getEmptyBillingInfo()],
-}
-export const TabletDefault = PageTemplate.bind({})
-TabletDefault.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const DesktopDefault = {
+  render: PageTemplate,
+
+  parameters: {
+    msw: [getEmptyBillingInfo()],
   },
-  chromatic: { viewports: [viewports.md] },
-  msw: [getEmptyBillingInfo()],
 }
 
-export const MobileDefault = PageTemplate.bind({})
-MobileDefault.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const TabletDefault = {
+  render: PageTemplate,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+    msw: [getEmptyBillingInfo()],
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: [getEmptyBillingInfo()],
+}
+
+export const MobileDefault = {
+  render: PageTemplate,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: [getEmptyBillingInfo()],
+  },
 }
 
 // BillCharges
@@ -66,98 +76,116 @@ const MOCK_BILLCHARGES_ARGS = {
   onSubmitEsrvcId: async () => {},
 }
 
-export const DesktopNoCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-DesktopNoCharges.args = MOCK_BILLCHARGES_ARGS
-DesktopNoCharges.parameters = {
-  msw: [getEmptyBillingInfo()],
-}
+export const DesktopNoCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
 
-export const TabletNoCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-TabletNoCharges.args = MOCK_BILLCHARGES_ARGS
-TabletNoCharges.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    msw: [getEmptyBillingInfo()],
   },
-  chromatic: { viewports: [viewports.md] },
-  msw: [getEmptyBillingInfo()],
 }
 
-export const MobileNoCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-MobileNoCharges.args = MOCK_BILLCHARGES_ARGS
-MobileNoCharges.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const TabletNoCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+    msw: [getEmptyBillingInfo()],
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: [getEmptyBillingInfo()],
 }
 
-export const DesktopHasCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-DesktopHasCharges.args = MOCK_BILLCHARGES_ARGS
-DesktopHasCharges.parameters = {
-  msw: [getBillingInfo({ delay: 1000 })],
-}
+export const MobileNoCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
 
-export const TabletHasCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-TabletHasCharges.args = MOCK_BILLCHARGES_ARGS
-TabletHasCharges.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: [getEmptyBillingInfo()],
   },
-  chromatic: { viewports: [viewports.md] },
-  msw: [getBillingInfo({ delay: 1000 })],
 }
 
-export const MobileHasCharges: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-MobileHasCharges.args = MOCK_BILLCHARGES_ARGS
-MobileHasCharges.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const DesktopHasCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    msw: [getBillingInfo({ delay: 1000 })],
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: [getBillingInfo({ delay: 1000 })],
 }
 
-export const DesktopLoading: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-DesktopLoading.args = MOCK_BILLCHARGES_ARGS
-DesktopLoading.parameters = {
-  msw: [getBillingInfo({ delay: 'infinite' })],
-}
+export const TabletHasCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
 
-export const TabletLoading: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-TabletLoading.args = MOCK_BILLCHARGES_ARGS
-TabletLoading.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+    msw: [getBillingInfo({ delay: 1000 })],
   },
-  chromatic: { viewports: [viewports.md] },
-  msw: [getBillingInfo({ delay: 'infinite' })],
 }
 
-export const MobileLoading: Story<BillChargesProps> = (args) => (
-  <BillCharges {...args} />
-)
-MobileLoading.args = MOCK_BILLCHARGES_ARGS
-MobileLoading.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const MobileHasCharges: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: [getBillingInfo({ delay: 1000 })],
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: [getBillingInfo({ delay: 'infinite' })],
+}
+
+export const DesktopLoading: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    msw: [getBillingInfo({ delay: 'infinite' })],
+  },
+}
+
+export const TabletLoading: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+    msw: [getBillingInfo({ delay: 'infinite' })],
+  },
+}
+
+export const MobileLoading: StoryObj<BillChargesProps> = {
+  render: (args) => <BillCharges {...args} />,
+
+  args: MOCK_BILLCHARGES_ARGS,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: [getBillingInfo({ delay: 'infinite' })],
+  },
 }

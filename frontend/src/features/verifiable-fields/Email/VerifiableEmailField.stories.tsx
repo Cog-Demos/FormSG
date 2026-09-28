@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { DecoratorFn, Meta, Story } from '@storybook/react'
+import { DecoratorFn, Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -91,7 +91,7 @@ export default {
   },
 } as Meta<StoryEmailFieldProps>
 
-const Template: Story<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
   const formMethods = useForm<VerifiableFieldInput>({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -133,23 +133,33 @@ const Template: Story<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const VerifiableEmailField = Template.bind({})
+export const VerifiableEmailField = {
+  render: Template,
+}
 
-export const PendingVerification = Template.bind({})
-PendingVerification.args = {
-  defaultValue: {
-    value: 'test@example.com',
+export const PendingVerification = {
+  render: Template,
+
+  args: {
+    defaultValue: {
+      value: 'test@example.com',
+    },
   },
 }
 
-export const PendingVerificationMobile = Template.bind({})
-PendingVerificationMobile.args = PendingVerification.args
-PendingVerificationMobile.parameters = getMobileViewParameters()
+export const PendingVerificationMobile = {
+  render: Template,
+  args: PendingVerification.args,
+  parameters: getMobileViewParameters(),
+}
 
-export const Verified = Template.bind({})
-Verified.args = {
-  defaultValue: {
-    value: 'test@example.com',
-    signature: 'some-signature',
+export const Verified = {
+  render: Template,
+
+  args: {
+    defaultValue: {
+      value: 'test@example.com',
+      signature: 'some-signature',
+    },
   },
 }

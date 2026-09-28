@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BiLockAlt, BiMailSend } from 'react-icons/bi'
 import { Stack, UnorderedList } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { StoryFn, Meta } from '@storybook/react'
 import { values } from 'lodash'
 
 import Badge from '~components/Badge'
@@ -40,7 +40,7 @@ interface TileTemplateProps extends TileProps {
   listItems: Record<string, string>
 }
 
-const Template: Story<TileTemplateProps> = ({
+const Template: StoryFn<TileTemplateProps> = ({
   title,
   subtitle,
   listTitle,
@@ -64,29 +64,35 @@ const Template: Story<TileTemplateProps> = ({
   )
 }
 
-export const Complex = Template.bind({})
-Complex.args = {
-  variant: 'complex',
-  title: 'Complex',
-  subtitle: 'Receive responses in forms',
-  badge: <Badge colorScheme="success">recommended</Badge>,
-  icon: BiLockAlt,
-  listTitle: 'description',
-  listItems: {
-    1: 'item 1',
-    2: 'item 2',
+export const Complex = {
+  render: Template,
+
+  args: {
+    variant: 'complex',
+    title: 'Complex',
+    subtitle: 'Receive responses in forms',
+    badge: <Badge colorScheme="success">recommended</Badge>,
+    icon: BiLockAlt,
+    listTitle: 'description',
+    listItems: {
+      1: 'item 1',
+      2: 'item 2',
+    },
   },
 }
 
-export const Simple = Template.bind({})
-Simple.args = {
-  variant: 'simple',
-  title: 'Simple',
-  subtitle: 'Receive responses in forms',
-  icon: BiMailSend,
+export const Simple = {
+  render: Template,
+
+  args: {
+    variant: 'simple',
+    title: 'Simple',
+    subtitle: 'Receive responses in forms',
+    icon: BiMailSend,
+  },
 }
 
-export const Playground: Story = () => {
+export const Playground: StoryFn = () => {
   const [selected, setSelected] = useState('')
 
   return (

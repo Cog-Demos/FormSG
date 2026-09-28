@@ -1,5 +1,5 @@
 import { SimpleGrid, Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { Badge, BadgeProps } from './Badge'
 
@@ -9,22 +9,22 @@ export default {
   decorators: [],
 } as Meta<BadgeProps>
 
-const Template: Story<BadgeProps> = (args) => <Badge {...args} />
-
-export const Solid = Template.bind({})
-Solid.args = {
-  colorScheme: 'success',
-  children: 'Badge name',
-  variant: 'solid',
+export const Solid = {
+  args: {
+    colorScheme: 'success',
+    children: 'Badge name',
+    variant: 'solid',
+  },
 }
 
-export const Subtle = Template.bind({})
-Subtle.args = {
-  children: 'Badge name',
-  variant: 'subtle',
+export const Subtle = {
+  args: {
+    children: 'Badge name',
+    variant: 'subtle',
+  },
 }
 
-const TemplateGroup: Story<BadgeProps> = (args) => (
+const TemplateGroup: StoryFn<BadgeProps> = (args) => (
   <SimpleGrid
     columns={2}
     spacing={8}
@@ -44,14 +44,20 @@ const TemplateGroup: Story<BadgeProps> = (args) => (
   </SimpleGrid>
 )
 
-export const SubtleColours = TemplateGroup.bind({})
-SubtleColours.args = {
-  children: 'Subtle',
-  variant: 'subtle',
+export const SubtleColours = {
+  render: TemplateGroup,
+
+  args: {
+    children: 'Subtle',
+    variant: 'subtle',
+  },
 }
 
-export const SolidColours = TemplateGroup.bind({})
-SolidColours.args = {
-  children: 'Solid',
-  variant: 'solid',
+export const SolidColours = {
+  render: TemplateGroup,
+
+  args: {
+    children: 'Solid',
+    variant: 'solid',
+  },
 }
