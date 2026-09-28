@@ -103,7 +103,7 @@
     "clean:emotion-types": "rimraf node_modules/@emotion/core/types",
     "postinstall": "patch-package && npm run gen:theme-typings && npm run clean:emotion-types && npm --prefix ../shared install",
     "start": "vite",
-    "build": "vite build",
+    "build": "node --max-old-space-size=6144 ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
