@@ -54,7 +54,10 @@ export const makeWorkerApiAndCleanup = (): CleanableDecryptionWorkerApi => {
   const workerApi = wrap<DecryptionWorkerApi>(worker)
 
   // A cleanup function that releases the comlink proxy and terminates the worker
+  let isCleanedUp = false
   const cleanup = () => {
+    if (isCleanedUp) return
+    isCleanedUp = true
     workerApi[releaseProxy]()
     worker.terminate()
   }
