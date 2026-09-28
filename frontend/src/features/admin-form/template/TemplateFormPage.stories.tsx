@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   getTemplateFormErrorResponse,
@@ -41,19 +41,30 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <TemplateFormPage />
-export const Default = Template.bind({})
+const Template: StoryFn = () => <TemplateFormPage />
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
-
-export const FormNotFound = Template.bind({})
-FormNotFound.parameters = {
-  msw: [getTemplateFormErrorResponse()],
+export const Default = {
+  render: Template,
 }
 
-export const FormNotFoundMobile = Template.bind({})
-FormNotFoundMobile.parameters = {
-  ...FormNotFound.parameters,
-  ...getMobileViewParameters(),
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
+
+export const FormNotFound = {
+  render: Template,
+
+  parameters: {
+    msw: [getTemplateFormErrorResponse()],
+  },
+}
+
+export const FormNotFoundMobile = {
+  render: Template,
+
+  parameters: {
+    ...FormNotFound.parameters,
+    ...getMobileViewParameters(),
+  },
 }

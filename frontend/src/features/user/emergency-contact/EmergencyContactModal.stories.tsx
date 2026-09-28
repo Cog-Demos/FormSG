@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { useDisclosure } from '@chakra-ui/hooks'
-import { Meta, Story } from '@storybook/react'
+import { useDisclosure } from '@chakra-ui/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { omit } from 'lodash'
 
 import {
@@ -35,7 +35,7 @@ export default {
 const modalRoot = document.createElement('div')
 document.body.appendChild(modalRoot)
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   const el = document.createElement('div')
@@ -56,26 +56,38 @@ const Template: Story = () => {
     el,
   )
 }
-export const WithContact = Template.bind({})
 
-export const NoContact = Template.bind({})
-NoContact.parameters = {
-  msw: [
-    getUser({ delay: 0, mockUser: omit(MOCK_USER, 'contact') }),
-    postGenerateContactOtp({ delay: 0 }),
-    postVerifyContactOtp({ delay: 0 }),
-  ],
+export const WithContact = {
+  render: Template,
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: userHandlers({ delay: 'infinite' }),
-}
+export const NoContact = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    msw: [
+      getUser({ delay: 0, mockUser: omit(MOCK_USER, 'contact') }),
+      postGenerateContactOtp({ delay: 0 }),
+      postVerifyContactOtp({ delay: 0 }),
+    ],
   },
-  chromatic: { viewports: [viewports.xs] },
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: userHandlers({ delay: 'infinite' }),
+  },
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }

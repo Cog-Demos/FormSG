@@ -1,20 +1,20 @@
-import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks'
+import type { Meta, StoryObj } from '@storybook/react'
+
 import { ColourTable } from './ColourTable'
 
-<Meta title="Foundation/Colours" />
+const meta = {
+  title: 'Foundation/Colours',
+  component: ColourTable,
+} satisfies Meta<typeof ColourTable>
 
-# Colours
+export default meta
+type Story = StoryObj<typeof meta>
 
-We are toning down our palette to signify the maturity of Form. Keeping blues and greens as the brand colours, but muting the brightness, reducing core brand colours, while increasing theme colours to provide our admin users with more choices.
-
-## Brand colours
-
-### Primary
-
-<Story name="Brand/Primary">
-  <ColourTable
-    label="Brand primary colours"
-    colours={[
+export const BrandPrimary: Story = {
+  name: 'Brand/Primary',
+  args: {
+    label: 'Brand primary colours',
+    colours: [
       { palette: 'primary', shade: '100' },
       { palette: 'primary', shade: '200' },
       { palette: 'primary', shade: '300' },
@@ -24,16 +24,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'primary', shade: '700' },
       { palette: 'primary', shade: '800' },
       { palette: 'primary', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Secondary
-
-<Story name="Brand/Secondary">
-  <ColourTable
-    label="Brand secondary colours"
-    colours={[
+export const BrandSecondary: Story = {
+  name: 'Brand/Secondary',
+  args: {
+    label: 'Brand secondary colours',
+    colours: [
       { palette: 'secondary', shade: '100' },
       { palette: 'secondary', shade: '200' },
       { palette: 'secondary', shade: '300' },
@@ -43,18 +42,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'secondary', shade: '700' },
       { palette: 'secondary', shade: '800' },
       { palette: 'secondary', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-## Feedback
-
-### Success
-
-<Story name="Feedback/Success">
-  <ColourTable
-    label="Success colours"
-    colours={[
+export const FeedbackSuccess: Story = {
+  name: 'Feedback/Success',
+  args: {
+    label: 'Success colours',
+    colours: [
       { palette: 'success', shade: '100' },
       { palette: 'success', shade: '200' },
       { palette: 'success', shade: '300' },
@@ -64,16 +60,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'success', shade: '700' },
       { palette: 'success', shade: '800' },
       { palette: 'success', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Danger
-
-<Story name="Feedback/Danger">
-  <ColourTable
-    label="Danger colours"
-    colours={[
+export const FeedbackDanger: Story = {
+  name: 'Feedback/Danger',
+  args: {
+    label: 'Danger colours',
+    colours: [
       { palette: 'danger', shade: '100' },
       { palette: 'danger', shade: '200' },
       { palette: 'danger', shade: '300' },
@@ -83,16 +78,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'danger', shade: '700' },
       { palette: 'danger', shade: '800' },
       { palette: 'danger', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Warning
-
-<Story name="Feedback/Warning">
-  <ColourTable
-    label="Warning colours"
-    colours={[
+export const FeedbackWarning: Story = {
+  name: 'Feedback/Warning',
+  args: {
+    label: 'Warning colours',
+    colours: [
       { palette: 'warning', shade: '100' },
       { palette: 'warning', shade: '200' },
       { palette: 'warning', shade: '300' },
@@ -102,16 +96,14 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'warning', shade: '700' },
       { palette: 'warning', shade: '800' },
       { palette: 'warning', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-## Neutral
-
-<Story name="Neutral">
-  <ColourTable
-    label="Neutral colours"
-    colours={[
+export const Neutral: Story = {
+  args: {
+    label: 'Neutral colours',
+    colours: [
       { palette: 'neutral', shade: '100' },
       { palette: 'neutral', shade: '200' },
       { palette: 'neutral', shade: '300' },
@@ -121,18 +113,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'neutral', shade: '700' },
       { palette: 'neutral', shade: '800' },
       { palette: 'neutral', shade: '900' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-## Theme
-
-### Green
-
-<Story name="Theme/Green">
-  <ColourTable
-    label="Theme Green colours"
-    colours={[
+export const ThemeGreen: Story = {
+  name: 'Theme/Green',
+  args: {
+    label: 'Theme Green colours',
+    colours: [
       { palette: 'theme-green', shade: '100' },
       { palette: 'theme-green', shade: '200' },
       { palette: 'theme-green', shade: '300' },
@@ -140,16 +129,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-green', shade: '500' },
       { palette: 'theme-green', shade: '600' },
       { palette: 'theme-green', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Teal
-
-<Story name="Theme/Teal">
-  <ColourTable
-    label="Theme Teal colours"
-    colours={[
+export const ThemeTeal: Story = {
+  name: 'Theme/Teal',
+  args: {
+    label: 'Theme Teal colours',
+    colours: [
       { palette: 'theme-teal', shade: '100' },
       { palette: 'theme-teal', shade: '200' },
       { palette: 'theme-teal', shade: '300' },
@@ -157,16 +145,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-teal', shade: '500' },
       { palette: 'theme-teal', shade: '600' },
       { palette: 'theme-teal', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Purple
-
-<Story name="Theme/Purple">
-  <ColourTable
-    label="Theme Purple colours"
-    colours={[
+export const ThemePurple: Story = {
+  name: 'Theme/Purple',
+  args: {
+    label: 'Theme Purple colours',
+    colours: [
       { palette: 'theme-purple', shade: '100' },
       { palette: 'theme-purple', shade: '200' },
       { palette: 'theme-purple', shade: '300' },
@@ -174,16 +161,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-purple', shade: '500' },
       { palette: 'theme-purple', shade: '600' },
       { palette: 'theme-purple', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Grey
-
-<Story name="Theme/Grey">
-  <ColourTable
-    label="Theme Grey colours"
-    colours={[
+export const ThemeGrey: Story = {
+  name: 'Theme/Grey',
+  args: {
+    label: 'Theme Grey colours',
+    colours: [
       { palette: 'theme-grey', shade: '100' },
       { palette: 'theme-grey', shade: '200' },
       { palette: 'theme-grey', shade: '300' },
@@ -191,16 +177,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-grey', shade: '500' },
       { palette: 'theme-grey', shade: '600' },
       { palette: 'theme-grey', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Yellow
-
-<Story name="Theme/Yellow">
-  <ColourTable
-    label="Theme Yellow colours"
-    colours={[
+export const ThemeYellow: Story = {
+  name: 'Theme/Yellow',
+  args: {
+    label: 'Theme Yellow colours',
+    colours: [
       { palette: 'theme-yellow', shade: '100' },
       { palette: 'theme-yellow', shade: '200' },
       { palette: 'theme-yellow', shade: '300' },
@@ -208,16 +193,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-yellow', shade: '500' },
       { palette: 'theme-yellow', shade: '600' },
       { palette: 'theme-yellow', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Orange
-
-<Story name="Theme/Orange">
-  <ColourTable
-    label="Theme Orange colours"
-    colours={[
+export const ThemeOrange: Story = {
+  name: 'Theme/Orange',
+  args: {
+    label: 'Theme Orange colours',
+    colours: [
       { palette: 'theme-orange', shade: '100' },
       { palette: 'theme-orange', shade: '200' },
       { palette: 'theme-orange', shade: '300' },
@@ -225,16 +209,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-orange', shade: '500' },
       { palette: 'theme-orange', shade: '600' },
       { palette: 'theme-orange', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Red
-
-<Story name="Theme/Red">
-  <ColourTable
-    label="Theme Red colours"
-    colours={[
+export const ThemeRed: Story = {
+  name: 'Theme/Red',
+  args: {
+    label: 'Theme Red colours',
+    colours: [
       { palette: 'theme-red', shade: '100' },
       { palette: 'theme-red', shade: '200' },
       { palette: 'theme-red', shade: '300' },
@@ -242,16 +225,15 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-red', shade: '500' },
       { palette: 'theme-red', shade: '600' },
       { palette: 'theme-red', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}
 
-### Brown
-
-<Story name="Theme/Brown">
-  <ColourTable
-    label="Theme Brown colours"
-    colours={[
+export const ThemeBrown: Story = {
+  name: 'Theme/Brown',
+  args: {
+    label: 'Theme Brown colours',
+    colours: [
       { palette: 'theme-brown', shade: '100' },
       { palette: 'theme-brown', shade: '200' },
       { palette: 'theme-brown', shade: '300' },
@@ -259,6 +241,6 @@ We are toning down our palette to signify the maturity of Form. Keeping blues an
       { palette: 'theme-brown', shade: '500' },
       { palette: 'theme-brown', shade: '600' },
       { palette: 'theme-brown', shade: '700' },
-    ]}
-  />
-</Story>
+    ],
+  },
+}

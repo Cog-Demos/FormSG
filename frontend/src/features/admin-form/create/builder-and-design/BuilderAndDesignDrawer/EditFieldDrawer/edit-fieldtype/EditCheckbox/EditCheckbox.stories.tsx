@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, CheckboxFieldBase } from '~shared/types'
 
@@ -35,35 +35,43 @@ interface StoryArgs {
   field: CheckboxFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditCheckbox field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithValues = Template.bind({})
-WithValues.args = {
-  field: {
-    ...DEFAULT_CHECKBOX_FIELD,
-    title: 'Storybook Checkbox',
-    description: 'Some description',
-    fieldOptions: ['Option 1', 'Option 2', 'Option 3'],
-    ValidationOptions: {
-      customMax: 3,
-      customMin: 2,
+export const WithValues = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_CHECKBOX_FIELD,
+      title: 'Storybook Checkbox',
+      description: 'Some description',
+      fieldOptions: ['Option 1', 'Option 2', 'Option 3'],
+      ValidationOptions: {
+        customMax: 3,
+        customMin: 2,
+      },
+      validateByValue: true,
+      othersRadioButton: true,
     },
-    validateByValue: true,
-    othersRadioButton: true,
   },
 }
 
-export const Placeholders = Template.bind({})
-Placeholders.args = {
-  field: {
-    ...DEFAULT_CHECKBOX_FIELD,
-    title: '',
-    description: '',
-    fieldOptions: [],
-    required: false,
+export const Placeholders = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_CHECKBOX_FIELD,
+      title: '',
+      description: '',
+      fieldOptions: [],
+      required: false,
+    },
   },
 }

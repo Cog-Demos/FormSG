@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -7,10 +7,7 @@ import { viewports } from '~utils/storybook'
 
 import { ParagraphFieldSchema } from '../types'
 
-import {
-  ParagraphField as ParagraphFieldComponent,
-  ParagraphFieldProps,
-} from './ParagraphField'
+import { ParagraphField as ParagraphFieldComponent } from './ParagraphField'
 
 export default {
   title: 'Templates/Field/ParagraphField',
@@ -32,26 +29,21 @@ const baseSchema: ParagraphFieldSchema = {
   _id: '611b94dfbb9e300012f702a7',
 }
 
-interface StoryParagraphFieldProps extends ParagraphFieldProps {
-  defaultValue?: string
-}
-
-const Template: Story<StoryParagraphFieldProps> = (args) => (
-  <ParagraphFieldComponent {...args} />
-)
-
-export const Default = Template.bind({})
-Default.args = {
-  schema: baseSchema,
-}
-
-export const Mobile = Template.bind({})
-Mobile.args = {
-  schema: baseSchema,
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Default = {
+  args: {
+    schema: baseSchema,
   },
-  chromatic: { viewports: [viewports.xs] },
+}
+
+export const Mobile = {
+  args: {
+    schema: baseSchema,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
