@@ -30,8 +30,7 @@ export type FieldBuilderStore = {
   updateEditState: (field: FormFieldDto, holding?: boolean) => void
   setToInactive: (holding?: boolean) => void
   stateData:
-    | FieldBuilderCreateEditStateData
-    | { state: FieldBuilderState.Inactive }
+    FieldBuilderCreateEditStateData | { state: FieldBuilderState.Inactive }
   // Used when there is a dirty state and we want to hold the next state to be set.
   // Will be used to set stateData if user confirms discarding changes.
   holdingStateData:

@@ -1,5 +1,5 @@
+import { ElementType } from 'react'
 import {
-  As,
   chakra,
   Flex,
   FlexProps,
@@ -19,7 +19,7 @@ type PublicHeaderLinkProps = {
   label: string
   href: string
   showOnMobile?: boolean
-  MobileIcon?: As
+  MobileIcon?: ElementType
   bg?: string
 }
 

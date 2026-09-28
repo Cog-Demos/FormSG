@@ -3,7 +3,6 @@ import { DropzoneProps, useDropzone } from 'react-dropzone'
 import {
   Box,
   forwardRef,
-  StylesProvider,
   Text,
   useFormControl,
   UseFormControlProps,
@@ -22,6 +21,7 @@ import { ThemeColorScheme } from '~theme/foundations/colours'
 import { downloadFile } from './utils/downloadFile'
 import { AttachmentDropzone } from './AttachmentDropzone'
 import { AttachmentFileInfo } from './AttachmentFileInfo'
+import { AttachmentStylesProvider } from './AttachmentStylesContext'
 import {
   getFileExtension,
   getInvalidFileExtensionsInZip,
@@ -285,7 +285,7 @@ export const Attachment = forwardRef<AttachmentProps, 'div'>(
     }, [getInputProps, inputProps, name])
 
     return (
-      <StylesProvider value={styles}>
+      <AttachmentStylesProvider value={styles}>
         <Box __css={styles.container}>
           <Box
             {...processedRootProps}
@@ -324,7 +324,7 @@ export const Attachment = forwardRef<AttachmentProps, 'div'>(
             </Text>
           ) : null}
         </Box>
-      </StylesProvider>
+      </AttachmentStylesProvider>
     )
   },
 )

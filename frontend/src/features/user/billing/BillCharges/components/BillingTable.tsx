@@ -19,12 +19,13 @@ type BillingColumnData = Pick<
   'formName' | 'adminEmail' | 'authType' | 'total'
 >
 
-const AUTHTYPE_TO_TEXT = {
+const AUTHTYPE_TO_TEXT: Record<FormAuthType, string> = {
   [FormAuthType.NIL]: '-',
   [FormAuthType.SP]: 'Singpass',
   [FormAuthType.SGID]: 'sgID',
   [FormAuthType.MyInfo]: 'MyInfo',
   [FormAuthType.CP]: 'Corppass',
+  [FormAuthType.SGID_MyInfo]: 'Singpass App-only with Myinfo',
 }
 
 const BILLING_TABLE_COLUMNS: Column<BillingColumnData>[] = [

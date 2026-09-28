@@ -25,7 +25,7 @@ export const VariablePaymentItemDetailsBlock = ({
   const {
     control,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<{ [PAYMENT_VARIABLE_INPUT_AMOUNT_FIELD_ID]: string }>()
 
   const {
     data: {

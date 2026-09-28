@@ -167,11 +167,11 @@ export const RatingOption = forwardRef<RatingOptionProps, 'input'>(
       [handleSelect, selectedValue, value],
     )
 
-    const { getInputProps, getCheckboxProps } = useRadio({
+    const { getInputProps, getRadioProps } = useRadio({
       name,
       id: `${name}-${value}`,
       onChange: handleSelect,
-      value,
+      value: String(value),
       isDisabled,
       // Required & invalid should apply to rating field rather than individual rating.
       isRequired: false,
@@ -179,7 +179,7 @@ export const RatingOption = forwardRef<RatingOptionProps, 'input'>(
     })
 
     const inputProps = getInputProps()
-    const radioProps = getCheckboxProps()
+    const radioProps = getRadioProps()
 
     const isChecked = value === selectedValue
 
