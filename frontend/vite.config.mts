@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react'
 import { createRequire } from 'node:module'
 import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
+import { defineConfig, HtmlTagDescriptor, Plugin } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
@@ -24,10 +24,53 @@ const polyfillShims = Object.fromEntries(
   ]),
 )
 
+const DATADOG_ENTRY = 'datadog-chunk'
+
+/**
+ * Loads the Datadog RUM chunk from `<head>` as an external module script so it
+ * runs before the app bundle. The backend CSP forbids inline scripts, hence a
+ * separate file instead of inlined code.
+ */
+const datadogHeadChunk = (): Plugin => {
+  let datadogFileName: string | undefined
+  return {
+    name: 'formsg:datadog-head-chunk',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (
+          chunk.type === 'chunk' &&
+          chunk.isEntry &&
+          chunk.name === DATADOG_ENTRY
+        ) {
+          datadogFileName = chunk.fileName
+        }
+      }
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler: (): HtmlTagDescriptor[] => {
+        if (!datadogFileName) return []
+        return [
+          {
+            tag: 'script',
+            attrs: {
+              type: 'module',
+              crossorigin: true,
+              src: `./${datadogFileName}`,
+            },
+            injectTo: 'head-prepend',
+          },
+        ]
+      },
+    },
+  }
+}
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [react(), tsconfigPaths(), svgr(), polyfills()],
+  plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogHeadChunk()],
   resolve: {
     alias: polyfillShims,
   },
@@ -61,7 +104,18 @@ export default defineConfig({
     outDir: '../dist/frontend',
     emptyOutDir: true,
     sourcemap: true,
-    // TICKET-B (MBA-2855): add `rollupOptions` here for the separate Datadog
-    // entry (datadog-chunk.ts). Do not add other build options in TICKET-A.
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        [DATADOG_ENTRY]: fileURLToPath(
+          new URL('./datadog-chunk.ts', import.meta.url),
+        ),
+      },
+      output: {
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash][extname]',
+      },
+    },
   },
 })

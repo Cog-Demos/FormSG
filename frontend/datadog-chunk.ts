@@ -1,6 +1,11 @@
 /**
- * This file compiles to datadog-chunk.js which is then loaded in the <head> of the react app
- * This ensures that datadog is initialised before the react app
+ * This file is built by Vite into its own chunk (see `build` section of
+ * vite.config.ts) which is loaded from the <head> of index.html before the
+ * main app bundle. This ensures that datadog is initialised before the react
+ * app.
+ *
+ * All configuration is read from `VITE_APP_*` variables present in the build
+ * environment; Vite inlines them at build time via `import.meta.env`.
  */
 
 import { datadogRum, RumInitConfiguration } from '@datadog/browser-rum'
@@ -26,23 +31,30 @@ const ddBeforeSend: RumInitConfiguration['beforeSend'] = (event) => {
   return true
 }
 
-// Init Datadog RUM
-// Values for REACT_APP_DD_RUM_APP_ID, REACT_APP_DD_RUM_CLIENT_TOKEN, REACT_APP_DD_RUM_ENV, REACT_APP_VERSION, REACT_APP_DD_SAMPLE_RATE will be injected at build time
-datadogRum.init({
-  applicationId: '@REACT_APP_DD_RUM_APP_ID',
-  clientToken: '@REACT_APP_DD_RUM_CLIENT_TOKEN',
-  env: '@REACT_APP_DD_RUM_ENV',
-  site: 'datadoghq.com',
-  service: 'formsg-react',
-  allowedTracingUrls: ['@REACT_APP_URL'],
+const applicationId = import.meta.env.VITE_APP_DD_RUM_APP_ID ?? ''
+const clientToken = import.meta.env.VITE_APP_DD_RUM_CLIENT_TOKEN ?? ''
+const appUrl = import.meta.env.VITE_APP_URL ?? ''
+const sampleRate = Number(import.meta.env.VITE_APP_DD_SAMPLE_RATE)
 
-  // Specify a version number to identify the deployed version of your application in Datadog
-  version: '@REACT_APP_VERSION',
-  sessionSampleRate: Number('@REACT_APP_DD_SAMPLE_RATE') || 5,
-  sessionReplaySampleRate: 100,
-  trackUserInteractions: true,
-  defaultPrivacyLevel: 'mask-user-input',
-  beforeSend: ddBeforeSend,
-})
+// Init Datadog RUM only when the build was given credentials.
+if (applicationId && clientToken) {
+  datadogRum.init({
+    applicationId,
+    clientToken,
+    env: import.meta.env.VITE_APP_DD_RUM_ENV ?? '',
+    site: 'datadoghq.com',
+    service: 'formsg-react',
+    allowedTracingUrls: appUrl ? [appUrl] : [],
 
-datadogRum.startSessionReplayRecording()
+    // Specify a version number to identify the deployed version of your application in Datadog
+    version: import.meta.env.VITE_APP_VERSION ?? '',
+    sessionSampleRate:
+      Number.isFinite(sampleRate) && sampleRate > 0 ? sampleRate : 5,
+    sessionReplaySampleRate: 100,
+    trackUserInteractions: true,
+    defaultPrivacyLevel: 'mask-user-input',
+    beforeSend: ddBeforeSend,
+  })
+
+  datadogRum.startSessionReplayRecording()
+}
