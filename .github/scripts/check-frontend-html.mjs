@@ -33,7 +33,7 @@ const scripts = [
     index: m.index,
     attrs: m[1],
     body: m[2],
-    src: src ? (src[1] ?? src[2] ?? src[3]) : undefined,
+    src: src ? src[1] ?? src[2] ?? src[3] : undefined,
     isModule: /\btype\s*=\s*["']?module/i.test(m[1]),
     isAsyncOrDefer: /\b(async|defer)\b/i.test(m[1]),
   }
