@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { LANDING_PAYMENTS_ROUTE } from '~constants/routes'
 import {
@@ -23,13 +23,22 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <LandingPaymentsPage />
-export const Default = Template.bind({})
+const Template: StoryFn = () => <LandingPaymentsPage />
 
-export const Loading = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const Loading = {
+  render: Template,
+}
 
-export const Tablet = Template.bind({})
-Tablet.parameters = getTabletViewParameters()
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
+
+export const Tablet = {
+  render: Template,
+  parameters: getTabletViewParameters(),
+}

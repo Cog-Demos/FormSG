@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { AdminFormDto } from '~shared/types/form'
 
@@ -28,33 +28,48 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsTwilioPage />
-export const WithoutCustomCredentials = Template.bind({})
+const Template: StoryFn = () => <SettingsTwilioPage />
 
-export const WithCustomCredentials = Template.bind({})
-WithCustomCredentials.parameters = {
-  msw: buildMswRoutes({
-    overrides: { msgSrvcName: 'some-test-twilio-credentials' },
-  }),
+export const WithoutCustomCredentials = {
+  render: Template,
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: buildMswRoutes({ delay: 'infinite' }),
-}
+export const WithCustomCredentials = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    msw: buildMswRoutes({
+      overrides: { msgSrvcName: 'some-test-twilio-credentials' },
+    }),
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({ delay: 'infinite' }),
   },
-  chromatic: { viewports: [viewports.md] },
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
 }

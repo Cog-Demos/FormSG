@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormResponseMode, FormSettings } from '~shared/types/form'
 
@@ -37,47 +37,65 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsWebhooksPage />
-export const StorageModeEmpty = Template.bind({})
-StorageModeEmpty.parameters = {
-  msw: buildMswRoutes({
-    overrides: {
-      responseMode: FormResponseMode.Encrypt,
-    },
-  }),
-}
+const Template: StoryFn = () => <SettingsWebhooksPage />
 
-export const StorageModeRetryEnabled = Template.bind({})
-StorageModeRetryEnabled.parameters = {
-  msw: buildMswRoutes({
-    overrides: {
-      responseMode: FormResponseMode.Encrypt,
-      webhook: {
-        url: 'https://example.com/webhook',
-        isRetryEnabled: true,
+export const StorageModeEmpty = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      overrides: {
+        responseMode: FormResponseMode.Encrypt,
       },
-    },
-  }),
-}
-
-export const UnsupportedEmailMode = Template.bind({})
-
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: buildMswRoutes({ delay: 'infinite' }),
-}
-
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  ...StorageModeRetryEnabled.parameters,
-  ...getMobileViewParameters(),
-}
-
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  ...StorageModeRetryEnabled.parameters,
-  viewport: {
-    defaultViewport: 'tablet',
+    }),
   },
-  chromatic: { viewports: [viewports.md] },
+}
+
+export const StorageModeRetryEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      overrides: {
+        responseMode: FormResponseMode.Encrypt,
+        webhook: {
+          url: 'https://example.com/webhook',
+          isRetryEnabled: true,
+        },
+      },
+    }),
+  },
+}
+
+export const UnsupportedEmailMode = {
+  render: Template,
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({ delay: 'infinite' }),
+  },
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    ...StorageModeRetryEnabled.parameters,
+    ...getMobileViewParameters(),
+  },
+}
+
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    ...StorageModeRetryEnabled.parameters,
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
 }

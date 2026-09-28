@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormId } from '~shared/types'
 
@@ -28,7 +28,7 @@ export default {
   },
 } as Meta<DeleteFormModalProps>
 
-const Template: Story<DeleteFormModalProps> = (args) => {
+const Template: StoryFn<DeleteFormModalProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   return (
@@ -39,7 +39,12 @@ const Template: Story<DeleteFormModalProps> = (args) => {
     />
   )
 }
-export const Default = Template.bind({})
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const Default = {
+  render: Template,
+}
+
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}

@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import {
   BasicField,
@@ -26,7 +26,7 @@ import { getMobileViewParameters, StoryRouter } from '~utils/storybook'
 
 import { FormFieldWithQuestionNo } from '~features/form/types'
 
-import { NewLogicBlock, NewLogicBlockProps } from './NewLogicBlock'
+import { NewLogicBlock } from './NewLogicBlock'
 
 export default {
   title: 'Features/AdminForm/Logic/NewLogicBlock',
@@ -61,39 +61,38 @@ const FIELD_TYPE_TO_ID = MOCK_FORM_FIELDS.reduce(
   {} as Record<BasicField, string>,
 )
 
-const Template: Story<NewLogicBlockProps> = (args) => (
-  <NewLogicBlock {...args} />
-)
+export const Default = {}
 
-export const Default = Template.bind({})
-
-export const AllLogicConditions = Template.bind({})
-AllLogicConditions.args = {
-  _defaultValues: {
-    conditions: generateAllLogicConditions(),
-    logicType: LogicType.ShowFields,
-    show: [
-      FIELD_TYPE_TO_ID[BasicField.Checkbox],
-      FIELD_TYPE_TO_ID[BasicField.LongText],
-      FIELD_TYPE_TO_ID[BasicField.Image],
-      FIELD_TYPE_TO_ID[BasicField.Mobile],
-      FIELD_TYPE_TO_ID[BasicField.Attachment],
-    ],
+export const AllLogicConditions = {
+  args: {
+    _defaultValues: {
+      conditions: generateAllLogicConditions(),
+      logicType: LogicType.ShowFields,
+      show: [
+        FIELD_TYPE_TO_ID[BasicField.Checkbox],
+        FIELD_TYPE_TO_ID[BasicField.LongText],
+        FIELD_TYPE_TO_ID[BasicField.Image],
+        FIELD_TYPE_TO_ID[BasicField.Mobile],
+        FIELD_TYPE_TO_ID[BasicField.Attachment],
+      ],
+    },
   },
 }
 
-export const PreventSubmission = Template.bind({})
-PreventSubmission.args = {
-  _defaultValues: {
-    logicType: LogicType.PreventSubmit,
-    preventSubmitMessage:
-      'No submission allowed because this is just a test block.',
+export const PreventSubmission = {
+  args: {
+    _defaultValues: {
+      logicType: LogicType.PreventSubmit,
+      preventSubmitMessage:
+        'No submission allowed because this is just a test block.',
+    },
   },
 }
 
-export const Mobile = Template.bind({})
-Mobile.args = AllLogicConditions.args
-Mobile.parameters = getMobileViewParameters()
+export const Mobile = {
+  args: AllLogicConditions.args,
+  parameters: getMobileViewParameters(),
+}
 
 // Helper functions to generate conditions
 function generateAllLogicConditions(): FormCondition[] {
