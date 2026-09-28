@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 
 import Button from '../Button'
@@ -83,49 +79,56 @@ export type PlaygroundArgs = PhoneNumberInputProps & {
   defaultValue?: string
 }
 
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
+  name,
+  label,
+  isDisabled,
+  isRequired,
+  defaultValue,
+  ...args
+}) => {
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<Record<string, string>>()
+  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormControl
+        isRequired={isRequired}
+        isDisabled={isDisabled}
+        isInvalid={!!errors[name]}
+        mb={6}
+      >
+        <FormLabel htmlFor={name}>{label}</FormLabel>
+        <Controller
+          control={control}
+          name={name}
+          defaultValue={defaultValue}
+          rules={{
+            required: isRequired
+              ? { value: true, message: 'Required field' }
+              : false,
+            validate: (val) => {
+              return isValidPhoneNumber(val) || 'Invalid number'
+            },
+          }}
+          render={({ field }) => <PhoneNumberInput {...args} {...field} />}
+        />
+
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button variant="solid" type="submit">
+        Submit
+      </Button>
+    </form>
+  )
+}
+
 export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({ name, label, isDisabled, isRequired, defaultValue, ...args }) => {
-    const {
-      handleSubmit,
-      formState: { errors },
-      control,
-    } = useForm<Record<string, string>>()
-    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
-
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormControl
-          isRequired={isRequired}
-          isDisabled={isDisabled}
-          isInvalid={!!errors[name]}
-          mb={6}
-        >
-          <FormLabel htmlFor={name}>{label}</FormLabel>
-          <Controller
-            control={control}
-            name={name}
-            defaultValue={defaultValue}
-            rules={{
-              required: isRequired
-                ? { value: true, message: 'Required field' }
-                : false,
-              validate: (val) => {
-                return isValidPhoneNumber(val) || 'Invalid number'
-              },
-            }}
-            render={({ field }) => <PhoneNumberInput {...args} {...field} />}
-          />
-
-          <FormErrorMessage>
-            {errors[name]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button variant="solid" type="submit">
-          Submit
-        </Button>
-      </form>
-    )
-  },
+  render: PlaygroundTemplate,
 
   args: {
     name: 'Test playground input',

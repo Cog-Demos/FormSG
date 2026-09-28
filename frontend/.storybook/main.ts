@@ -1,6 +1,5 @@
-import { resolve } from 'node:path'
-
 import type { StorybookConfig } from '@storybook/react-vite'
+import { resolve } from 'node:path'
 import { mergeConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'

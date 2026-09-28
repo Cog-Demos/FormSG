@@ -3,7 +3,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { BiHeading, BiRadioCircleMarked } from 'react-icons/bi'
 import { FormControl } from '@chakra-ui/react'
 import { useArgs } from '@storybook/preview-api'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { fixedHeightDecorator } from '~utils/storybook'
 import Button from '~components/Button'
@@ -169,54 +169,59 @@ export const Disabled = {
   },
 }
 
+const PlaygroundTemplate: StoryFn<SingleSelectProps> = ({
+  items,
+  isReadOnly,
+}) => {
+  const name = 'Dropdown'
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm({
+    defaultValues: {
+      [name]: '',
+    },
+  })
+
+  const itemValues = useMemo(() => items.map((i) => itemToValue(i)), [items])
+
+  const onSubmit = useCallback((data: unknown) => {
+    alert(JSON.stringify(data))
+  }, [])
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormControl
+        id={name}
+        isRequired
+        isInvalid={!!errors[name]}
+        isReadOnly={isReadOnly}
+      >
+        <FormLabel>Best fruit</FormLabel>
+        <Controller
+          control={control}
+          name={name}
+          rules={{
+            required: 'Dropdown selection is required',
+            validate: (value) => {
+              return (
+                itemValues.includes(value) ||
+                'Entered value is not valid dropdown option'
+              )
+            },
+          }}
+          render={({ field }) => <SingleSelect items={items} {...field} />}
+        />
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button type="submit">Submit</Button>
+    </form>
+  )
+}
+
 export const Playground: StoryObj<SingleSelectProps> = {
-  render: ({ items, isReadOnly }) => {
-    const name = 'Dropdown'
-    const {
-      handleSubmit,
-      formState: { errors },
-      control,
-    } = useForm({
-      defaultValues: {
-        [name]: '',
-      },
-    })
-
-    const itemValues = useMemo(() => items.map((i) => itemToValue(i)), [items])
-
-    const onSubmit = useCallback((data: unknown) => {
-      alert(JSON.stringify(data))
-    }, [])
-
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormControl
-          id={name}
-          isRequired
-          isInvalid={!!errors[name]}
-          isReadOnly={isReadOnly}
-        >
-          <FormLabel>Best fruit</FormLabel>
-          <Controller
-            control={control}
-            name={name}
-            rules={{
-              required: 'Dropdown selection is required',
-              validate: (value) => {
-                return (
-                  itemValues.includes(value) ||
-                  'Entered value is not valid dropdown option'
-                )
-              },
-            }}
-            render={({ field }) => <SingleSelect items={items} {...field} />}
-          />
-          <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
-        </FormControl>
-        <Button type="submit">Submit</Button>
-      </form>
-    )
-  },
+  render: PlaygroundTemplate,
 
   args: {
     isReadOnly: false,

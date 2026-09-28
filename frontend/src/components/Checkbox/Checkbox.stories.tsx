@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { FormControl, VStack } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isEmpty } from 'lodash'
 
 import { viewports } from '~utils/storybook'
@@ -93,79 +93,80 @@ type PlaygroundArgs = CheckboxProps & {
   othersCheckboxName: string
 }
 
-export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({
-    name = 'checkbox',
-    othersInputName = 'others-input',
-    othersCheckboxName = 'others-checkbox',
-    label,
-    ...args
-  }) => {
-    const options = useMemo(() => ['Option 1', 'Option 2', 'Option 3'], [])
-    const {
-      register,
-      handleSubmit,
-      formState: { errors, isDirty },
-      control,
-      trigger,
-    } = useForm<Record<string, string>>()
-    const isOthersChecked = useWatch({
-      name: othersCheckboxName,
-      control,
-    })
-    useEffect(() => {
-      // When isOthersChecked changes, manually trigger input validation. This
-      // is to ensure that:
-      // 1. if you check then uncheck the checkbox, the form knows
-      // that the text input is now optional.
-      // 2. if you check a non-others option, uncheck it, then check "Others",
-      // the form knows that the error state should switch from "Please select
-      // at least one option" to "Please specify others"
-      // Use isDirty to avoid triggering validation when form first loads
-      if (isDirty) {
-        trigger(name)
-        trigger(othersInputName)
-      }
-    }, [isOthersChecked, trigger, othersInputName, name, isDirty])
-    const onSubmit = (data: unknown) => {
-      alert(JSON.stringify(data))
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
+  name = 'checkbox',
+  othersInputName = 'others-input',
+  othersCheckboxName = 'others-checkbox',
+  label,
+  ...args
+}) => {
+  const options = useMemo(() => ['Option 1', 'Option 2', 'Option 3'], [])
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isDirty },
+    control,
+    trigger,
+  } = useForm<Record<string, string>>()
+  const isOthersChecked = useWatch({
+    name: othersCheckboxName,
+    control,
+  })
+  useEffect(() => {
+    // When isOthersChecked changes, manually trigger input validation. This
+    // is to ensure that:
+    // 1. if you check then uncheck the checkbox, the form knows
+    // that the text input is now optional.
+    // 2. if you check a non-others option, uncheck it, then check "Others",
+    // the form knows that the error state should switch from "Please select
+    // at least one option" to "Please specify others"
+    // Use isDirty to avoid triggering validation when form first loads
+    if (isDirty) {
+      trigger(name)
+      trigger(othersInputName)
     }
-    return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl isInvalid={!isEmpty(errors)} mb={6}>
-          <FormLabel isRequired>{label}</FormLabel>
-          {options.map((o, idx) => (
-            <Checkbox
-              key={idx}
-              value={o}
-              {...register(name, {
-                required: !isOthersChecked && 'This field is required',
-              })}
-              {...args}
-            >
-              {o}
-            </Checkbox>
-          ))}
-          <Checkbox.OthersWrapper>
-            <Checkbox.OthersCheckbox
-              {...register(othersCheckboxName)}
-              {...args}
-            />
-            <Checkbox.OthersInput
-              {...register(othersInputName, {
-                required:
-                  isOthersChecked && 'Please specify a value for Others',
-              })}
-            />
-          </Checkbox.OthersWrapper>
-          <FormErrorMessage>
-            {errors[name]?.message ?? errors[othersInputName]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button type="submit">Submit</Button>
-      </form>
-    )
-  },
+  }, [isOthersChecked, trigger, othersInputName, name, isDirty])
+  const onSubmit = (data: unknown) => {
+    alert(JSON.stringify(data))
+  }
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl isInvalid={!isEmpty(errors)} mb={6}>
+        <FormLabel isRequired>{label}</FormLabel>
+        {options.map((o, idx) => (
+          <Checkbox
+            key={idx}
+            value={o}
+            {...register(name, {
+              required: !isOthersChecked && 'This field is required',
+            })}
+            {...args}
+          >
+            {o}
+          </Checkbox>
+        ))}
+        <Checkbox.OthersWrapper>
+          <Checkbox.OthersCheckbox
+            {...register(othersCheckboxName)}
+            {...args}
+          />
+          <Checkbox.OthersInput
+            {...register(othersInputName, {
+              required: isOthersChecked && 'Please specify a value for Others',
+            })}
+          />
+        </Checkbox.OthersWrapper>
+        <FormErrorMessage>
+          {errors[name]?.message ?? errors[othersInputName]?.message}
+        </FormErrorMessage>
+      </FormControl>
+      <Button type="submit">Submit</Button>
+    </form>
+  )
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
 
   args: {
     label: 'Checkbox label',

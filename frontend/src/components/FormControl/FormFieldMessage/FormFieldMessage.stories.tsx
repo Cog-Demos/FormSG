@@ -10,7 +10,10 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: StoryFn<PropsWithChildren<FormFieldMessageProps>> = ({ children, ...args }) => (
+const Template: StoryFn<PropsWithChildren<FormFieldMessageProps>> = ({
+  children,
+  ...args
+}) => (
   // FormControl component required to pass appropriate props into component.
   <FormControl>
     <FormFieldMessage {...args}>{children}</FormFieldMessage>

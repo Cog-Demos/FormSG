@@ -1,6 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
 import { FormControl } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
@@ -69,64 +69,68 @@ export const WithUploadedFile = {
   },
 }
 
-export const Playground: StoryObj<AttachmentProps> = {
-  render: ({ isDisabled, isReadOnly, ...args }) => {
-    const {
-      control,
-      handleSubmit,
-      setError,
-      clearErrors,
-      formState: { errors },
-    } = useForm<Record<string, File>>()
+const PlaygroundTemplate: StoryFn<AttachmentProps> = ({
+  isDisabled,
+  isReadOnly,
+  ...args
+}) => {
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<Record<string, File>>()
 
-    const isInvalid = !!errors?.[args.name]
+  const isInvalid = !!errors?.[args.name]
 
-    const onSubmit = (values: Record<string, File>) => {
-      const stringifyFile = (obj: File) => {
-        const replacer = []
-        for (const key in obj) {
-          replacer.push(key)
-        }
-        return JSON.stringify(obj, replacer)
+  const onSubmit = (values: Record<string, File>) => {
+    const stringifyFile = (obj: File) => {
+      const replacer = []
+      for (const key in obj) {
+        replacer.push(key)
       }
-      alert(stringifyFile(values[args.name]))
+      return JSON.stringify(obj, replacer)
     }
+    alert(stringifyFile(values[args.name]))
+  }
 
-    return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl
-          isInvalid={isInvalid}
-          isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
-        >
-          <FormLabel>Attachments are cool</FormLabel>
-          <Controller
-            render={({ field: { onChange, ...rest } }) => (
-              <Attachment
-                {...args}
-                {...rest}
-                showFileSize={!isInvalid && args.showFileSize}
-                onChange={(file) => {
-                  clearErrors(args.name)
-                  onChange(file)
-                }}
-                onError={(message: string) => setError(args.name, { message })}
-              />
-            )}
-            name={args.name}
-            rules={{
-              required: 'This field is required',
-            }}
-            control={control}
-          />
-          <FormErrorMessage>
-            {errors[args.name]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button type="submit">Submit</Button>
-      </form>
-    )
-  },
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FormControl
+        isInvalid={isInvalid}
+        isDisabled={isDisabled}
+        isReadOnly={isReadOnly}
+      >
+        <FormLabel>Attachments are cool</FormLabel>
+        <Controller
+          render={({ field: { onChange, ...rest } }) => (
+            <Attachment
+              {...args}
+              {...rest}
+              showFileSize={!isInvalid && args.showFileSize}
+              onChange={(file) => {
+                clearErrors(args.name)
+                onChange(file)
+              }}
+              onError={(message: string) => setError(args.name, { message })}
+            />
+          )}
+          name={args.name}
+          rules={{
+            required: 'This field is required',
+          }}
+          control={control}
+        />
+        <FormErrorMessage>{errors[args.name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button type="submit">Submit</Button>
+    </form>
+  )
+}
+
+export const Playground: StoryObj<AttachmentProps> = {
+  render: PlaygroundTemplate,
 
   args: {
     name: 'Test-attachment',

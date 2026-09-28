@@ -1,4 +1,3 @@
-import { useDisclosure } from '@chakra-ui/react'
 import {
   ButtonGroup,
   Modal,
@@ -9,6 +8,7 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalProps,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { Meta, StoryFn } from '@storybook/react'
 

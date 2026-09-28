@@ -6,7 +6,7 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 import Button from '~components/Button'
@@ -116,44 +116,50 @@ type PlaygroundArgs = YesNoProps & {
   isRequired?: boolean
 }
 
-export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({ name, label, isDisabled, isRequired, ...args }) => {
-    const {
-      handleSubmit,
-      control,
-      formState: { errors },
-    } = useForm<Record<string, YesNoOptionValue>>()
-    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
+  name,
+  label,
+  isDisabled,
+  isRequired,
+  ...args
+}) => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<Record<string, YesNoOptionValue>>()
+  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormControl
-          isRequired={isRequired}
-          isDisabled={isDisabled}
-          isInvalid={!!errors[name]}
-          mb={6}
-        >
-          <FormLabel>{label}</FormLabel>
-          <Controller
-            control={control}
-            rules={{
-              required: isRequired
-                ? { value: true, message: 'Required field' }
-                : false,
-            }}
-            name={name}
-            render={({ field }) => (
-              <YesNo {...args} isDisabled={isDisabled} {...field} />
-            )}
-          />
-          <FormErrorMessage>
-            {errors[name]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button type="submit">Submit</Button>
-      </form>
-    )
-  },
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormControl
+        isRequired={isRequired}
+        isDisabled={isDisabled}
+        isInvalid={!!errors[name]}
+        mb={6}
+      >
+        <FormLabel>{label}</FormLabel>
+        <Controller
+          control={control}
+          rules={{
+            required: isRequired
+              ? { value: true, message: 'Required field' }
+              : false,
+          }}
+          name={name}
+          render={({ field }) => (
+            <YesNo {...args} isDisabled={isDisabled} {...field} />
+          )}
+        />
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button type="submit">Submit</Button>
+    </form>
+  )
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
 
   args: {
     name: 'Test playground input',

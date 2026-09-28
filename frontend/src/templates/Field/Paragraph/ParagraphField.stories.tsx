@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -7,10 +7,7 @@ import { viewports } from '~utils/storybook'
 
 import { ParagraphFieldSchema } from '../types'
 
-import {
-  ParagraphField as ParagraphFieldComponent,
-  ParagraphFieldProps,
-} from './ParagraphField'
+import { ParagraphField as ParagraphFieldComponent } from './ParagraphField'
 
 export default {
   title: 'Templates/Field/ParagraphField',
@@ -30,10 +27,6 @@ const baseSchema: ParagraphFieldSchema = {
   disabled: false,
   fieldType: BasicField.Statement,
   _id: '611b94dfbb9e300012f702a7',
-}
-
-interface StoryParagraphFieldProps extends ParagraphFieldProps {
-  defaultValue?: string
 }
 
 export const Default = {

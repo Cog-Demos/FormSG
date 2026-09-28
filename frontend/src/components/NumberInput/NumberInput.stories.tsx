@@ -1,10 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -66,44 +62,50 @@ type PlaygroundArgs = NumberInputProps & {
   placeholder?: string
 }
 
-export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({ name, label, isDisabled, isRequired, ...args }) => {
-    const {
-      handleSubmit,
-      formState: { errors },
-      control,
-    } = useForm<Record<string, string>>()
-    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
+  name,
+  label,
+  isDisabled,
+  isRequired,
+  ...args
+}) => {
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<Record<string, string>>()
+  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormControl
-          isRequired={isRequired}
-          isDisabled={isDisabled}
-          isInvalid={!!errors[name]}
-          mb={6}
-        >
-          <FormLabel htmlFor={name}>{label}</FormLabel>
-          <Controller
-            name={name}
-            control={control}
-            rules={{
-              required: isRequired
-                ? { value: true, message: 'Required field' }
-                : false,
-            }}
-            render={({ field }) => <NumberInput {...field} {...args} />}
-          />
-          <FormErrorMessage>
-            {errors[name]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button variant="solid" type="submit">
-          Submit
-        </Button>
-      </form>
-    )
-  },
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormControl
+        isRequired={isRequired}
+        isDisabled={isDisabled}
+        isInvalid={!!errors[name]}
+        mb={6}
+      >
+        <FormLabel htmlFor={name}>{label}</FormLabel>
+        <Controller
+          name={name}
+          control={control}
+          rules={{
+            required: isRequired
+              ? { value: true, message: 'Required field' }
+              : false,
+          }}
+          render={({ field }) => <NumberInput {...field} {...args} />}
+        />
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button variant="solid" type="submit">
+        Submit
+      </Button>
+    </form>
+  )
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
 
   args: {
     name: 'Test playground input',

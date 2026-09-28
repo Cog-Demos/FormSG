@@ -1,4 +1,4 @@
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import {
   getBillingInfo,

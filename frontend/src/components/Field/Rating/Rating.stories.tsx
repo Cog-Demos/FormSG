@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~/utils/storybook'
 
@@ -224,59 +224,57 @@ type PlaygroundArgs = RatingProps & {
   isRequired?: boolean
 }
 
-export const Playground: StoryObj<PlaygroundArgs> = {
-  render: ({
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
+  name,
+  label,
+  isDisabled,
+  isRequired,
+  variant,
+  numberOfRatings,
+  ...args
+}) => {
+  const { handleSubmit, control } = useForm<Record<string, number>>()
+  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+  const {
+    field,
+    formState: { errors },
+  } = useController({
+    control,
     name,
-    label,
-    isDisabled,
-    isRequired,
-    variant,
-    numberOfRatings,
-    ...args
-  }) => {
-    const { handleSubmit, control } = useForm<Record<string, number>>()
-    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
-    const {
-      field,
-      formState: { errors },
-    } = useController({
-      control,
-      name,
-      defaultValue: args.defaultValue,
-      rules: {
-        required: isRequired
-          ? { value: true, message: 'Required field' }
-          : false,
-      },
-    })
+    defaultValue: args.defaultValue,
+    rules: {
+      required: isRequired ? { value: true, message: 'Required field' } : false,
+    },
+  })
 
-    return (
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FormControl
-          isRequired={isRequired}
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <FormControl
+        isRequired={isRequired}
+        isDisabled={isDisabled}
+        isInvalid={!!errors[name]}
+        mb={6}
+      >
+        <FormLabel htmlFor={name}>{label}</FormLabel>
+        <Rating
+          variant={variant}
+          numberOfRatings={numberOfRatings}
+          {...args}
           isDisabled={isDisabled}
-          isInvalid={!!errors[name]}
-          mb={6}
-        >
-          <FormLabel htmlFor={name}>{label}</FormLabel>
-          <Rating
-            variant={variant}
-            numberOfRatings={numberOfRatings}
-            {...args}
-            isDisabled={isDisabled}
-            isRequired={isRequired}
-            {...field}
-          />
-          <FormErrorMessage>
-            {errors[name]?.message}
-          </FormErrorMessage>
-        </FormControl>
-        <Button type="submit" colorScheme={args.colorScheme}>
-          Submit
-        </Button>
-      </form>
-    )
-  },
+          isRequired={isRequired}
+          {...field}
+        />
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
+      </FormControl>
+      <Button type="submit" colorScheme={args.colorScheme}>
+        Submit
+      </Button>
+    </form>
+  )
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
 
   args: {
     name: 'Test playground input',

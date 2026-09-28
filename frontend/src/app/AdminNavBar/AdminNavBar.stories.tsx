@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { SeenFlags } from '~shared/types/user'
 
@@ -14,7 +14,7 @@ import {
 
 import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
-import { AdminNavBar, AdminNavBarProps } from './AdminNavBar'
+import { AdminNavBar } from './AdminNavBar'
 
 export default {
   title: 'App/AdminNavBar',
@@ -83,7 +83,10 @@ export const WhatsNewFeatureNotificationNotShown = {
         mockUser: {
           ...MOCK_USER,
           flags: new Map([
-            [SeenFlags.LastSeenFeatureUpdateVersion, FEATURE_UPDATE_LIST.version],
+            [
+              SeenFlags.LastSeenFeatureUpdateVersion,
+              FEATURE_UPDATE_LIST.version,
+            ],
           ]),
         },
       }),

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { VStack } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -81,28 +81,30 @@ export const ToggleStates = {
   name: 'All states',
 }
 
+const PlaygroundTemplate: StoryFn<ToggleProps> = (args) => {
+  const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
+  const { register, handleSubmit } = useForm()
+  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <VStack align="left" w="30%">
+        {labels.map((l, idx) => (
+          <Toggle
+            key={idx}
+            {...args}
+            {...register(l)}
+            label={l}
+            description={`${l} description`}
+          />
+        ))}
+      </VStack>
+      <Button mt="1rem" type="submit">
+        Submit
+      </Button>
+    </form>
+  )
+}
+
 export const Playground: StoryObj<ToggleProps> = {
-  render: (args) => {
-    const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
-    const { register, handleSubmit } = useForm()
-    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
-    return (
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <VStack align="left" w="30%">
-          {labels.map((l, idx) => (
-            <Toggle
-              key={idx}
-              {...args}
-              {...register(l)}
-              label={l}
-              description={`${l} description`}
-            />
-          ))}
-        </VStack>
-        <Button mt="1rem" type="submit">
-          Submit
-        </Button>
-      </form>
-    )
-  },
+  render: PlaygroundTemplate,
 }

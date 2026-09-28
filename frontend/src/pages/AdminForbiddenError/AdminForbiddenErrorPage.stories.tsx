@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { getUnauthedUser } from '~/mocks/msw/handlers/user'
 

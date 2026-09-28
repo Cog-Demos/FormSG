@@ -1,4 +1,4 @@
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Principles as Component } from './Principles'
 
