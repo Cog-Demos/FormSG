@@ -1,3 +1,4 @@
+import { ElementType } from 'react'
 import {
   BiAlignLeft,
   BiBody,
@@ -43,13 +44,12 @@ import {
   BiUser,
   BiUserVoice,
 } from 'react-icons/bi'
-import { As } from '@chakra-ui/react'
 
 import { BasicField, MyInfoAttribute } from '~shared/types/field'
 
 type BuilderSidebarFieldMeta = {
   label: string
-  icon: As
+  icon: ElementType
   // Is this fieldType included in submissions?
   isSubmitted: boolean
 }

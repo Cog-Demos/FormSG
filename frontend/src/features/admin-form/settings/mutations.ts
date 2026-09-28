@@ -65,10 +65,9 @@ export const useMutateFormSettings = () => {
         adminFormKeys.id(formId),
         (oldData) =>
           oldData
-            ? {
-                ...oldData,
-                ...newData,
-              }
+            ? // Settings share the form's response mode, so the merged
+              // result remains a valid AdminFormDto of the same variant.
+              ({ ...oldData, ...newData } as AdminFormDto)
             : undefined,
       )
     },
@@ -76,7 +75,7 @@ export const useMutateFormSettings = () => {
   )
 
   const generateErrorToast = useCallback(
-    (message) => {
+    (message: string) => {
       toast.closeAll()
       toast({
         description: message,
@@ -87,7 +86,7 @@ export const useMutateFormSettings = () => {
   )
 
   const generateSuccessToast = useCallback(
-    (message) => {
+    (message: string) => {
       toast.closeAll()
       toast({
         description: message,

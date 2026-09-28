@@ -10,10 +10,14 @@ import {
   Navigator as BaseNavigator,
   UNSAFE_NavigationContext as NavigationContext,
 } from 'react-router-dom'
-import type { History } from 'history'
+
+interface BlockTransition {
+  location: { pathname: string }
+  retry(): void
+}
 
 interface Navigator extends BaseNavigator {
-  block: History['block']
+  block: (blocker: (transition: BlockTransition) => void) => () => void
 }
 
 type NavigationContextWithBlock = ContextType<typeof NavigationContext> & {
