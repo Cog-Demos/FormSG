@@ -9,7 +9,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ChakraProvider } from '@chakra-ui/react'
 import type { Decorator, Preview } from '@storybook/react'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { initialize, mswDecorator } from 'msw-storybook-addon'
 
 import { AuthProvider } from '~contexts/AuthContext'
 import * as dayjsUtils from '~utils/dayjs'
@@ -53,8 +53,9 @@ const withHelmet: Decorator = (Story) => (
 )
 
 const preview: Preview = {
-  decorators: [withReactQuery, withChakra, withHelmet],
-  loaders: [mswLoader],
+  // mswDecorator (not mswLoader) so `composeStories` in Vitest applies the
+  // story's MSW handlers on render without an explicit `Story.load()`.
+  decorators: [mswDecorator, withReactQuery, withChakra, withHelmet],
   initialGlobals: {
     locale: 'en-SG',
     locales: {

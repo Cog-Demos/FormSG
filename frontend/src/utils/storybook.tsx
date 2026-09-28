@@ -98,12 +98,14 @@ export const ViewedEmergencyContactDecorator: Decorator = (
 
 export const EditFieldDrawerDecorator: Decorator = (storyFn) => {
   const deleteFieldModalDisclosure = useDisclosure()
+  const deletePaymentModalDisclosure = useDisclosure()
   return (
     <Box maxW="33.25rem">
       <CreatePageSideBarLayoutProvider>
         <BuilderAndDesignContext.Provider
           value={{
             deleteFieldModalDisclosure,
+            deletePaymentModalDisclosure,
           }}
         >
           {storyFn()}
