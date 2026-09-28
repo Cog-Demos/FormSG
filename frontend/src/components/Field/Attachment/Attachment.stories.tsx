@@ -1,6 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
 import { FormControl } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
@@ -14,47 +14,62 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<AttachmentProps> = (args) => {
+const Template: StoryFn<AttachmentProps> = (args) => {
   return <Attachment {...args} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  name: 'Test-input',
-  maxSize: 23000,
+export const Default = {
+  render: Template,
+
+  args: {
+    name: 'Test-input',
+    maxSize: 23000,
+  },
 }
 
-export const ShowMaxSize = Template.bind({})
-ShowMaxSize.args = {
-  name: 'Test-input',
-  maxSize: 23000,
-  showFileSize: true,
+export const ShowMaxSize = {
+  render: Template,
+
+  args: {
+    name: 'Test-input',
+    maxSize: 23000,
+    showFileSize: true,
+  },
 }
 
-export const Invalid = Template.bind({})
-Invalid.args = {
-  name: 'Test-input',
-  isInvalid: true,
+export const Invalid = {
+  render: Template,
+
+  args: {
+    name: 'Test-input',
+    isInvalid: true,
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  name: 'Test-input',
-  isDisabled: true,
+export const Disabled = {
+  render: Template,
+
+  args: {
+    name: 'Test-input',
+    isDisabled: true,
+  },
 }
 
-export const WithUploadedFile = Template.bind({})
-WithUploadedFile.args = {
-  name: 'Test-input',
-  value: Object.defineProperty(
-    new File([''], 'mock file', { type: 'text/html' }),
-    'size',
-    { value: 1100 * 1000 },
-  ),
-  onChange: () => console.log('delete button pressed'),
+export const WithUploadedFile = {
+  render: Template,
+
+  args: {
+    name: 'Test-input',
+    value: Object.defineProperty(
+      new File([''], 'mock file', { type: 'text/html' }),
+      'size',
+      { value: 1100 * 1000 },
+    ),
+    onChange: () => console.log('delete button pressed'),
+  },
 }
 
-export const Playground: Story<AttachmentProps> = ({
+const PlaygroundTemplate: StoryFn<AttachmentProps> = ({
   isDisabled,
   isReadOnly,
   ...args
@@ -65,7 +80,7 @@ export const Playground: Story<AttachmentProps> = ({
     setError,
     clearErrors,
     formState: { errors },
-  } = useForm()
+  } = useForm<Record<string, File>>()
 
   const isInvalid = !!errors?.[args.name]
 
@@ -107,17 +122,20 @@ export const Playground: Story<AttachmentProps> = ({
           }}
           control={control}
         />
-        <FormErrorMessage>
-          {errors[args.name] && errors[args.name].message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors[args.name]?.message}</FormErrorMessage>
       </FormControl>
       <Button type="submit">Submit</Button>
     </form>
   )
 }
-Playground.args = {
-  name: 'Test-attachment',
-  maxSize: 400000,
-  isReadOnly: false,
-  isDisabled: false,
+
+export const Playground: StoryObj<AttachmentProps> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test-attachment',
+    maxSize: 400000,
+    isReadOnly: false,
+    isDisabled: false,
+  },
 }

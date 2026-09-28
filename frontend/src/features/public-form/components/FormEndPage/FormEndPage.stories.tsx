@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom'
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { FormColorTheme } from '~shared/types'
 
@@ -35,62 +35,71 @@ export default {
   },
 } as Meta<FormEndPageProps>
 
-const Template: Story<FormEndPageProps> = (args) => <FormEndPage {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  endPage: {
-    buttonText: 'Continue',
-    title:
-      'Thank you for your submission with some super long backstory about how important the submission is to them',
-    paragraph: 'We will get back to you shortly.\n\nOnce again,\r\nthank you.',
-    paymentTitle: '',
-    paymentParagraph: '',
+export const Default = {
+  args: {
+    endPage: {
+      buttonText: 'Continue',
+      title:
+        'Thank you for your submission with some super long backstory about how important the submission is to them',
+      paragraph:
+        'We will get back to you shortly.\n\nOnce again,\r\nthank you.',
+      paymentTitle: '',
+      paymentParagraph: '',
+    },
+    submissionData: {
+      id: 'mockSubmissionId',
+      timestamp: 1648545566989,
+    },
+    handleSubmitFeedback: (inputs: unknown) => console.log(inputs),
   },
-  submissionData: {
-    id: 'mockSubmissionId',
-    timestamp: 1648545566989,
+}
+
+export const ColorThemeGreen = {
+  args: {
+    ...Default.args,
+    colorTheme: FormColorTheme.Green,
   },
-  handleSubmitFeedback: (inputs) => console.log(inputs),
 }
 
-export const ColorThemeGreen = Template.bind({})
-ColorThemeGreen.args = {
-  ...Default.args,
-  colorTheme: FormColorTheme.Green,
+export const ColorThemeGrey = {
+  args: {
+    ...Default.args,
+    colorTheme: FormColorTheme.Grey,
+  },
 }
 
-export const ColorThemeGrey = Template.bind({})
-ColorThemeGrey.args = {
-  ...Default.args,
-  colorTheme: FormColorTheme.Grey,
+export const ColorThemeBrown = {
+  args: {
+    ...Default.args,
+    colorTheme: FormColorTheme.Brown,
+  },
 }
 
-export const ColorThemeBrown = Template.bind({})
-ColorThemeBrown.args = {
-  ...Default.args,
-  colorTheme: FormColorTheme.Brown,
+export const ColorThemeRed = {
+  args: {
+    ...Default.args,
+    colorTheme: FormColorTheme.Red,
+  },
 }
 
-export const ColorThemeRed = Template.bind({})
-ColorThemeRed.args = {
-  ...Default.args,
-  colorTheme: FormColorTheme.Red,
+export const ColorThemeOrange = {
+  args: {
+    ...Default.args,
+    colorTheme: FormColorTheme.Orange,
+  },
 }
 
-export const ColorThemeOrange = Template.bind({})
-ColorThemeOrange.args = {
-  ...Default.args,
-  colorTheme: FormColorTheme.Orange,
+export const FeedbackSubmitted = {
+  args: {
+    ...Default.args,
+    isFeedbackSectionHidden: true,
+  },
 }
 
-export const FeedbackSubmitted = Template.bind({})
-FeedbackSubmitted.args = {
-  ...Default.args,
-  isFeedbackSectionHidden: true,
-}
+export const Mobile = {
+  args: {
+    ...Default.args,
+  },
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  ...Default.args,
+  parameters: getMobileViewParameters(),
 }
-Mobile.parameters = getMobileViewParameters()

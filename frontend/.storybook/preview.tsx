@@ -1,6 +1,6 @@
 /**
  * This file is used to add global decorators and parameters to all storybook stories.
- * @see https://storybook.js.org/docs/react/configure/overview#configure-story-rendering
+ * @see https://storybook.js.org/docs/configure#configure-story-rendering
  */
 import 'inter-ui/inter.css'
 import 'focus-visible/dist/focus-visible.min.js'
@@ -8,8 +8,8 @@ import 'focus-visible/dist/focus-visible.min.js'
 import { HelmetProvider } from 'react-helmet-async'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ChakraProvider } from '@chakra-ui/react'
-import { DecoratorFn } from '@storybook/react'
-import { initialize, mswDecorator } from 'msw-storybook-addon'
+import type { Decorator, Preview } from '@storybook/react'
+import { initialize, mswLoader } from 'msw-storybook-addon'
 
 import { AuthProvider } from '~contexts/AuthContext'
 import * as dayjsUtils from '~utils/dayjs'
@@ -19,10 +19,10 @@ import { theme } from '../src/theme'
 
 import { StorybookTheme } from './themes'
 
-initialize()
+initialize({ onUnhandledRequest: 'bypass' })
 dayjsUtils.init()
 
-const withReactQuery: DecoratorFn = (storyFn) => {
+const withReactQuery: Decorator = (Story) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -33,31 +33,45 @@ const withReactQuery: DecoratorFn = (storyFn) => {
   })
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>{storyFn()}</AuthProvider>
+      <AuthProvider>
+        <Story />
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
 
-const withChakra: DecoratorFn = (storyFn) => (
+const withChakra: Decorator = (Story) => (
   <ChakraProvider resetCSS theme={theme}>
-    {storyFn()}
+    <Story />
   </ChakraProvider>
 )
 
-const withHelmet: DecoratorFn = (storyFn) => (
-  <HelmetProvider>{storyFn()}</HelmetProvider>
+const withHelmet: Decorator = (Story) => (
+  <HelmetProvider>
+    <Story />
+  </HelmetProvider>
 )
 
-export const decorators = [withReactQuery, withChakra, withHelmet, mswDecorator]
-
-export const parameters = {
-  i18n,
-  locale: 'en-SG',
-  locales: {
-    'en-SG': 'English',
+const preview: Preview = {
+  decorators: [withReactQuery, withChakra, withHelmet],
+  loaders: [mswLoader],
+  initialGlobals: {
+    locale: 'en-SG',
+    locales: {
+      'en-SG': 'English',
+    },
   },
-  docs: {
-    theme: StorybookTheme.docs,
-    inlineStories: true,
+  parameters: {
+    i18n,
+    a11y: {
+      disable: false,
+      options: { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] } },
+    },
+    docs: {
+      theme: StorybookTheme.docs,
+      story: { inline: true },
+    },
   },
 }
+
+export default preview

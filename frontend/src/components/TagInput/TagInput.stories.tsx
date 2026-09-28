@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { getMobileViewParameters } from '~utils/storybook'
 
@@ -13,44 +13,51 @@ export default {
   },
 } as Meta<TagInputProps>
 
-const Template: Story<TagInputProps> = (args) => <TagInput {...args} />
-export const Default = Template.bind({})
-Default.args = {}
-
-export const WithValue = Template.bind({})
-WithValue.args = {
-  defaultValue: ['foo', 'bar'],
+export const Default = {
+  args: {},
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  isDisabled: true,
+export const WithValue = {
+  args: {
+    defaultValue: ['foo', 'bar'],
+  },
 }
 
-export const DisabledWithValue = Template.bind({})
-DisabledWithValue.args = {
-  ...WithValue.args,
-  ...Disabled.args,
+export const Disabled = {
+  args: {
+    isDisabled: true,
+  },
 }
 
-export const InvalidField = Template.bind({})
-InvalidField.args = {
-  ...WithValue.args,
-  isInvalid: true,
+export const DisabledWithValue = {
+  args: {
+    ...WithValue.args,
+    ...Disabled.args,
+  },
 }
 
-export const InvalidFieldWithInvalidTags = Template.bind({})
-InvalidFieldWithInvalidTags.args = {
-  isInvalid: true,
-  defaultValue: ['foo', 'bar', 'bazinvalid'],
-  tagValidation: (tag) => tag.length <= 3,
+export const InvalidField = {
+  args: {
+    ...WithValue.args,
+    isInvalid: true,
+  },
 }
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  defaultValue: [
-    'somethingreallylong_that_should_overflow_the_input@example.com',
-    'test@example.com',
-  ],
+export const InvalidFieldWithInvalidTags = {
+  args: {
+    isInvalid: true,
+    defaultValue: ['foo', 'bar', 'bazinvalid'],
+    tagValidation: (tag: string) => tag.length <= 3,
+  },
 }
-Mobile.parameters = getMobileViewParameters()
+
+export const Mobile = {
+  args: {
+    defaultValue: [
+      'somethingreallylong_that_should_overflow_the_input@example.com',
+      'test@example.com',
+    ],
+  },
+
+  parameters: getMobileViewParameters(),
+}

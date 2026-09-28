@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { VStack } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -11,7 +11,7 @@ export default {
   title: 'Components/Toggle',
 } as Meta
 
-const AllToggleStates: Story<ToggleProps> = (args) => {
+const AllToggleStates: StoryFn<ToggleProps> = (args) => {
   return (
     <VStack align="left" w="50%">
       <Toggle
@@ -76,10 +76,12 @@ const AllToggleStates: Story<ToggleProps> = (args) => {
   )
 }
 
-export const ToggleStates = AllToggleStates.bind({})
-ToggleStates.storyName = 'All states'
+export const ToggleStates = {
+  render: AllToggleStates,
+  name: 'All states',
+}
 
-export const Playground: Story<ToggleProps> = (args) => {
+const PlaygroundTemplate: StoryFn<ToggleProps> = (args) => {
   const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
   const { register, handleSubmit } = useForm()
   const onSubmit = (data: unknown) => alert(JSON.stringify(data))
@@ -101,4 +103,8 @@ export const Playground: Story<ToggleProps> = (args) => {
       </Button>
     </form>
   )
+}
+
+export const Playground: StoryObj<ToggleProps> = {
+  render: PlaygroundTemplate,
 }

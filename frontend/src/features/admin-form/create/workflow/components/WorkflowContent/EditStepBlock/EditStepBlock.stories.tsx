@@ -1,5 +1,5 @@
-import { expect } from '@storybook/jest'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { StoryObj } from '@storybook/react'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
 
 import {
   BasicField,
@@ -198,8 +198,8 @@ export const Step3AllSelectedValid = {
   },
 }
 
-export const Step4ApprovalFieldNotInEditErrorMessage = {
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+export const Step4ApprovalFieldNotInEditErrorMessage: StoryObj = {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await waitFor(
       async () =>
@@ -217,7 +217,7 @@ export const Step4ApprovalFieldNotInEditErrorMessage = {
       },
     )
     await expect(
-      await canvas.findByText((content) => {
+      await canvas.findByText((content: string) => {
         return content
           .toLowerCase()
           .includes(

@@ -1,10 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -16,38 +12,47 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<MoneyInputProps> = (args) => <MoneyInput {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  placeholder: 'Test placeholder',
+export const Default = {
+  args: {
+    placeholder: 'Test placeholder',
+  },
 }
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: '3.142',
-  isPrefilled: true,
+export const Prefilled = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: '3.142',
+    isPrefilled: true,
+  },
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
+export const Error = {
+  args: {
+    isInvalid: true,
+  },
 }
 
-// TODO: add error cases when e is involved (e.g. 2+e3489), once these cases are handled
-
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
+export const Success = {
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  isDisabled: true,
+export const Disabled = {
+  args: {
+    isDisabled: true,
+  },
 }
 
-export const Playground: Story = ({
+type PlaygroundArgs = MoneyInputProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+  placeholder?: string
+}
+
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
   name,
   label,
   isDisabled,
@@ -58,7 +63,7 @@ export const Playground: Story = ({
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm()
+  } = useForm<Record<string, string>>()
   const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
   return (
@@ -80,9 +85,7 @@ export const Playground: Story = ({
           }}
           render={({ field }) => <MoneyInput {...field} {...args} />}
         />
-        <FormErrorMessage>
-          {errors[name] && errors[name].message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
       </FormControl>
       <Button variant="solid" type="submit">
         Submit
@@ -90,10 +93,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Field label',
-  placeholder: 'Fill in this field',
-  isRequired: true,
-  isDisabled: false,
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Field label',
+    placeholder: 'Fill in this field',
+    isRequired: true,
+    isDisabled: false,
+  },
 }

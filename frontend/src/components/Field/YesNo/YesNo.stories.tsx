@@ -6,12 +6,12 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 import Button from '~components/Button'
 
-import { YesNo, YesNoProps } from './YesNo'
+import { YesNo, YesNoOptionValue, YesNoProps } from './YesNo'
 
 export default {
   title: 'Components/Field/YesNo',
@@ -19,13 +19,13 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<YesNoProps> = (args) => <YesNo {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  name: 'testInput',
+export const Default = {
+  args: {
+    name: 'testInput',
+  },
 }
 
-const TemplateGroup: Story<YesNoProps> = (args) => (
+const TemplateGroup: StoryFn<YesNoProps> = (args) => (
   <SimpleGrid
     columns={2}
     spacing={8}
@@ -52,52 +52,71 @@ const TemplateGroup: Story<YesNoProps> = (args) => (
     <YesNo {...args} colorScheme="theme-brown" />
   </SimpleGrid>
 )
-export const Selected = TemplateGroup.bind({})
-Selected.args = {
-  name: 'testInput',
-  defaultValue: 'Yes',
-}
-Selected.parameters = {
-  controls: {
-    include: ['name', 'isDisabled'],
+
+export const Selected = {
+  render: TemplateGroup,
+
+  args: {
+    name: 'testInput',
+    defaultValue: 'Yes',
+  },
+
+  parameters: {
+    controls: {
+      include: ['name', 'isDisabled'],
+    },
   },
 }
 
-export const Disabled = TemplateGroup.bind({})
-Disabled.args = {
-  name: 'testInput',
-  defaultValue: 'No',
-  isDisabled: true,
-}
-Disabled.parameters = {
-  controls: {
-    include: ['name', 'isDisabled'],
+export const Disabled = {
+  render: TemplateGroup,
+
+  args: {
+    name: 'testInput',
+    defaultValue: 'No',
+    isDisabled: true,
+  },
+
+  parameters: {
+    controls: {
+      include: ['name', 'isDisabled'],
+    },
   },
 }
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  name: 'testMobileInput',
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Mobile = {
+  args: {
+    name: 'testMobileInput',
   },
-  chromatic: { viewports: [viewports.xs] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-export const Tablet = Template.bind({})
-Tablet.args = {
-  name: 'testTabletInput',
-}
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Tablet = {
+  args: {
+    name: 'testTabletInput',
   },
-  chromatic: { viewports: [viewports.md] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
 }
 
-export const Playground: Story = ({
+type PlaygroundArgs = YesNoProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+}
+
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
   name,
   label,
   isDisabled,
@@ -108,7 +127,7 @@ export const Playground: Story = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm()
+  } = useForm<Record<string, YesNoOptionValue>>()
   const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
   return (
@@ -132,17 +151,20 @@ export const Playground: Story = ({
             <YesNo {...args} isDisabled={isDisabled} {...field} />
           )}
         />
-        <FormErrorMessage>
-          {errors[name] && errors[name].message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
       </FormControl>
       <Button type="submit">Submit</Button>
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'YesNo field label',
-  isRequired: false,
-  isDisabled: false,
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'YesNo field label',
+    isRequired: false,
+    isDisabled: false,
+  },
 }

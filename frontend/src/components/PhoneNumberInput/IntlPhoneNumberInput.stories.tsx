@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 
 import Button from '../Button'
@@ -19,7 +15,7 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<PhoneNumberInputProps> = (args) => {
+const Template: StoryFn<PhoneNumberInputProps> = (args) => {
   const [value, setValue] = useState<string | undefined>(args.value ?? '')
   return (
     <PhoneNumberInput
@@ -32,35 +28,58 @@ const Template: Story<PhoneNumberInputProps> = (args) => {
     />
   )
 }
-export const Default = Template.bind({})
-Default.args = {}
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  value: '+12015550123',
-  isPrefilled: true,
+export const Default = {
+  render: Template,
+  args: {},
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
-  value: '999',
+export const Prefilled = {
+  render: Template,
+
+  args: {
+    value: '+12015550123',
+    isPrefilled: true,
+  },
 }
 
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
-  placeholder: 'Enter number',
-  value: '+6598765432',
-}
-export const Disabled = Template.bind({})
-Disabled.args = {
-  value: '123',
-  isDisabled: true,
+export const Error = {
+  render: Template,
+
+  args: {
+    isInvalid: true,
+    value: '999',
+  },
 }
 
-export const Playground: Story = ({
+export const Success = {
+  render: Template,
+
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+    placeholder: 'Enter number',
+    value: '+6598765432',
+  },
+}
+
+export const Disabled = {
+  render: Template,
+
+  args: {
+    value: '123',
+    isDisabled: true,
+  },
+}
+
+export type PlaygroundArgs = PhoneNumberInputProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+  defaultValue?: string
+}
+
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
   name,
   label,
   isDisabled,
@@ -72,7 +91,7 @@ export const Playground: Story = ({
     handleSubmit,
     formState: { errors },
     control,
-  } = useForm()
+  } = useForm<Record<string, string>>()
   const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
   return (
@@ -99,9 +118,7 @@ export const Playground: Story = ({
           render={({ field }) => <PhoneNumberInput {...args} {...field} />}
         />
 
-        <FormErrorMessage>
-          {errors[name] && errors[name].message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
       </FormControl>
       <Button variant="solid" type="submit">
         Submit
@@ -109,10 +126,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Field label',
-  isRequired: true,
-  isDisabled: false,
-  defaultValue: '98765432',
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Field label',
+    isRequired: true,
+    isDisabled: false,
+    defaultValue: '98765432',
+  },
 }

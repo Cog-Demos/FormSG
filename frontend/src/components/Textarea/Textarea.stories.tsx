@@ -1,10 +1,6 @@
 import { useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -16,42 +12,52 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<TextareaProps> = (args) => <Textarea {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  placeholder: 'Test placeholder',
+export const Default = {
+  args: {
+    placeholder: 'Test placeholder',
+  },
 }
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: 'Prefilled field',
-  isPrefilled: true,
+export const Prefilled = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: 'Prefilled field',
+    isPrefilled: true,
+  },
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
-  placeholder: 'Test placeholder',
-  defaultValue: 'Field error',
+export const Error = {
+  args: {
+    isInvalid: true,
+    placeholder: 'Test placeholder',
+    defaultValue: 'Field error',
+  },
 }
 
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
-  placeholder: 'Test placeholder',
-  defaultValue: 'Field success',
+export const Success = {
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+    placeholder: 'Test placeholder',
+    defaultValue: 'Field success',
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  defaultValue: 'Some text',
-  placeholder: 'Test placeholder',
-  isDisabled: true,
+export const Disabled = {
+  args: {
+    defaultValue: 'Some text',
+    placeholder: 'Test placeholder',
+    isDisabled: true,
+  },
 }
 
-export const Playground: Story = ({
+type PlaygroundArgs = TextareaProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+}
+
+const PlaygroundTemplate: StoryFn<PlaygroundArgs> = ({
   name,
   label,
   isDisabled,
@@ -62,7 +68,7 @@ export const Playground: Story = ({
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm()
+  } = useForm<Record<string, string>>()
   const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
   return (
@@ -82,9 +88,7 @@ export const Playground: Story = ({
               : false,
           })}
         />
-        <FormErrorMessage>
-          {errors[name] && errors[name].message}
-        </FormErrorMessage>
+        <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
       </FormControl>
       <Button variant="solid" type="submit">
         Submit
@@ -92,10 +96,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground Textarea',
-  label: 'Field label',
-  placeholder: 'Fill in this field',
-  isRequired: true,
-  isDisabled: false,
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground Textarea',
+    label: 'Field label',
+    placeholder: 'Fill in this field',
+    isRequired: true,
+    isDisabled: false,
+  },
 }

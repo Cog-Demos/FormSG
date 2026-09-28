@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { BiHeading, BiRadioCircleMarked } from 'react-icons/bi'
 import { FormControl } from '@chakra-ui/react'
-import { useArgs } from '@storybook/client-api'
-import { Meta, Story } from '@storybook/react'
+import { useArgs } from '@storybook/preview-api'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { fixedHeightDecorator } from '~utils/storybook'
 import Button from '~components/Button'
@@ -76,77 +76,103 @@ export default {
   },
 } as Meta
 
-const Template: Story<SingleSelectProps> = (args) => {
+const Template: StoryFn<SingleSelectProps> = (args) => {
   const [{ value = '' }, updateArgs] = useArgs()
   const onChange = (value: string) => updateArgs({ value })
   return <SingleSelect {...args} value={value} onChange={onChange} />
 }
 
-export const Default = Template.bind({})
-
-export const NotClearable = Template.bind({})
-NotClearable.args = {
-  isClearable: false,
+export const Default = {
+  render: Template,
 }
 
-export const HasValueSelected = Template.bind({})
-HasValueSelected.args = {
-  value: itemToValue(INITIAL_COMBOBOX_ITEMS[0]),
-  initialIsOpen: true,
-}
+export const NotClearable = {
+  render: Template,
 
-export const StringValues = Template.bind({})
-StringValues.args = {
-  items: ['this only has only string values', 'this is cool'],
-  comboboxProps: {
-    initialInputValue: 'this',
+  args: {
+    isClearable: false,
   },
-  initialIsOpen: true,
 }
 
-export const WithIconSelected = Template.bind({})
-WithIconSelected.args = {
-  items: [
-    {
-      value: 'Radio button',
-      icon: BiRadioCircleMarked,
-      description: 'This is an option with an icon',
-    },
-    {
-      value: 'Radio button button',
-      icon: BiRadioCircleMarked,
-      description: 'To show highlight effect between active and inactive',
-    },
-    {
-      value: 'Section',
-      icon: BiHeading,
-      description: 'This is another option with an icon',
-    },
-  ],
-  value: 'Radio button',
-  initialIsOpen: true,
-  isDisabled: false,
-}
+export const HasValueSelected = {
+  render: Template,
 
-export const WithHalfFilledValue = Template.bind({})
-WithHalfFilledValue.args = {
-  comboboxProps: {
-    initialInputValue: 'Multiple words and',
+  args: {
+    value: itemToValue(INITIAL_COMBOBOX_ITEMS[0]),
+    initialIsOpen: true,
   },
-  initialIsOpen: true,
 }
 
-export const Invalid = Template.bind({})
-Invalid.args = {
-  isInvalid: true,
+export const StringValues = {
+  render: Template,
+
+  args: {
+    items: ['this only has only string values', 'this is cool'],
+    comboboxProps: {
+      initialInputValue: 'this',
+    },
+    initialIsOpen: true,
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  isDisabled: true,
+export const WithIconSelected = {
+  render: Template,
+
+  args: {
+    items: [
+      {
+        value: 'Radio button',
+        icon: BiRadioCircleMarked,
+        description: 'This is an option with an icon',
+      },
+      {
+        value: 'Radio button button',
+        icon: BiRadioCircleMarked,
+        description: 'To show highlight effect between active and inactive',
+      },
+      {
+        value: 'Section',
+        icon: BiHeading,
+        description: 'This is another option with an icon',
+      },
+    ],
+    value: 'Radio button',
+    initialIsOpen: true,
+    isDisabled: false,
+  },
 }
 
-export const Playground: Story<SingleSelectProps> = ({ items, isReadOnly }) => {
+export const WithHalfFilledValue = {
+  render: Template,
+
+  args: {
+    comboboxProps: {
+      initialInputValue: 'Multiple words and',
+    },
+    initialIsOpen: true,
+  },
+}
+
+export const Invalid = {
+  render: Template,
+
+  args: {
+    isInvalid: true,
+  },
+}
+
+export const Disabled = {
+  render: Template,
+
+  args: {
+    isDisabled: true,
+  },
+}
+
+const PlaygroundTemplate: StoryFn<SingleSelectProps> = ({
+  items,
+  isReadOnly,
+}) => {
   const name = 'Dropdown'
   const {
     handleSubmit,
@@ -193,6 +219,11 @@ export const Playground: Story<SingleSelectProps> = ({ items, isReadOnly }) => {
     </form>
   )
 }
-Playground.args = {
-  isReadOnly: false,
+
+export const Playground: StoryObj<SingleSelectProps> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    isReadOnly: false,
+  },
 }
