@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest'
+
 import { SubmissionMetadata } from '~shared/types'
 import { centsToDollars } from '~shared/utils/payments'
 
