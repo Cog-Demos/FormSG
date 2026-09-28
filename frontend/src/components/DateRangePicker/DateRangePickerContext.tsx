@@ -12,7 +12,7 @@ import {
   useState,
 } from 'react'
 import {
-  CSSObject,
+  SystemStyleObject,
   FormControlProps,
   useControllableState,
   useDisclosure,
@@ -30,7 +30,7 @@ import { DateRangePickerProps } from './DateRangePicker'
 
 interface DateRangePickerContextReturn {
   isMobile: boolean
-  styles: Record<string, CSSObject>
+  styles: Record<string, SystemStyleObject>
   handleStartDateChange: ChangeEventHandler<HTMLInputElement>
   handleEndDateChange: ChangeEventHandler<HTMLInputElement>
   handleCalendarDateChange: (value: DateRangeValue) => void

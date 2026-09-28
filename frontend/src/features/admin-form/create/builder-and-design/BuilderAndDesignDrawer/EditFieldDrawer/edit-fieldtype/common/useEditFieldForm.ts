@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import {
-  DeepPartial,
+  DefaultValues,
+  FieldValues,
   Mode,
-  UnpackNestedValue,
   useForm,
   UseFormReturn,
   useWatch,
@@ -39,13 +39,13 @@ import { isMyInfo } from '~features/myinfo/utils'
 import { EditFieldProps } from './types'
 
 type UseEditFieldFormProps<
-  FormShape,
+  FormShape extends FieldValues,
   FieldShape extends FieldBase,
 > = EditFieldProps<FieldShape> & {
   transform: {
-    input: (field: FieldShape) => UnpackNestedValue<DeepPartial<FormShape>>
+    input: (field: FieldShape) => DefaultValues<FormShape>
     output: (
-      form: UnpackNestedValue<FormShape>,
+      form: FormShape,
       originalField: FieldShape,
     ) => FieldShape
     /**
@@ -53,7 +53,7 @@ type UseEditFieldFormProps<
      * This transformation will be ran with the output of transform.output.
      */
     preSubmit?: (
-      input: UnpackNestedValue<FormShape>,
+      input: FormShape,
       output: FieldShape,
     ) => Promise<FieldShape> | FieldShape
   }
@@ -61,7 +61,7 @@ type UseEditFieldFormProps<
   mode?: Mode
 }
 
-export type UseEditFieldFormReturn<U> = UseFormReturn<U> & {
+export type UseEditFieldFormReturn<U extends FieldValues> = UseFormReturn<U> & {
   handleUpdateField: () => Promise<void>
   handleCancel: () => void
   buttonText: string
@@ -69,7 +69,10 @@ export type UseEditFieldFormReturn<U> = UseFormReturn<U> & {
   formMethods: UseFormReturn<U>
 }
 
-export const useEditFieldForm = <FormShape, FieldShape extends FormField>({
+export const useEditFieldForm = <
+  FormShape extends FieldValues,
+  FieldShape extends FormField,
+>({
   field,
   transform,
   mode,
@@ -124,7 +127,7 @@ export const useEditFieldForm = <FormShape, FieldShape extends FormField>({
 
   const watchedInputs = useWatch({
     control: editForm.control,
-  }) as UnpackNestedValue<FormShape>
+  }) as FormShape
 
   // Cloning is required so any nested references are not pointing to the same object,
   // which would prevent rerenders.
@@ -134,12 +137,8 @@ export const useEditFieldForm = <FormShape, FieldShape extends FormField>({
   )
 
   const onSaveSuccess = useCallback(
-    (newField) => {
-      editForm.reset(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        transform.input(newField),
-      )
+    (newField: FieldShape) => {
+      editForm.reset(transform.input(newField))
       setToInactive()
     },
     [editForm, transform, setToInactive],

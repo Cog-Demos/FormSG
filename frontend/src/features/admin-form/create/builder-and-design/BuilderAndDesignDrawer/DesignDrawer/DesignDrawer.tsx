@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
 import {
   Controller,
-  UnpackNestedValue,
   useForm,
   useWatch,
 } from 'react-hook-form'
@@ -124,7 +123,7 @@ export const DesignInput = (): JSX.Element | null => {
 
   const watchedInputs = useWatch({
     control: control,
-  }) as UnpackNestedValue<FormStartPageInput>
+  }) as FormStartPageInput
 
   const clonedWatchedInputs = useMemo(
     () => cloneDeep(watchedInputs),

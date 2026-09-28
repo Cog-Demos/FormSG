@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import { ElementType, useCallback } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
-import { As, FormControl, Stack, Text } from '@chakra-ui/react'
+import { FormControl, Stack, Text } from '@chakra-ui/react'
 import { get } from 'lodash'
 import isEmail from 'validator/lib/isEmail'
 
@@ -114,7 +114,7 @@ interface DynamicRespondentOptionProps extends RespondentOptionProps {
   emailFieldItems: {
     label: string
     value: string
-    icon?: As
+    icon?: ElementType
   }[]
 }
 

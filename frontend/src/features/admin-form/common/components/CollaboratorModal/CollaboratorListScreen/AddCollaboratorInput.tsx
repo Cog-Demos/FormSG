@@ -73,7 +73,8 @@ const useAddCollaboratorInput = () => {
     return handleAddCollaborator(inputs)
   })
 
-  const validationRules: RegisterOptions = useMemo(() => {
+  const validationRules: RegisterOptions<AddCollaboratorInputs, 'email'> =
+    useMemo(() => {
     return {
       required: 'Collaborator email is required',
       validate: {

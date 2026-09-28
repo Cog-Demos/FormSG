@@ -7,7 +7,6 @@ import {
   NumberInputProps as ChakraNumberInputProps,
   Text,
   useFormControlProps,
-  useMergeRefs,
   useMultiStyleConfig,
   useNumberInput,
 } from '@chakra-ui/react'
@@ -63,9 +62,8 @@ export const MoneyInput = forwardRef<MoneyInputProps, 'input'>(
       focusInputOnChange,
     })
 
-    const inputProps = getInputProps({ placeholder: props.placeholder })
+    const inputProps = getInputProps({ placeholder: props.placeholder }, ref)
 
-    const inputRef = useMergeRefs(inputProps.ref, ref)
 
     return (
       <Box {...htmlProps} __css={styles.root}>
@@ -98,7 +96,7 @@ export const MoneyInput = forwardRef<MoneyInputProps, 'input'>(
             // the parent.
             // No point passing the ref to the div wrapper as the main component
             // is this input.
-            ref={inputRef}
+            ref={inputProps.ref}
             __css={styles.field}
             borderLeftRadius={0}
           />

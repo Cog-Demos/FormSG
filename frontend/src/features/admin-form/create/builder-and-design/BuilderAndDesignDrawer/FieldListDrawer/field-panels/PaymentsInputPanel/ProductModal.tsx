@@ -134,7 +134,7 @@ export const ProductModal = ({
     onClose()
   })
 
-  const minQtyValidation: RegisterOptions = {
+  const minQtyValidation: RegisterOptions<ProductInput, typeof MIN_QTY_KEY> = {
     validate: (valStr: string) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 
@@ -153,7 +153,7 @@ export const ProductModal = ({
       return true
     },
   }
-  const maxQtyValidation: RegisterOptions = {
+  const maxQtyValidation: RegisterOptions<ProductInput, typeof MAX_QTY_KEY> = {
     validate: (valStr: string) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 

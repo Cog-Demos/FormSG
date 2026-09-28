@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { FC, PropsWithChildren, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as ReactLink } from 'react-router-dom'
 import { Box, chakra, Flex, GridItem, GridProps, Text } from '@chakra-ui/react'
@@ -28,7 +28,7 @@ export const BrandLogo = chakra(BrandLogoSvg, {
 })
 
 // Component for the split blue/white background.
-export const BackgroundBox: FC = ({ children }) => (
+export const BackgroundBox: FC<PropsWithChildren> = ({ children }) => (
   <Flex
     flex={1}
     overflow={{ lg: 'auto' }}
@@ -48,11 +48,11 @@ export const BaseGridLayout = (props: GridProps) => (
 )
 
 // Grid area styling for the login form.
-export const LoginGridArea: FC = ({ children }) => (
+export const LoginGridArea: FC<PropsWithChildren> = ({ children }) => (
   <GridItem
     gridColumn={{ base: '1 / 5', md: '2 / 12', lg: '7 / 12' }}
     py="4rem"
-    d="flex"
+    display="flex"
     alignItems={{ base: 'initial', lg: 'center' }}
     justifyContent="center"
     children={children}
@@ -60,7 +60,7 @@ export const LoginGridArea: FC = ({ children }) => (
 )
 
 // Grid area styling for the footer.
-export const FooterGridArea: FC = ({ children }) => (
+export const FooterGridArea: FC<PropsWithChildren> = ({ children }) => (
   <GridItem
     alignSelf="end"
     gridColumn={{ base: '1 / 5', md: '2 / 12' }}
@@ -71,9 +71,9 @@ export const FooterGridArea: FC = ({ children }) => (
 )
 
 // Grid area styling for the left sidebar that only displays on tablet and desktop breakpoints.
-export const NonMobileSidebarGridArea: FC = ({ children }) => (
+export const NonMobileSidebarGridArea: FC<PropsWithChildren> = ({ children }) => (
   <GridItem
-    d={{ base: 'none', md: 'flex' }}
+    display={{ base: 'none', md: 'flex' }}
     gridColumn={{ md: '1 / 13', lg: '2 / 6' }}
     // colSpan={{ md: 12, lg: 5 }}
     // pl={{ base: '1.5rem', lg: '8%' }}
@@ -87,7 +87,7 @@ export const NonMobileSidebarGridArea: FC = ({ children }) => (
   />
 )
 
-export const LoginPageTemplate: FC = ({ children }) => {
+export const LoginPageTemplate: FC<PropsWithChildren> = ({ children }) => {
   const { data: { siteBannerContent, isLoginBanner } = {} } = useEnv()
   const { t } = useTranslation()
 

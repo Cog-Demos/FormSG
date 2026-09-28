@@ -116,7 +116,10 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
     [watchedInputs.othersRadioButton],
   )
 
-  const customMinValidationOptions: RegisterOptions = useMemo(
+  const customMinValidationOptions: RegisterOptions<
+    EditCheckboxInputs,
+    'ValidationOptions.customMin'
+  > = useMemo(
     () => ({
       required: {
         value:
@@ -158,7 +161,10 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
     [watchedInputs],
   )
 
-  const customMaxValidationOptions: RegisterOptions = useMemo(
+  const customMaxValidationOptions: RegisterOptions<
+    EditCheckboxInputs,
+    'ValidationOptions.customMax'
+  > = useMemo(
     () => ({
       required: {
         value:

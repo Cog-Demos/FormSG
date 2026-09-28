@@ -29,7 +29,6 @@ import {
   Box,
   chakra,
   ComponentWithAs,
-  CSSObject,
   forwardRef,
   HTMLChakraProps,
   layoutPropNames,
@@ -43,7 +42,7 @@ import {
   useRadioGroupContext,
   UseRadioProps,
 } from '@chakra-ui/react'
-import { callAll, split } from '@chakra-ui/utils'
+import { omit, pick } from 'lodash'
 
 import { RADIO_THEME_KEY } from '~/theme/components/Radio'
 import { FieldColorScheme } from '~/theme/foundations/colours'
@@ -86,7 +85,7 @@ export interface RadioProps
    * Additional overriding styles. This is a change from the Chakra UI
    * implementation, which previously did not allow overriding styles.
    */
-  __css?: CSSObject
+  __css?: SystemStyleObject
 
   /**
    * Function called when checked state of the input changes
@@ -136,12 +135,16 @@ export const Radio = forwardRef<RadioProps, 'input'>(
 
     let onChange = onChangeProp
     if (group?.onChange && valueProp != null) {
-      onChange = callAll(group.onChange, onChangeProp)
+      const groupOnChange = group.onChange
+      onChange = (event) => {
+        groupOnChange(event)
+        onChangeProp?.(event)
+      }
     }
 
     const name = props?.name ?? group?.name
 
-    const { getInputProps, getCheckboxProps, getLabelProps, htmlProps } =
+    const { getInputProps, getRadioProps, getLabelProps, htmlProps } =
       useRadio({
         ...rest,
         isDisabled: props.isDisabled,
@@ -150,10 +153,10 @@ export const Radio = forwardRef<RadioProps, 'input'>(
         name,
       })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [layoutProps, otherProps] = split(htmlProps, layoutPropNames as any)
+    const layoutProps = pick(htmlProps, layoutPropNames)
+    const otherProps = omit(htmlProps, layoutPropNames)
 
-    const checkboxProps = getCheckboxProps(otherProps)
+    const checkboxProps = getRadioProps(otherProps)
     const inputProps = getInputProps({}, ref)
 
     const handleSelect = useCallback(

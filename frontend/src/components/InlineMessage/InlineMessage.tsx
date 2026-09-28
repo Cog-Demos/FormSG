@@ -1,5 +1,5 @@
+import { ElementType } from 'react'
 import {
-  As,
   Flex,
   FlexProps,
   Icon,
@@ -15,7 +15,7 @@ import { MarkdownText } from '~components/MarkdownText'
 export interface InlineMessageProps extends FlexProps {
   variant?: InlineMessageVariant
   useMarkdown?: boolean
-  icon?: As
+  icon?: ElementType
 }
 
 export const InlineMessage = ({

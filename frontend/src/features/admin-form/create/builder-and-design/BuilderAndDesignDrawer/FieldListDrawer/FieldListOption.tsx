@@ -3,7 +3,7 @@ import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
-} from 'react-beautiful-dnd'
+} from '@hello-pangea/dnd'
 import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
 
 import { FormResponseMode } from '~shared/types'

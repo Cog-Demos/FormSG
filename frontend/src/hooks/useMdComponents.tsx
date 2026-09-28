@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Components } from 'react-markdown'
 import {
-  CSSObject,
+  SystemStyleObject,
   ListItem,
   OrderedList,
   Text,
@@ -14,19 +14,19 @@ type MdComponentStyles = {
   /**
    * If exists, will be used for styling links
    */
-  link?: CSSObject
+  link?: SystemStyleObject
   /**
    * If exists, will be used for styling text
    */
-  text?: CSSObject
+  text?: SystemStyleObject
   /**
    * If exists, will be used for styling lists
    */
-  list?: CSSObject
+  list?: SystemStyleObject
   /**
    * If exists, will be used for styling ordered lists
    */
-  listItem?: CSSObject
+  listItem?: SystemStyleObject
 }
 
 type UseMdComponentsProps = {

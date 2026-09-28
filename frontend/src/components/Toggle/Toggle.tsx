@@ -1,7 +1,7 @@
 import {
   Box,
   ComponentWithAs,
-  CSSObject,
+  SystemStyleObject,
   Flex,
   forwardRef,
   useMultiStyleConfig,
@@ -26,15 +26,15 @@ export interface ToggleProps extends Omit<SwitchProps, 'children'> {
    * Overriding styles for the container which wraps the text
    * as well as the switch
    */
-  containerStyles?: CSSObject
+  containerStyles?: SystemStyleObject
   /**
    * Overriding styles for the main label
    */
-  labelStyles?: CSSObject
+  labelStyles?: SystemStyleObject
   /**
    * Overriding styles for the description
    */
-  descriptionStyles?: CSSObject
+  descriptionStyles?: SystemStyleObject
 }
 
 type ToggleWithParts = ComponentWithAs<'input', ToggleProps> & {

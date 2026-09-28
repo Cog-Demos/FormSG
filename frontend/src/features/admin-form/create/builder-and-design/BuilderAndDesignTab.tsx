@@ -4,7 +4,7 @@ import {
   DragStart,
   DragUpdate,
   DropResult,
-} from 'react-beautiful-dnd'
+} from '@hello-pangea/dnd'
 import { useDisclosure } from '@chakra-ui/react'
 
 import {

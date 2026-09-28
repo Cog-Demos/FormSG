@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
-import { Draggable } from 'react-beautiful-dnd'
+import { Draggable } from '@hello-pangea/dnd'
 import { FormProvider, useForm } from 'react-hook-form'
 import { BiCog, BiDuplicate, BiGridHorizontal, BiTrash } from 'react-icons/bi'
 import { useIsMutating } from 'react-query'

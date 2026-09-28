@@ -3,7 +3,6 @@ import {
   Controller,
   DeepPartial,
   FormProvider,
-  UnpackNestedValue,
   useFormState,
 } from 'react-hook-form'
 import { FormControl, Stack } from '@chakra-ui/react'
@@ -54,7 +53,7 @@ export type EditTableProps = EditFieldProps<TableFieldBase>
 
 const transformTableFieldToEditForm = (
   field: TableFieldBase,
-): UnpackNestedValue<DeepPartial<EditTableInputs>> => {
+): DeepPartial<EditTableInputs> => {
   const nextMaxRows = field.maximumRows || ''
   const nextMinRows = field.minimumRows || ''
 
