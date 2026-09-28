@@ -7,7 +7,7 @@ import {
   Tag as ChakraTag,
   TagCloseButtonProps as ChakraTagCloseButtonProps,
   TagProps as ChakraTagProps,
-  useStyles,
+  useTagStyles,
 } from '@chakra-ui/react'
 
 export type TagProps = ChakraTagProps
@@ -15,7 +15,7 @@ export type TagProps = ChakraTagProps
 export type TagIconProps = Omit<IconProps, 'css'>
 
 export const TagLeftIcon = forwardRef<TagIconProps, 'svg'>((props, ref) => {
-  const styles = useStyles()
+  const styles = useTagStyles()
   return (
     <Icon
       ref={ref}
@@ -27,7 +27,7 @@ export const TagLeftIcon = forwardRef<TagIconProps, 'svg'>((props, ref) => {
   )
 })
 export const TagRightIcon = forwardRef<TagIconProps, 'svg'>((props, ref) => {
-  const styles = useStyles()
+  const styles = useTagStyles()
   return (
     <Icon
       ref={ref}
@@ -50,7 +50,7 @@ export const TagCloseButton = ({
   children,
   ...rest
 }: TagCloseButtonProps): JSX.Element => {
-  const styles = useStyles()
+  const styles = useTagStyles()
 
   return (
     <chakra.button
