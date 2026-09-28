@@ -71,7 +71,9 @@ export const FooterGridArea: FC<PropsWithChildren> = ({ children }) => (
 )
 
 // Grid area styling for the left sidebar that only displays on tablet and desktop breakpoints.
-export const NonMobileSidebarGridArea: FC<PropsWithChildren> = ({ children }) => (
+export const NonMobileSidebarGridArea: FC<PropsWithChildren> = ({
+  children,
+}) => (
   <GridItem
     display={{ base: 'none', md: 'flex' }}
     gridColumn={{ md: '1 / 13', lg: '2 / 6' }}

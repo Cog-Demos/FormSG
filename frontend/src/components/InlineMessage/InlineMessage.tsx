@@ -1,10 +1,5 @@
 import { ElementType } from 'react'
-import {
-  Flex,
-  FlexProps,
-  Icon,
-  useMultiStyleConfig,
-} from '@chakra-ui/react'
+import { Flex, FlexProps, Icon, useMultiStyleConfig } from '@chakra-ui/react'
 
 import { BxsErrorCircle, BxsInfoCircle } from '~/assets/icons'
 import { InlineMessageVariant } from '~/theme/components/InlineMessage'

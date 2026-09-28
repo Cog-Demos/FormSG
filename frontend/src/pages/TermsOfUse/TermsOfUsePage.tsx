@@ -108,7 +108,9 @@ export const SubSectionListItem: FC<ListItemProps & listItemMarkerProps> = ({
   )
 }
 
-const SectionTitle: FC<PropsWithChildren> = ({ children }) => <Text mb="1.5rem">{children}</Text>
+const SectionTitle: FC<PropsWithChildren> = ({ children }) => (
+  <Text mb="1.5rem">{children}</Text>
+)
 
 export const TermsOfUsePage = (): JSX.Element => {
   return (

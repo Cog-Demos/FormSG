@@ -1,9 +1,9 @@
-import { FieldValidationRules } from './fieldValidation'
-
 import {
   WORKSPACE_MAX_TITLE_LENGTH,
   WORKSPACE_MIN_TITLE_LENGTH,
 } from '~shared/constants'
+
+import { FieldValidationRules } from './fieldValidation'
 
 export const WORKSPACE_TITLE_VALIDATION_RULES: FieldValidationRules = {
   required: 'Folder name is required',

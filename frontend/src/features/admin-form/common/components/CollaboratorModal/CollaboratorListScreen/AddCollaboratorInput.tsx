@@ -75,24 +75,24 @@ const useAddCollaboratorInput = () => {
 
   const validationRules: RegisterOptions<AddCollaboratorInputs, 'email'> =
     useMemo(() => {
-    return {
-      required: 'Collaborator email is required',
-      validate: {
-        validEmail: (value: string) =>
-          !value || isEmail(value) || 'Please enter a valid email',
-        duplicateEmail: (value: string) =>
-          !value ||
-          !collaborators?.find(
-            (c) => c.email.toLowerCase() === value.toLowerCase(),
-          ) ||
-          'This user is an existing collaborator. Edit role below.',
-        ownerEmail: (value: string) =>
-          !value ||
-          form?.admin.email?.toLowerCase() !== value.toLowerCase() ||
-          'You cannot add the form owner as a collaborator',
-      },
-    }
-  }, [collaborators, form?.admin.email])
+      return {
+        required: 'Collaborator email is required',
+        validate: {
+          validEmail: (value: string) =>
+            !value || isEmail(value) || 'Please enter a valid email',
+          duplicateEmail: (value: string) =>
+            !value ||
+            !collaborators?.find(
+              (c) => c.email.toLowerCase() === value.toLowerCase(),
+            ) ||
+            'This user is an existing collaborator. Edit role below.',
+          ownerEmail: (value: string) =>
+            !value ||
+            form?.admin.email?.toLowerCase() !== value.toLowerCase() ||
+            'You cannot add the form owner as a collaborator',
+        },
+      }
+    }, [collaborators, form?.admin.email])
 
   const isMobile = useIsMobile()
 

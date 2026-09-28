@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useFieldArray, useFormContext, useFormState } from 'react-hook-form'
+import {
+  FieldError,
+  useFieldArray,
+  useFormContext,
+  useFormState,
+} from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import { useTable } from 'react-table'
+import { CellProps, Column, Renderer, useTable } from 'react-table'
 import {
   Box,
   Table,
@@ -23,7 +28,11 @@ import FormErrorMessage from '~components/FormControl/FormErrorMessage'
 import IconButton from '~components/IconButton'
 
 import { BaseFieldProps } from '../FieldContainer'
-import { TableFieldInputs, TableFieldSchema } from '../types'
+import {
+  TableFieldInputs,
+  TableFieldSchema,
+  TableRowFieldValue,
+} from '../types'
 
 import { createTableRow } from './utils/createRow'
 import { AddRowFooter } from './AddRowFooter'
@@ -46,16 +55,20 @@ export const TableField = ({
   disableRequiredValidation,
   colorTheme = FormColorTheme.Blue,
 }: TableFieldProps): JSX.Element => {
-  const hasMinRowsChanged = useHasChanged(schema.minimumRows)
+  const minimumRows = schema.minimumRows === '' ? 0 : schema.minimumRows
+  const hasMinRowsChanged = useHasChanged(minimumRows)
   const isMobile = useIsMobile()
 
-  const columnsData = useMemo(() => {
+  const columnsData = useMemo<Column<TableRowFieldValue>[]>(() => {
     return schema.columns.map((c) => ({
       Header: (
         <ColumnHeader title={c.title} isRequired={c.required} id={c._id} />
       ),
       accessor: c._id,
-      Cell: ColumnCell,
+      // The remaining ColumnCellProps are supplied via `cell.render('Cell', props)`.
+      Cell: ColumnCell as unknown as Renderer<
+        CellProps<TableRowFieldValue, string>
+      >,
     }))
   }, [schema.columns])
 
@@ -71,7 +84,14 @@ export const TableField = ({
     // would not need to be shown in the table field itself.
     if (isMobile) return
     // Get first available error amongst all column cell errors.
-    return head(uniq(tableErrors?.flatMap((err = {}) => Object.values(err))))
+    if (!Array.isArray(tableErrors)) return
+    return head(
+      uniq(
+        tableErrors.flatMap((err = {}) =>
+          Object.values(err as Record<string, FieldError | undefined>),
+        ),
+      ),
+    )
   }, [isMobile, tableErrors])
 
   const { fields, append, remove } = useFieldArray<TableFieldInputs>({
@@ -88,18 +108,18 @@ export const TableField = ({
     // Update field array when min rows changes.
     if (hasMinRowsChanged) {
       const prevRowLength = fields.length
-      if (schema.minimumRows > prevRowLength) {
-        for (let i = prevRowLength; i < schema.minimumRows; i++) {
+      if (minimumRows > prevRowLength) {
+        for (let i = prevRowLength; i < minimumRows; i++) {
           appendTableRow()
         }
       } else {
         // Remove rows from field array
-        for (let i = prevRowLength; i > schema.minimumRows; i--) {
+        for (let i = prevRowLength; i > minimumRows; i--) {
           remove(i - 1)
         }
       }
     }
-  }, [appendTableRow, fields.length, hasMinRowsChanged, remove, schema])
+  }, [appendTableRow, fields.length, hasMinRowsChanged, minimumRows, remove])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns: columnsData, data: fields })
@@ -115,12 +135,12 @@ export const TableField = ({
 
   const handleRemoveRow = useCallback(
     (rowIndex: number) => {
-      if (fields.length <= schema.minimumRows || rowIndex >= fields.length) {
+      if (fields.length <= minimumRows || rowIndex >= fields.length) {
         return
       }
       return remove(rowIndex)
     },
-    [fields.length, remove, schema.minimumRows],
+    [fields.length, minimumRows, remove],
   )
 
   const ariaTableDescription = useMemo(() => {
@@ -228,7 +248,7 @@ export const TableField = ({
                     >
                       <IconButton
                         isDisabled={
-                          schema.disabled || fields.length <= schema.minimumRows
+                          schema.disabled || fields.length <= minimumRows
                         }
                         variant="clear"
                         colorScheme="danger"

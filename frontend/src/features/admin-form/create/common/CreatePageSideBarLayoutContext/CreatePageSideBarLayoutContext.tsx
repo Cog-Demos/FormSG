@@ -31,7 +31,9 @@ export const useCreatePageSidebarLayoutContext =
     }
   }
 
-export const CreatePageSideBarLayoutProvider: FC<PropsWithChildren> = ({ children }) => {
+export const CreatePageSideBarLayoutProvider: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const context = useCreatePageSidebarLayoutContext()
   return (
     <CreatePageSidebarLayoutContext.Provider value={context}>

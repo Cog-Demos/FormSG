@@ -9,6 +9,5 @@ const ChakraMotionDiv = chakra(motion.div, {
     isValidMotionProp(prop) || shouldForwardProp(prop),
 })
 
-export const MotionBox = ChakraMotionDiv as unknown as React.ComponentType<
-  MotionBoxProps
->
+export const MotionBox =
+  ChakraMotionDiv as unknown as React.ComponentType<MotionBoxProps>

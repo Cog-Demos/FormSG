@@ -1,5 +1,10 @@
 import { PropsWithChildren } from 'react'
-import { Box, FormHelperText, FormHelperTextProps, Icon } from '@chakra-ui/react'
+import {
+  Box,
+  FormHelperText,
+  FormHelperTextProps,
+  Icon,
+} from '@chakra-ui/react'
 
 import { BxsCheckCircle } from '~assets/icons'
 

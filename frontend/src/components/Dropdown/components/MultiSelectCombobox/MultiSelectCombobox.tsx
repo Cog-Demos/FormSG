@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, forwardRef, useCallback } from 'react'
+import { FC, forwardRef, PropsWithChildren, useCallback } from 'react'
 import { Box, chakra, Flex, Icon, useMergeRefs } from '@chakra-ui/react'
 
 import { BxsChevronDown } from '~assets/icons/BxsChevronDown'

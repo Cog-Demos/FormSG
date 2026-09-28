@@ -1,10 +1,10 @@
 import { CSSProperties, useCallback, useMemo } from 'react'
+import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
 } from '@hello-pangea/dnd'
-import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
 
 import { FormResponseMode } from '~shared/types'
 import { BasicField, MyInfoAttribute } from '~shared/types/field'

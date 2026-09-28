@@ -63,10 +63,10 @@ export const useToast = ({
             ? render(props)
             : React.createElement(() =>
                 Toast({
-                  status: status ?? initialStatus,
                   isClosable: initialProps.isClosable,
                   ...rest,
                   ...props,
+                  status: status ?? initialStatus,
                 }),
               ),
       })

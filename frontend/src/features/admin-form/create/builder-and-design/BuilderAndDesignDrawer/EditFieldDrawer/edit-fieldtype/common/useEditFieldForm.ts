@@ -44,10 +44,7 @@ type UseEditFieldFormProps<
 > = EditFieldProps<FieldShape> & {
   transform: {
     input: (field: FieldShape) => DefaultValues<FormShape>
-    output: (
-      form: FormShape,
-      originalField: FieldShape,
-    ) => FieldShape
+    output: (form: FormShape, originalField: FieldShape) => FieldShape
     /**
      * Final transformation before submitting, if any.
      * This transformation will be ran with the output of transform.output.
@@ -137,8 +134,10 @@ export const useEditFieldForm = <
   )
 
   const onSaveSuccess = useCallback(
-    (newField: FieldShape) => {
-      editForm.reset(transform.input(newField))
+    (newField: FormFieldDto) => {
+      // The mutation returns the generic FormFieldDto; the saved field is of
+      // the same shape as the field being edited.
+      editForm.reset(transform.input(newField as unknown as FieldShape))
       setToInactive()
     },
     [editForm, transform, setToInactive],

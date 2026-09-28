@@ -64,7 +64,6 @@ export const MoneyInput = forwardRef<MoneyInputProps, 'input'>(
 
     const inputProps = getInputProps({ placeholder: props.placeholder }, ref)
 
-
     return (
       <Box {...htmlProps} __css={styles.root}>
         {/* Using base input wrapper instead of `Input` component as the Input 

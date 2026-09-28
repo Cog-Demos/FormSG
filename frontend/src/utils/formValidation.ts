@@ -1,5 +1,6 @@
-import { FieldValidationRules } from './fieldValidation'
 import validator from 'validator'
+
+import { FieldValidationRules } from './fieldValidation'
 
 const MAX_EMAIL_LENGTH = 30
 

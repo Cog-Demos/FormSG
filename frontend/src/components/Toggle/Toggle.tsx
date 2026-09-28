@@ -1,9 +1,9 @@
 import {
   Box,
   ComponentWithAs,
-  SystemStyleObject,
   Flex,
   forwardRef,
+  SystemStyleObject,
   useMultiStyleConfig,
 } from '@chakra-ui/react'
 

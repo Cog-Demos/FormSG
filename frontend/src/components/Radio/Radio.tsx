@@ -144,14 +144,15 @@ export const Radio = forwardRef<RadioProps, 'input'>(
 
     const name = props?.name ?? group?.name
 
-    const { getInputProps, getRadioProps, getLabelProps, htmlProps } =
-      useRadio({
+    const { getInputProps, getRadioProps, getLabelProps, htmlProps } = useRadio(
+      {
         ...rest,
         isDisabled: props.isDisabled,
         isChecked,
         onChange,
         name,
-      })
+      },
+    )
 
     const layoutProps = pick(htmlProps, layoutPropNames)
     const otherProps = omit(htmlProps, layoutPropNames)

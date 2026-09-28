@@ -1,5 +1,8 @@
 import { PropsWithChildren } from 'react'
-import { Link as ReactLink, LinkProps as ReactLinkProps } from 'react-router-dom'
+import {
+  Link as ReactLink,
+  LinkProps as ReactLinkProps,
+} from 'react-router-dom'
 import { chakra, HTMLChakraProps, useStyles } from '@chakra-ui/react'
 
 const Link = chakra(ReactLink)

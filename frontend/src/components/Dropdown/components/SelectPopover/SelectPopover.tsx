@@ -13,7 +13,9 @@ import { useSelectContext } from '~components/Dropdown/SelectContext'
 
 import { SelectPopoverContext } from './SelectPopoverContext'
 
-export const SelectPopoverProvider: FC<PropsWithChildren> = ({ children }): JSX.Element => {
+export const SelectPopoverProvider: FC<PropsWithChildren> = ({
+  children,
+}): JSX.Element => {
   const { styles, setIsFocused, isOpen } = useSelectContext()
 
   const wrapperRef = useRef<HTMLDivElement | null>(null)

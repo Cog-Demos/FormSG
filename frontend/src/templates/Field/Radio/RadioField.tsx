@@ -124,7 +124,7 @@ export const RadioField = ({
                     ml={styles.othersInput?.ml as string}
                     mb={0}
                   >
-                    {get(errors, `${othersInputName}.message`)}
+                    {get(errors, othersInputName)?.message}
                   </FormErrorMessage>
                 </FormControl>
               </Radio.OthersWrapper>

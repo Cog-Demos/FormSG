@@ -81,7 +81,6 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
     const incProps = getIncrementButtonProps()
     const decProps = getDecrementButtonProps()
 
-
     const inputEndPadding = showSteppers
       ? stepperWrapperRef.current?.offsetWidth
       : undefined

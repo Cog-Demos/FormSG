@@ -11,10 +11,9 @@ interface HelpAccordionItemProps {
   title: string
 }
 
-export const HelpAccordionItem: FC<PropsWithChildren<HelpAccordionItemProps>> = ({
-  title,
-  children,
-}) => {
+export const HelpAccordionItem: FC<
+  PropsWithChildren<HelpAccordionItemProps>
+> = ({ title, children }) => {
   return (
     <AccordionItem>
       <AccordionButton>

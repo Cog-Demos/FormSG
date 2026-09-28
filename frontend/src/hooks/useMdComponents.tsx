@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { Components } from 'react-markdown'
 import {
-  SystemStyleObject,
   ListItem,
   OrderedList,
+  SystemStyleObject,
   Text,
   UnorderedList,
 } from '@chakra-ui/react'

@@ -153,7 +153,9 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
             numOptions += 1
           }
           return (
-            !val || val <= numOptions || 'Cannot be more than number of options'
+            !val ||
+            Number(val) <= numOptions ||
+            'Cannot be more than number of options'
           )
         },
       },
@@ -199,7 +201,9 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
             numOptions += 1
           }
           return (
-            !val || val <= numOptions || 'Cannot be more than number of options'
+            !val ||
+            Number(val) <= numOptions ||
+            'Cannot be more than number of options'
           )
         },
       },
