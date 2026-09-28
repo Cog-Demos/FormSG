@@ -20,6 +20,13 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      # mongodb-memory-server's mongod 4.0 binary links against OpenSSL 1.1,
+      # which ubuntu-24.04 runners no longer ship
+      - name: Install libssl1.1 for mongodb-memory-server
+        run: |
+          curl -fsSL -o /tmp/libssl1.1.deb https://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.24_amd64.deb
+          echo "7cf39d70a639017d1dd7c8d36daa2258063608688e449fddf40ffdd46f992a78  /tmp/libssl1.1.deb" | sha256sum -c -
+          sudo dpkg -i /tmp/libssl1.1.deb
       - name: Configure Datadog Test Visibility
         uses: datadog/test-visibility-github-action@v1.0.5
         with:
