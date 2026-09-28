@@ -198,47 +198,64 @@ export const TableField = ({
           colorScheme={`theme-${colorTheme}`}
         >
           <Thead display={{ base: 'none', md: 'table-header-group' }}>
-            {headerGroups.map((headerGroup) => (
-              <Tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, _idx, array) => (
-                  <Th
-                    {...column.getHeaderProps()}
-                    scope="col"
-                    w={{ base: 'initial', md: `calc(100%/${array.length})` }}
-                    minW="15rem"
-                    display={{ base: 'block', md: 'table-cell' }}
-                  >
-                    {column.render('Header')}
-                  </Th>
-                ))}
-              </Tr>
-            ))}
+            {headerGroups.map((headerGroup) => {
+              const { key: headerGroupKey, ...headerGroupProps } =
+                headerGroup.getHeaderGroupProps()
+              return (
+                <Tr key={headerGroupKey} {...headerGroupProps}>
+                  {headerGroup.headers.map((column, _idx, array) => {
+                    const { key: headerKey, ...headerProps } =
+                      column.getHeaderProps()
+                    return (
+                      <Th
+                        key={headerKey}
+                        {...headerProps}
+                        scope="col"
+                        w={{
+                          base: 'initial',
+                          md: `calc(100%/${array.length})`,
+                        }}
+                        minW="15rem"
+                        display={{ base: 'block', md: 'table-cell' }}
+                      >
+                        {column.render('Header')}
+                      </Th>
+                    )
+                  })}
+                </Tr>
+              )
+            })}
           </Thead>
           <Tbody {...getTableBodyProps()} verticalAlign="baseline">
             {rows.map((row, rowIndex) => {
               prepareRow(row)
+              const { key: _rowKey, ...rowProps } = row.getRowProps()
               return (
                 // The `key` prop is required for useFieldArray to remove the correct row.
-                <Tr {...row.getRowProps()} key={row.original.id}>
-                  {row.cells.map((cell, j) => (
-                    <Td
-                      {...cell.getCellProps()}
-                      display={{ base: 'block', md: 'table-cell' }}
-                      sx={{
-                        '@media print': {
-                          breakInside: 'avoid',
-                        },
-                      }}
-                    >
-                      {cell.render('Cell', {
-                        schemaId: schema._id,
-                        isDisabled: schema.disabled,
-                        disableRequiredValidation,
-                        columnSchema: schema.columns[j],
-                        colorTheme,
-                      })}
-                    </Td>
-                  ))}
+                <Tr {...rowProps} key={row.original.id}>
+                  {row.cells.map((cell, j) => {
+                    const { key: cellKey, ...cellProps } = cell.getCellProps()
+                    return (
+                      <Td
+                        key={cellKey}
+                        {...cellProps}
+                        display={{ base: 'block', md: 'table-cell' }}
+                        sx={{
+                          '@media print': {
+                            breakInside: 'avoid',
+                          },
+                        }}
+                      >
+                        {cell.render('Cell', {
+                          schemaId: schema._id,
+                          isDisabled: schema.disabled,
+                          disableRequiredValidation,
+                          columnSchema: schema.columns[j],
+                          colorTheme,
+                        })}
+                      </Td>
+                    )
+                  })}
 
                   {schema.addMoreRows ? (
                     <Td
