@@ -68,7 +68,7 @@ variable keeps its name with the prefix swapped (`envPrefix` stays `VITE_`).
 
 | Old | New | Read in | Defined in |
 | --- | --- | --- | --- |
-| `REACT_APP_VERSION` | `VITE_APP_VERSION` (from `npm_package_version`, via `define` in `vite.config.ts`) | `App.tsx`, `lazyRetry.ts`, `datadog-chunk.ts` | `.buildtime-env`, `deploy-eb.yml` |
+| `REACT_APP_VERSION` | `VITE_APP_VERSION` (from `npm_package_version`, via `define` in `vite.config.mts`) | `App.tsx`, `lazyRetry.ts`, `datadog-chunk.ts` | `.buildtime-env`, `deploy-eb.yml` |
 | `REACT_APP_URL` | `VITE_APP_URL` | `growthbook.ts`, `axiosDebugFlow.tsx`, `datadog-chunk.ts` | `deploy-eb.yml` |
 | `REACT_APP_BASE_URL` | `VITE_APP_BASE_URL` | `ApiService.ts` | — |
 | `REACT_APP_GA_TRACKING_ID` | `VITE_APP_GA_TRACKING_ID` | `AppHelmet.tsx`, `index.tsx` | `.buildtime-env`, `deploy-eb.yml` |
@@ -85,10 +85,10 @@ the build-arg / env names they are mapped to change (TICKET-B).
 
 | Ticket | Owns | Must not touch |
 | --- | --- | --- |
-| A – Vite build | `frontend/vite.config.ts` (everything except the `build` section, which it imports from `vite.build.ts`), `frontend/index.html` (moved from `public/`), `frontend/tsconfig.json` (paths merged in), `frontend/src/vite-env.d.ts`, env reads / worker / SVG import lines in `frontend/src/**` (incl. `StorageResponsesService.ts`, `typings/worker-loader.d.ts`), deletions: `craco.config.js`, `tsconfig.paths.json`, `src/setupProxy.js`, `src/react-app-env.d.ts`, `.buildtime-env` | `*.test.*`, `*.stories.*`, `.storybook/`, `.github/`, `Dockerfile*`, `datadog-chunk.ts`, `shared/`, `package.json` |
-| B – Datadog + deploy | `frontend/datadog-chunk.ts`, `frontend/tsconfig.dd.json`, `frontend/vite.build.ts` (the `build` section + build-only plugins, imported by `vite.config.ts`), `.github/**`, `Dockerfile.production`, deletion of `webpack.dd.config.js` | other `frontend/src/**`, `.storybook/`, tests, `package.json` (script changes requested via Jira) |
+| A – Vite build | `frontend/vite.config.mts` (everything except the `build` section, which it imports from `vite.build.mts`), `frontend/index.html` (moved from `public/`), `frontend/tsconfig.json` (paths merged in), `frontend/src/vite-env.d.ts`, env reads / worker / SVG import lines in `frontend/src/**` (incl. `StorageResponsesService.ts`, `typings/worker-loader.d.ts`), deletions: `craco.config.js`, `tsconfig.paths.json`, `src/setupProxy.js`, `src/react-app-env.d.ts`, `.buildtime-env` | `*.test.*`, `*.stories.*`, `.storybook/`, `.github/`, `Dockerfile*`, `datadog-chunk.ts`, `shared/`, `package.json` |
+| B – Datadog + deploy | `frontend/datadog-chunk.ts`, `frontend/tsconfig.dd.json`, `frontend/vite.build.mts` (the `build` section + build-only plugins, imported by `vite.config.mts`), `.github/**`, `Dockerfile.production`, deletion of `webpack.dd.config.js` | other `frontend/src/**`, `.storybook/`, tests, `package.json` (script changes requested via Jira) |
 | C – Storybook 8 | `frontend/.storybook/**` (→ `main.ts`, `preview.tsx`, `manager.ts`), `frontend/**/*.stories.*`, `frontend/**/*.mdx`, deletion of `frontend/__tests__/storyshots/` | non-story app code, tests, A/B/D configs, `package.json` |
-| D – Vitest | `frontend/vitest.config.ts`, `frontend/src/setupTests.ts` → `frontend/src/test/setup.ts`, `frontend/src/test-utils.tsx`, `frontend/**/*.test.*`, deletion of `frontend/jest.config.js` | app code, stories, `vite.config.ts`, `package.json` |
+| D – Vitest | `frontend/vitest.config.ts`, `frontend/src/setupTests.ts` → `frontend/src/test/setup.ts`, `frontend/src/test-utils.tsx`, `frontend/**/*.test.*`, deletion of `frontend/jest.config.js` | app code, stories, `vite.config.mts`, `package.json` |
 | E – React 18 + Chakra v2 | `frontend/src/**` app code (components, features, theme, `index.tsx` `createRoot`) | `*.test.*`, `*.stories.*`, env / worker / SVG import lines (A), `.storybook/`, `package.json` |
 | F – Shared types TS5 | `shared/**`, backend `src/**` and `__tests__/**` consumers / fixtures, root `tsconfig*.json` if required | `frontend/**` |
 
@@ -98,6 +98,13 @@ else; both keep edits minimal so the 3-way merge is clean. D may add
 test-only shims in its setup file but not in app code.
 
 TICKET-0 scaffolds two stubs so A and B never edit the same file:
-`frontend/vite.config.ts` (A) imports `buildOptions` / `buildPlugins` from
-`frontend/vite.build.ts` (B). A must keep `build: buildOptions` and spread
+`frontend/vite.config.mts` (A) imports `buildOptions` / `buildPlugins` from
+`frontend/vite.build.mts` (B). A must keep `build: buildOptions` and spread
 `...buildPlugins` into `plugins`; B must keep those two exports.
+
+The Vite config files use the `.mts` extension because `frontend/` is a
+CommonJS package (no `"type": "module"`) and `vite-tsconfig-paths@5` is
+ESM-only, which Vite cannot `require` from a `.ts` config. `.eslintrc` lints
+`*.mts` with the TypeScript parser. The stub already registers
+`@vitejs/plugin-react`, `vite-tsconfig-paths` and `vite-plugin-svgr` so C and D
+can run Storybook / Vitest on their branches before A lands.
