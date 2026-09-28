@@ -25,7 +25,7 @@ export const ProductPaymentItemDetailsBlock = ({
     register,
     setValue,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext<{ [PAYMENT_PRODUCT_FIELD_ID]: ProductItem[] }>()
   register(PAYMENT_PRODUCT_FIELD_ID, {
     validate: (value) => {
       // Check if at least 1 product is selected

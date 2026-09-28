@@ -186,7 +186,7 @@ export const EditConditionBlock = ({
   }, [ifValueTypeValue])
 
   const validateValueInputComponent = useCallback(
-    (val) => {
+    (val: unknown) => {
       switch (ifValueTypeValue) {
         case LogicIfValue.Number: {
           if (currentSelectedField?.fieldType === BasicField.Decimal)

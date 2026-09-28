@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo } from 'react'
 import {
   FieldValues,
   RegisterOptions,
-  UnpackNestedValue,
   useForm,
   useWatch,
 } from 'react-hook-form'
@@ -107,15 +106,15 @@ export const EndPageInput = ({
   }, [dirtyFields, setIsDirty])
 
   const handleEndPageBuilderChanges = useCallback(
-    (endPageInputs) => {
-      setData({ ...(endPageInputs as FormEndPage) })
+    (endPageInputs: FormEndPage) => {
+      setData({ ...endPageInputs })
     },
     [setData],
   )
 
   const watchedInputs = useWatch({
     control: control,
-  }) as UnpackNestedValue<FormEndPage>
+  }) as FormEndPage
 
   const clonedWatchedInputs = useMemo(
     () => cloneDeep(watchedInputs),
