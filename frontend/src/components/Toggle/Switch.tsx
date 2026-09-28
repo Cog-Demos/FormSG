@@ -6,25 +6,28 @@
 
 import { useMemo } from 'react'
 import { BiLoader } from 'react-icons/bi'
-import { useCheckbox, UseCheckboxProps } from '@chakra-ui/checkbox'
-import { Icon, keyframes, usePrefersReducedMotion } from '@chakra-ui/react'
 import {
   chakra,
   forwardRef,
   HTMLChakraProps,
+  Icon,
   omitThemingProps,
   SystemProps,
   SystemStyleObject,
   ThemingProps,
+  useCheckbox,
+  UseCheckboxProps,
   useMultiStyleConfig,
-} from '@chakra-ui/system'
-import { cx, dataAttr } from '@chakra-ui/utils'
+  usePrefersReducedMotion,
+} from '@chakra-ui/react'
+import { keyframes } from '@emotion/react'
 
 import { BxCheck, BxLockAlt, BxX } from '~/assets/icons'
 import { TOGGLE_THEME_KEY } from '~/theme/components/Toggle'
 
 export interface SwitchProps
-  extends Omit<UseCheckboxProps, 'isIndeterminate'>,
+  extends
+    Omit<UseCheckboxProps, 'isIndeterminate'>,
     Omit<HTMLChakraProps<'label'>, keyof UseCheckboxProps>,
     ThemingProps<'Switch'> {
   /**
@@ -153,7 +156,7 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
           as={ThumbIcon}
           animation={animation}
           __css={styles.icon}
-          data-checked={dataAttr(state.isChecked)}
+          data-checked={state.isChecked ? '' : undefined}
         />
       )
     }, [
@@ -167,7 +170,7 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
     return (
       <chakra.label
         {...getRootProps()}
-        className={cx('chakra-switch', props.className)}
+        className={['chakra-switch', props.className].filter(Boolean).join(' ')}
         __css={containerStyles}
       >
         <input className="chakra-switch__input" {...getInputProps({}, ref)} />
@@ -179,8 +182,8 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
           <chakra.span
             __css={styles.thumb}
             className="chakra-switch__thumb"
-            data-checked={dataAttr(state.isChecked)}
-            data-hover={dataAttr(state.isHovered)}
+            data-checked={state.isChecked ? '' : undefined}
+            data-hover={state.isHovered ? '' : undefined}
           >
             {iconComponent}
           </chakra.span>

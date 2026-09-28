@@ -1,10 +1,10 @@
 import { CSSProperties, useCallback, useMemo } from 'react'
+import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
-} from 'react-beautiful-dnd'
-import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
+} from '@hello-pangea/dnd'
 
 import { FormResponseMode } from '~shared/types'
 import { BasicField, MyInfoAttribute } from '~shared/types/field'
@@ -56,14 +56,18 @@ interface MyInfoFieldOptionProps extends FieldOptionProps {
   fieldType: MyInfoAttribute
 }
 
-interface DraggableBasicFieldOptionProps
-  extends Omit<FieldOptionProps, 'isActive'> {
+interface DraggableBasicFieldOptionProps extends Omit<
+  FieldOptionProps,
+  'isActive'
+> {
   index: number
   fieldType: BasicField
 }
 
-interface DraggableMyInfoFieldOptionProps
-  extends Omit<FieldOptionProps, 'isActive'> {
+interface DraggableMyInfoFieldOptionProps extends Omit<
+  FieldOptionProps,
+  'isActive'
+> {
   index: number
   fieldType: MyInfoAttribute
 }

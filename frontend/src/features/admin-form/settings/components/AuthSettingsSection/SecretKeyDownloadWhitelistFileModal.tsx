@@ -11,11 +11,14 @@ import {
 import { useToast } from '~hooks/useToast'
 import { downloadFile } from '~components/Field/Attachment/utils/downloadFile'
 
+import { SecretKeyFormInputs } from '../../hooks/useSecretKeyForm'
 import { fetchAdminFormEncryptedWhitelistedSubmitterIds } from '../../queries'
 import { SecretKeyFormModal } from '../SecretKeyFormModal'
 
-export interface SecretKeyDownloadWhitelistFileModalProps
-  extends Pick<UseDisclosureReturn, 'onClose' | 'isOpen'> {
+export interface SecretKeyDownloadWhitelistFileModalProps extends Pick<
+  UseDisclosureReturn,
+  'onClose' | 'isOpen'
+> {
   publicKey: string
   formId: string
   downloadFileName: string
@@ -43,7 +46,7 @@ export const SecretKeyDownloadWhitelistFileModal = ({
     [errorToast],
   )
   const toastSuccessMessage = useCallback(
-    (message) => {
+    (message: string) => {
       toast.closeAll()
       toast({
         description: message,
@@ -62,7 +65,7 @@ export const SecretKeyDownloadWhitelistFileModal = ({
     [],
   )
   const handleWhitelistCsvDownload = useCallback(
-    ({ secretKey }) => {
+    ({ secretKey }: SecretKeyFormInputs) => {
       fetchAdminFormEncryptedWhitelistedSubmitterIds(formId, queryClient)
         .then((data) => {
           const { encryptedWhitelistedSubmitterIds } = data
