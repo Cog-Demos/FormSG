@@ -108,3 +108,21 @@ ESM-only, which Vite cannot `require` from a `.ts` config. `.eslintrc` lints
 `*.mts` with the TypeScript parser. The stub already registers
 `@vitejs/plugin-react`, `vite-tsconfig-paths` and `vite-plugin-svgr` so C and D
 can run Storybook / Vitest on their branches before A lands.
+
+## 5. Consolidated verification (TICKET-G, `feature/vite-v2-G-consolidation`)
+
+Same machine and setup as the baseline. No repo config was changed to work
+around the machine; the only extra step was `npm rebuild` after installing
+with `--ignore-scripts` (so `bcrypt`'s native binding exists for backend Jest).
+
+| Check | Command | Baseline | Now |
+| --- | --- | --- | --- |
+| Build | `npm run build` | CRA pass (~2 m) | pass (~34 s); `dist/frontend/index.html` has 2 external module scripts (`static/js/datadog-chunk-*.js`, `static/js/main-*.js`), 0 inline; worker emitted as `static/decryption.worker-*.js` |
+| Frontend `tsc` | `cd frontend && npx tsc --noEmit` | fail (206) | pass (0 errors, no new `@ts-expect-error`) |
+| Backend `tsc` | `npx tsc -p tsconfig.build.json --noEmit` | pass | pass |
+| Frontend tests | `npm run test:frontend` (Vitest) | Jest 25 suites / 182 tests | Vitest 25 files / 182 tests |
+| Backend Jest | `npm run test:backend:ci` | 153 suites, 2910 + 1 todo | 153 suites, 2910 + 1 todo |
+| `serverless/virus-scanner` | `npm ci && npx tsc --noEmit` | pass | pass |
+| Storybook | `cd frontend && npm run build-storybook` | SB6 pass (~2 m 30 s) | SB8 pass (~45 s) |
+| Lint | `npm run lint:frontend`, `npm run lint-ci` | pass | pass (0 errors) |
+| Whitespace | `git diff --check develop...HEAD` | — | clean |
