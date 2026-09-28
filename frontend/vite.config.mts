@@ -11,14 +11,16 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 const polyfills = () =>
   nodePolyfills({
     include: ['buffer', 'events', 'stream', 'string_decoder', 'util'],
-    globals: { Buffer: true, global: true, process: false },
+    globals: { Buffer: true, global: true, process: true },
   })
 
-// Modules under `../shared/node_modules` cannot resolve the polyfill shims
-// injected by vite-plugin-node-polyfills, so pin them to absolute paths.
+// In production builds, modules under `../shared/node_modules` cannot resolve
+// the polyfill shims injected by vite-plugin-node-polyfills, so pin them to
+// absolute paths. Dev must not alias them: the alias defeats the plugin's
+// optimizeDeps exclusion and pre-bundles the shims into a circular import.
 const require = createRequire(import.meta.url)
 const polyfillShims = Object.fromEntries(
-  ['buffer', 'global'].map((shim) => [
+  ['buffer', 'global', 'process'].map((shim) => [
     `vite-plugin-node-polyfills/shims/${shim}`,
     require.resolve(`vite-plugin-node-polyfills/shims/${shim}`),
   ]),
@@ -68,11 +70,11 @@ const datadogHeadChunk = (): Plugin => {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   base: './',
   plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogHeadChunk()],
   resolve: {
-    alias: polyfillShims,
+    alias: command === 'build' ? polyfillShims : {},
   },
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(
@@ -118,4 +120,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))
