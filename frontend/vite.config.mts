@@ -70,11 +70,11 @@ const datadogHeadChunk = (): Plugin => {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
+export default defineConfig(({ command, mode }) => ({
   base: './',
   plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogHeadChunk()],
   resolve: {
-    alias: command === 'build' ? polyfillShims : {},
+    alias: command === 'build' || mode === 'test' ? polyfillShims : {},
   },
   define: {
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(
