@@ -26,8 +26,10 @@ import Input from '~components/Input'
 
 import { TableFieldInputs } from '../types'
 
-export interface ColumnCellProps
-  extends UseTableCellProps<TableFieldInputs, string> {
+export interface ColumnCellProps extends UseTableCellProps<
+  TableFieldInputs,
+  string
+> {
   schemaId: string
   isDisabled?: boolean
   disableRequiredValidation: boolean
@@ -179,9 +181,7 @@ export const ColumnCell = ({
         // On desktop, errors are shown directly under the table field and should not
         // be shown in the individual column cells.
         isMobile ? (
-          <FormErrorMessage>
-            {get(errors, `${inputName}.message`)}
-          </FormErrorMessage>
+          <FormErrorMessage>{get(errors, inputName)?.message}</FormErrorMessage>
         ) : null
       }
     </FormControl>

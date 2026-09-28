@@ -1,5 +1,5 @@
 import { Children } from 'react'
-import { Box, Divider, Stack, StackProps } from '@chakra-ui/layout'
+import { Box, Divider, Stack, StackProps } from '@chakra-ui/react'
 
 export interface DrawerContentContainerProps extends StackProps {
   children: React.ReactNode

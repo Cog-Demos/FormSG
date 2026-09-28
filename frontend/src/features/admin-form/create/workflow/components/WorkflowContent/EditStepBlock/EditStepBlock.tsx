@@ -117,7 +117,7 @@ export const EditStepBlock = ({
     : undefined
 
   // TODO: (MRF-email-notif) Remove isTest check when approvals is out of beta
-  const isTest = process.env.NODE_ENV === 'test'
+  const isTest = import.meta.env.MODE === 'test'
 
   return (
     <Stack

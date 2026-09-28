@@ -1,9 +1,6 @@
 import { expose } from 'comlink'
 import { formatInTimeZone } from 'date-fns-tz'
-// Some webpack pipelines (Chromatic for ours) fails with the default export, but works with /dist export.
-// Due to not recognizing export from the package's package.json.
-// See https://github.com/sindresorhus/p-queue/issues/145
-import PQueue from 'p-queue/dist'
+import PQueue from 'p-queue'
 
 import formsgSdk from '~utils/formSdk'
 
@@ -15,15 +12,6 @@ import {
   MaterializedCsvRecord,
 } from '../types'
 import { CsvRecord } from '../utils/CsvRecord.class'
-
-// Fixes issue raised at https://stackoverflow.com/questions/66472945/referenceerror-refreshreg-is-not-defined
-// Something to do with babel-loader.
-if (process.env.NODE_ENV !== 'production') {
-  // eslint-disable-next-line
-  ;(global as any).$RefreshReg$ = () => {}
-  // eslint-disable-next-line
-  ;(global as any).$RefreshSig$ = () => () => {}
-}
 
 const queue = new PQueue({ concurrency: 1 })
 
@@ -75,12 +63,10 @@ async function decryptIntoCsv(
   // Something to do with babel-loader.
 
   // TODO: May be removed when we move to Webpack 5, where web workers are now first class citizens?
-  const { processDecryptedContent, processDecryptedContentV3 } = await import(
-    '../utils/processDecryptedContent'
-  )
-  const { downloadAndDecryptAttachmentsAsZip } = await import(
-    '../utils/downloadAndDecryptAttachment'
-  )
+  const { processDecryptedContent, processDecryptedContentV3 } =
+    await import('../utils/processDecryptedContent')
+  const { downloadAndDecryptAttachmentsAsZip } =
+    await import('../utils/downloadAndDecryptAttachment')
 
   const { SubmissionStreamDto, SubmissionType } = await import('~shared/types')
 
@@ -182,11 +168,13 @@ async function decryptIntoCsv(
         })
 
         try {
-          downloadBlob = await queue.add(() =>
-            downloadAndDecryptAttachmentsAsZip(
-              attachmentDownloadUrls,
-              attachmentDecryptionKey,
-            ),
+          downloadBlob = await queue.add(
+            () =>
+              downloadAndDecryptAttachmentsAsZip(
+                attachmentDownloadUrls,
+                attachmentDecryptionKey,
+              ),
+            { throwOnTimeout: true },
           )
           csvRecord.setStatus(
             CsvRecordStatus.Ok,
@@ -227,5 +215,4 @@ const exports = {
 
 expose(exports)
 
-export default {} as typeof Worker & { new (): Worker }
 export type DecryptionWorkerApi = typeof exports

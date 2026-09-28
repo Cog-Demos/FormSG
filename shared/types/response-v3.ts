@@ -1,4 +1,4 @@
-import { BasicField, FormFieldDto, MyInfoChildAttributes } from './field'
+import type { BasicField, FormFieldDto, MyInfoChildAttributes } from './field'
 
 export type FieldResponsesV3 = Record<FormFieldDto['_id'], FieldResponseV3>
 

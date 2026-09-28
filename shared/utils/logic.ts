@@ -1,15 +1,15 @@
 import { CLIENT_RADIO_OTHERS_INPUT_VALUE } from '../constants'
 import {
   BasicField,
-  FormDto,
+  type FormDto,
   LogicConditionState,
   LogicType,
-  FormCondition,
-  LogicDto,
-  ShowFieldLogicDto,
-  PreventSubmitLogicDto,
-  LogicCondition,
-  LogicableField,
+  type FormCondition,
+  type LogicDto,
+  type ShowFieldLogicDto,
+  type PreventSubmitLogicDto,
+  type LogicCondition,
+  type LogicableField,
 } from '../types'
 
 const LOGIC_CONDITIONS: LogicCondition[] = [

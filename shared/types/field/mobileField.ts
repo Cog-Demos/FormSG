@@ -1,4 +1,8 @@
-import { BasicField, MyInfoableFieldBase, VerifiableFieldBase } from './base'
+import type {
+  BasicField,
+  MyInfoableFieldBase,
+  VerifiableFieldBase,
+} from './base'
 
 export interface MobileFieldBase
   extends MyInfoableFieldBase,

@@ -9,7 +9,6 @@ import { RovingTabIndexProvider } from 'react-roving-tabindex'
 import {
   Box,
   forwardRef,
-  StylesProvider,
   useControllableState,
   useFormControl,
   useMergeRefs,
@@ -20,10 +19,13 @@ import { InputProps } from '~components/Input'
 import { TagProps } from '~components/Tag/Tag'
 
 import { TagInputInput } from './TagInputInput'
+import { TagInputStylesProvider } from './TagInputStylesContext'
 import { TagInputTag } from './TagInputTag'
 
-export interface TagInputProps
-  extends Omit<InputProps, 'value' | 'onChange' | 'defaultValue'> {
+export interface TagInputProps extends Omit<
+  InputProps,
+  'value' | 'onChange' | 'defaultValue'
+> {
   /** Value of the controlled input. */
   value?: string[]
   /**
@@ -163,7 +165,7 @@ export const TagInput = forwardRef<TagInputProps, 'input'>(
 
     return (
       <RovingTabIndexProvider>
-        <StylesProvider value={styles}>
+        <TagInputStylesProvider value={styles}>
           <Box
             sx={styles.container}
             onClick={handleFieldClick}
@@ -189,7 +191,7 @@ export const TagInput = forwardRef<TagInputProps, 'input'>(
               ref={mergedInputRefs}
             />
           </Box>
-        </StylesProvider>
+        </TagInputStylesProvider>
       </RovingTabIndexProvider>
     )
   },

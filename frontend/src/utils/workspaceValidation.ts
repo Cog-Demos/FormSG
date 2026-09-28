@@ -1,11 +1,11 @@
-import { UseControllerProps } from 'react-hook-form'
-
 import {
   WORKSPACE_MAX_TITLE_LENGTH,
   WORKSPACE_MIN_TITLE_LENGTH,
 } from '~shared/constants'
 
-export const WORKSPACE_TITLE_VALIDATION_RULES: UseControllerProps['rules'] = {
+import { FieldValidationRules } from './fieldValidation'
+
+export const WORKSPACE_TITLE_VALIDATION_RULES: FieldValidationRules = {
   required: 'Folder name is required',
   maxLength: {
     value: WORKSPACE_MAX_TITLE_LENGTH,

@@ -11,8 +11,8 @@ import React, {
   useRef,
 } from 'react'
 import {
-  CSSObject,
   FormControlProps,
+  SystemStyleObject,
   useControllableState,
   useDisclosure,
   UseDisclosureReturn,
@@ -28,7 +28,7 @@ import { DatePickerProps } from './DatePicker'
 
 interface DatePickerContextReturn {
   isMobile: boolean
-  styles: Record<string, CSSObject>
+  styles: Record<string, SystemStyleObject>
   handleInputChange: ChangeEventHandler<HTMLInputElement>
   handleInputClick: MouseEventHandler<HTMLInputElement>
   handleDateChange: (date: Date | null) => void

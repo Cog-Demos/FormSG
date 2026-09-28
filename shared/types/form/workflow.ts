@@ -1,4 +1,4 @@
-import { FormFieldDto } from '../field'
+import type { FormFieldDto } from '../field'
 
 export enum WorkflowType {
   Static = 'static',

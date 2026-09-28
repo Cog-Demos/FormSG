@@ -1,6 +1,6 @@
-import Stripe from 'stripe'
-import { FormPaymentsField, ProductItem } from './form'
-import { DateString } from './generic'
+import type Stripe from 'stripe'
+import type { FormPaymentsField, ProductItem } from './form'
+import type { DateString } from './generic'
 
 // Stripe Charge status
 export enum PaymentStatus {

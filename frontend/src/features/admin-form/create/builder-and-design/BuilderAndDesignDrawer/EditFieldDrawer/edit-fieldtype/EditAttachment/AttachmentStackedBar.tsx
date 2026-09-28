@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { Box, BoxProps, Flex, Grid, Skeleton, Stack } from '@chakra-ui/react'
-import { valueToPercent } from '@chakra-ui/utils'
 
 export interface AttachmentStackedBarProps {
   /** Existing value to render in the stacked bar. If `undefined` the progress
@@ -14,6 +13,9 @@ export interface AttachmentStackedBarProps {
   /** The maximum value of the bar */
   max: number
 }
+
+const valueToPercent = (value: number, min: number, max: number) =>
+  ((value - min) * 100) / (max - min)
 
 const FilledTrack = (props: BoxProps) => {
   return (

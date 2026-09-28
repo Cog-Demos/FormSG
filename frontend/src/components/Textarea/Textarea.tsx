@@ -5,7 +5,7 @@ import {
   TextareaProps as ChakraTextareaProps,
   useStyleConfig,
 } from '@chakra-ui/react'
-import { omit } from '@chakra-ui/utils'
+import { omit } from 'lodash'
 
 export interface TextareaProps extends ChakraTextareaProps {
   /**
