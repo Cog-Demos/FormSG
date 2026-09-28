@@ -1,6 +1,6 @@
 import { ObjectId } from 'bson'
 import { isPaymentsProducts } from '../product'
-import { Product } from '../product'
+import type { Product } from '../product'
 
 describe('Product validation', () => {
   it('should return false if products is not an array', () => {

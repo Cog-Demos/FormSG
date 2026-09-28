@@ -1,7 +1,7 @@
 import type { Merge } from 'type-fest'
-import { DateString } from '../generic'
-import { SubmissionResponseDto } from '../submission'
-import { FormDto } from './form'
+import type { DateString } from '../generic'
+import type { SubmissionResponseDto } from '../submission'
+import type { FormDto } from './form'
 
 export type SubmitFormFeedbackBodyDto = {
   isPreview?: boolean

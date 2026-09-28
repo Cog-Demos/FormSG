@@ -4,22 +4,22 @@ import {
   getApplicableIfStates,
   getLogicUnitPreventingSubmit,
   getVisibleFieldIds,
-  LogicFieldClientRadioResponseInput,
-  LogicFieldResponse,
-  LogicFieldServerResponse,
+  type LogicFieldClientRadioResponseInput,
+  type LogicFieldResponse,
+  type LogicFieldServerResponse,
 } from '../logic'
 
 import {
   BasicField,
-  FormDto,
-  FormFieldDto,
+  type FormDto,
+  type FormFieldDto,
   LogicConditionState,
   LogicIfValue,
   LogicType,
-  PreventSubmitLogicDto,
-  RadioFieldBase,
-  ShortTextFieldBase,
-  ShowFieldLogicDto,
+  type PreventSubmitLogicDto,
+  type RadioFieldBase,
+  type ShortTextFieldBase,
+  type ShowFieldLogicDto,
 } from '../../types'
 import { CLIENT_RADIO_OTHERS_INPUT_VALUE } from '../../constants'
 
