@@ -3,7 +3,7 @@ import { Remote } from 'comlink'
 import { SetRequired } from 'type-fest'
 
 import { CsvRecord } from './utils/CsvRecord.class'
-import { DecryptionWorkerApi } from './worker/decryption.worker'
+import type { DecryptionWorkerApi } from './worker/decryption.worker'
 
 export enum CsvRecordStatus {
   Ok = 'OK',
