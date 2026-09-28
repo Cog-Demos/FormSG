@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Circle, Flex, Text } from '@chakra-ui/layout'
+import { Circle, Flex, Text } from '@chakra-ui/react'
 
 import { FormStatus } from '~shared/types/form/form'
 

@@ -1,8 +1,36 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { resolve } from 'node:path'
-import { mergeConfig } from 'vite'
+import { mergeConfig, Plugin } from 'vite'
+import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
+
+/**
+ * CRA-compatible SVG handling: `import { ReactComponent } from './x.svg'`
+ * yields a component while `import url from './x.svg'` keeps the asset URL.
+ */
+const svgrWithDefaultUrl = (): Plugin => {
+  const svgrPlugin = svgr({
+    include: '**/*.svg',
+    svgrOptions: { exportType: 'named', namedExport: 'ReactComponent' },
+  })
+  const hook = svgrPlugin.load
+  const svgrLoad = typeof hook === 'function' ? hook : hook?.handler
+  return {
+    name: 'storybook-svgr-with-default-url',
+    enforce: 'pre',
+    async load(id) {
+      if (!svgrLoad || !id.endsWith('.svg')) return null
+      const result = await svgrLoad.call(this, id)
+      if (!result) return null
+      const componentCode = typeof result === 'string' ? result : result.code
+      return {
+        code: `${componentCode}\nexport { default } from ${JSON.stringify(`${id}?url`)}`,
+        map: null,
+      }
+    },
+  }
+}
 
 const config: StorybookConfig = {
   framework: {
@@ -40,11 +68,18 @@ const config: StorybookConfig = {
         tsconfigPaths({
           projects: [resolve(__dirname, '../tsconfig.json')],
         }),
-        svgr({
-          include: '**/*.svg',
-          svgrOptions: { exportType: 'named', namedExport: 'ReactComponent' },
-        }),
+        svgrWithDefaultUrl(),
+        // csv-string (CsvGenerator) extends Node's stream.Transform.
+        nodePolyfills({ include: ['stream', 'buffer', 'events', 'util'] }),
       ],
+      // App code still reads CRA-style `process.env.*`; shim until the
+      // `import.meta.env` rename lands.
+      define: {
+        'process.env': JSON.stringify({
+          NODE_ENV: 'development',
+          PUBLIC_URL: '',
+        }),
+      },
       resolve: {
         // Removed packages still imported by app code; drop once TICKET-E lands.
         alias: [
