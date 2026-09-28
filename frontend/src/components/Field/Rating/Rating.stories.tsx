@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~/utils/storybook'
 
@@ -218,8 +218,12 @@ export const Tablet = {
   },
 }
 
-export const Playground: StoryObj = {
-  render: ({
+type PlaygroundArgs = RatingProps & {
+  label: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: function Render({
     name,
     label,
     isDisabled,
@@ -227,8 +231,8 @@ export const Playground: StoryObj = {
     variant,
     numberOfRatings,
     ...args
-  }) => {
-    const { handleSubmit, control } = useForm()
+  }) {
+    const { handleSubmit, control } = useForm<Record<string, number>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
     const {
       field,
@@ -258,11 +262,11 @@ export const Playground: StoryObj = {
             numberOfRatings={numberOfRatings}
             {...args}
             isDisabled={isDisabled}
+            isRequired={isRequired}
+            fieldTitle={label}
             {...field}
           />
-          <FormErrorMessage>
-            {errors[name] && errors[name].message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
         </FormControl>
         <Button type="submit" colorScheme={args.colorScheme}>
           Submit

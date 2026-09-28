@@ -1,10 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/form-control'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -59,13 +55,21 @@ export const Disabled = {
   },
 }
 
-export const Playground: StoryObj = {
-  render: ({ name, label, isDisabled, isRequired, ...args }) => {
+type PlaygroundArgs = NumberInputProps & {
+  name: string
+  label: string
+  isDisabled?: boolean
+  isRequired?: boolean
+  placeholder?: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: function Render({ name, label, isDisabled, isRequired, ...args }) {
     const {
       handleSubmit,
       formState: { errors },
       control,
-    } = useForm()
+    } = useForm<Record<string, string>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -87,9 +91,7 @@ export const Playground: StoryObj = {
             }}
             render={({ field }) => <NumberInput {...field} {...args} />}
           />
-          <FormErrorMessage>
-            {errors[name] && errors[name].message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
         </FormControl>
         <Button variant="solid" type="submit">
           Submit

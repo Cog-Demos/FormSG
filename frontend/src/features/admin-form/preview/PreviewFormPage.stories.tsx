@@ -1,6 +1,5 @@
-import { expect } from '@storybook/jest'
 import { Meta, StoryFn } from '@storybook/react'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
 import dedent from 'dedent'
 
 import { BasicField } from '~shared/types/field'
@@ -414,7 +413,7 @@ export const WithPreventSubmissionLogic = {
     ],
   },
 
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement)
     await waitFor(
       async () => {

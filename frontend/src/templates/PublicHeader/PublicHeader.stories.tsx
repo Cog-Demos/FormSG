@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { BxsHelpCircle } from '~assets/icons/BxsHelpCircle'
 import {

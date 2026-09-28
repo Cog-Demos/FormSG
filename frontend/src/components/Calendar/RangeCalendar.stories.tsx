@@ -59,6 +59,6 @@ export const RangeCalendarWeekdayOnly = {
   render: RangeCalendarOnlyTemplate,
 
   args: {
-    isDateUnavailable: (d) => isWeekend(d),
+    isDateUnavailable: (d: Date) => isWeekend(d),
   },
 }

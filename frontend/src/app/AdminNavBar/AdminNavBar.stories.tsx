@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 
@@ -12,7 +12,7 @@ import {
 
 import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
-import { AdminNavBar, AdminNavBarProps } from './AdminNavBar'
+import { AdminNavBar } from './AdminNavBar'
 
 export default {
   title: 'App/AdminNavBar',

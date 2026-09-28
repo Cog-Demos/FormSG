@@ -9,7 +9,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
-import { StoryFn, Meta } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { MenuVariant } from '~theme/components/Menu'
 

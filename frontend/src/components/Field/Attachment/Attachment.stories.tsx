@@ -1,6 +1,6 @@
 import { Controller, useForm } from 'react-hook-form'
 import { FormControl } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
@@ -70,14 +70,14 @@ export const WithUploadedFile = {
 }
 
 export const Playground: StoryObj<AttachmentProps> = {
-  render: ({ isDisabled, isReadOnly, ...args }) => {
+  render: function Render({ isDisabled, isReadOnly, ...args }) {
     const {
       control,
       handleSubmit,
       setError,
       clearErrors,
       formState: { errors },
-    } = useForm()
+    } = useForm<Record<string, File>>()
 
     const isInvalid = !!errors?.[args.name]
 
@@ -119,9 +119,7 @@ export const Playground: StoryObj<AttachmentProps> = {
             }}
             control={control}
           />
-          <FormErrorMessage>
-            {errors[args.name] && errors[args.name].message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors[args.name]?.message}</FormErrorMessage>
         </FormControl>
         <Button type="submit">Submit</Button>
       </form>

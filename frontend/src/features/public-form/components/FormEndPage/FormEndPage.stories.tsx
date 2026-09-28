@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom'
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { FormColorTheme } from '~shared/types'
 
@@ -9,6 +9,7 @@ import { getMobileViewParameters } from '~utils/storybook'
 
 import { PublicFormProvider } from '~features/public-form/PublicFormProvider'
 
+import { FeedbackFormInput } from './components/FeedbackBlock'
 import { FormEndPage, FormEndPageProps } from './FormEndPage'
 
 export default {
@@ -50,7 +51,7 @@ export const Default = {
       id: 'mockSubmissionId',
       timestamp: 1648545566989,
     },
-    handleSubmitFeedback: (inputs) => console.log(inputs),
+    handleSubmitFeedback: (inputs: FeedbackFormInput) => console.log(inputs),
   },
 }
 

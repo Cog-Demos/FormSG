@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { DecoratorFn, Meta, StoryFn } from '@storybook/react'
+import { Decorator, Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -29,7 +29,7 @@ import {
   VerifiableMobileFieldSchema,
 } from './VerifiableMobileField'
 
-const MockProviders: DecoratorFn = (storyFn) => {
+const MockProviders: Decorator = (storyFn) => {
   return (
     <PublicFormContext.Provider
       value={

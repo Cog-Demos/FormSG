@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react'
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import {
   BasicField,
@@ -26,7 +26,7 @@ import { getMobileViewParameters, StoryRouter } from '~utils/storybook'
 
 import { FormFieldWithQuestionNo } from '~features/form/types'
 
-import { NewLogicBlock, NewLogicBlockProps } from './NewLogicBlock'
+import { NewLogicBlock } from './NewLogicBlock'
 
 export default {
   title: 'Features/AdminForm/Logic/NewLogicBlock',

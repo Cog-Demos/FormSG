@@ -1,6 +1,6 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
-import { InlineMessage, InlineMessageProps } from './InlineMessage'
+import { InlineMessage } from './InlineMessage'
 
 export default {
   title: 'Components/InlineMessage',

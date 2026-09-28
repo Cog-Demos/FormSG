@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { BiRadioCircleMarked } from 'react-icons/bi'
 import { FormControl } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { get } from 'lodash'
 import difference from 'lodash/difference'
 
@@ -139,7 +139,7 @@ export const DisabledWithSelection = {
 }
 
 export const Playground: StoryObj<MultiSelectProps> = {
-  render: ({ items, isDisabled }) => {
+  render: function Render({ items, isDisabled }) {
     const name = 'Multiselect'
     const {
       handleSubmit,

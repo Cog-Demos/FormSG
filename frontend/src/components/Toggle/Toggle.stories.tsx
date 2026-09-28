@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { VStack } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -82,7 +82,7 @@ export const ToggleStates = {
 }
 
 export const Playground: StoryObj<ToggleProps> = {
-  render: (args) => {
+  render: function Render(args) {
     const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
     const { register, handleSubmit } = useForm()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))

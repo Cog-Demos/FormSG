@@ -6,12 +6,12 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 import Button from '~components/Button'
 
-import { YesNo, YesNoProps } from './YesNo'
+import { YesNo, YesNoOptionValue, YesNoProps } from './YesNo'
 
 export default {
   title: 'Components/Field/YesNo',
@@ -110,13 +110,20 @@ export const Tablet = {
   },
 }
 
-export const Playground: StoryObj = {
-  render: ({ name, label, isDisabled, isRequired, ...args }) => {
+type PlaygroundArgs = YesNoProps & {
+  name: string
+  label: string
+  isDisabled?: boolean
+  isRequired?: boolean
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: function Render({ name, label, isDisabled, isRequired, ...args }) {
     const {
       handleSubmit,
       control,
       formState: { errors },
-    } = useForm()
+    } = useForm<Record<string, YesNoOptionValue>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -140,9 +147,7 @@ export const Playground: StoryObj = {
               <YesNo {...args} isDisabled={isDisabled} {...field} />
             )}
           />
-          <FormErrorMessage>
-            {errors[name] && errors[name].message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
         </FormControl>
         <Button type="submit">Submit</Button>
       </form>

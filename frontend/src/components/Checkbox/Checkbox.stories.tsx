@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { FormControl, VStack } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isEmpty } from 'lodash'
 
 import { viewports } from '~utils/storybook'
@@ -85,14 +85,21 @@ export const CheckboxStates = {
   render: AllStates,
 }
 
-export const Playground: StoryObj = {
-  render: ({
+type PlaygroundArgs = CheckboxProps & {
+  name?: string
+  othersInputName?: string
+  othersCheckboxName?: string
+  label: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: function Render({
     name = 'checkbox',
     othersInputName = 'others-input',
     othersCheckboxName = 'others-checkbox',
     label,
     ...args
-  }) => {
+  }) {
     const options = useMemo(() => ['Option 1', 'Option 2', 'Option 3'], [])
     const {
       register,
@@ -100,7 +107,7 @@ export const Playground: StoryObj = {
       formState: { errors, isDirty },
       control,
       trigger,
-    } = useForm()
+    } = useForm<Record<string, string | string[]>>()
     const isOthersChecked = useWatch({
       name: othersCheckboxName,
       control,

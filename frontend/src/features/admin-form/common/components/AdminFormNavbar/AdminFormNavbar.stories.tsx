@@ -1,15 +1,17 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { DateString } from '~shared/types/generic'
+
+import { createMockForm } from '~/mocks/msw/handlers/admin-form/form'
 
 import { getMobileViewParameters, StoryRouter } from '~utils/storybook'
 
 import { AdminFormNavbar, AdminFormNavbarProps } from './AdminFormNavbar'
 
-const MOCK_FORM: AdminFormNavbarProps['formInfo'] = {
+const MOCK_FORM: AdminFormNavbarProps['formInfo'] = createMockForm({
   title: 'Storybook Test Form',
   lastModified: '2020-01-01T00:00:00.000Z' as DateString,
-} as const
+}).form
 
 export default {
   title: 'Features/AdminForm/AdminFormNavbar',

@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { BiHeading, BiRadioCircleMarked } from 'react-icons/bi'
 import { FormControl } from '@chakra-ui/react'
-import { useArgs } from '@storybook/client-api'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { useArgs } from '@storybook/preview-api'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { fixedHeightDecorator } from '~utils/storybook'
 import Button from '~components/Button'
@@ -170,7 +170,7 @@ export const Disabled = {
 }
 
 export const Playground: StoryObj<SingleSelectProps> = {
-  render: ({ items, isReadOnly }) => {
+  render: function Render({ items, isReadOnly }) {
     const name = 'Dropdown'
     const {
       handleSubmit,

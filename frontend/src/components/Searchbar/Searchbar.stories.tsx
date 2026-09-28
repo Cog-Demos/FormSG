@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { Searchbar, SearchbarProps } from './Searchbar'
 import { useSearchbar } from './useSearchbar'
@@ -18,7 +18,7 @@ export const Default: StoryObj<SearchbarProps> = {
 }
 
 export const ExpandableClosed: StoryObj<SearchbarProps> = {
-  render: ({ isExpanded: isInitiallyExpanded, ...args }) => {
+  render: function Render({ isExpanded: isInitiallyExpanded, ...args }) {
     const { inputRef, isExpanded, handleExpansion, handleCollapse } =
       useSearchbar({
         isInitiallyExpanded,
@@ -44,7 +44,7 @@ export const ExpandableClosed: StoryObj<SearchbarProps> = {
 }
 
 export const ExpandableOpen: StoryObj<SearchbarProps> = {
-  render: ({ isExpanded: isInitiallyExpanded, ...args }) => {
+  render: function Render({ isExpanded: isInitiallyExpanded, ...args }) {
     const { inputRef, isExpanded, handleExpansion, handleCollapse } =
       useSearchbar({
         isInitiallyExpanded,
@@ -71,7 +71,7 @@ export const ExpandableOpen: StoryObj<SearchbarProps> = {
 }
 
 export const Unexpandable: StoryObj<SearchbarProps> = {
-  render: ({ isExpanded: isInitiallyExpanded, ...args }) => {
+  render: function Render({ isExpanded: isInitiallyExpanded, ...args }) {
     const { inputRef, isExpanded, handleExpansion, handleCollapse } =
       useSearchbar({
         isInitiallyExpanded,
@@ -98,7 +98,7 @@ export const Unexpandable: StoryObj<SearchbarProps> = {
 }
 
 export const Playground: StoryObj<SearchbarProps> = {
-  render: ({ isExpanded: isInitiallyExpanded, ...args }) => {
+  render: function Render({ isExpanded: isInitiallyExpanded, ...args }) {
     const { isExpanded, inputRef, handleExpansion, handleCollapse } =
       useSearchbar({ isInitiallyExpanded })
 

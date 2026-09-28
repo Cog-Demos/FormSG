@@ -1,11 +1,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from '@chakra-ui/form-control'
-import { StoryObj, Meta, StoryFn } from '@storybook/react'
+import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 
 import Button from '../Button'
@@ -76,13 +72,28 @@ export const Disabled = {
   },
 }
 
-export const Playground: StoryObj = {
-  render: ({ name, label, isDisabled, isRequired, defaultValue, ...args }) => {
+type PlaygroundArgs = PhoneNumberInputProps & {
+  name: string
+  label: string
+  isDisabled?: boolean
+  isRequired?: boolean
+  defaultValue?: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
+  render: function Render({
+    name,
+    label,
+    isDisabled,
+    isRequired,
+    defaultValue,
+    ...args
+  }) {
     const {
       handleSubmit,
       formState: { errors },
       control,
-    } = useForm()
+    } = useForm<Record<string, string>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -109,9 +120,7 @@ export const Playground: StoryObj = {
             render={({ field }) => <PhoneNumberInput {...args} {...field} />}
           />
 
-          <FormErrorMessage>
-            {errors[name] && errors[name].message}
-          </FormErrorMessage>
+          <FormErrorMessage>{errors[name]?.message}</FormErrorMessage>
         </FormControl>
         <Button variant="solid" type="submit">
           Submit

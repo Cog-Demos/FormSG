@@ -1,11 +1,8 @@
-import { Meta, StoryFn } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 
-import {
-  GovtMasthead as GovtMastheadComponent,
-  GovtMastheadProps,
-} from './GovtMasthead'
+import { GovtMasthead as GovtMastheadComponent } from './GovtMasthead'
 
 export default {
   title: 'Components/GovtMasthead',
