@@ -1,7 +1,8 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import parsePhoneNumber from 'libphonenumber-js'
+import { describe, expect, it } from 'vitest'
 
 import { MOCK_USER } from '~/mocks/msw/handlers/user'
 
@@ -96,7 +97,7 @@ describe('User has verified contact number', () => {
     }) as HTMLInputElement
     const vfnButton = screen.getByRole('button', { name: /verified/i })
     const expectedFormattedPhoneNumber = parsePhoneNumber(
-      MOCK_USER.contact,
+      MOCK_USER.contact!,
     )!.formatInternational()
 
     // Assert
