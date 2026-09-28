@@ -1,7 +1,8 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { addDays, isBefore, lightFormat } from 'date-fns'
+import { describe, expect, it } from 'vitest'
 
 import { DATE_DISPLAY_FORMAT } from '~shared/constants/dates'
 
