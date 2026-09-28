@@ -22,8 +22,10 @@ import { TagProps } from '~components/Tag/Tag'
 import { TagInputInput } from './TagInputInput'
 import { TagInputTag } from './TagInputTag'
 
-export interface TagInputProps
-  extends Omit<InputProps, 'value' | 'onChange' | 'defaultValue'> {
+export interface TagInputProps extends Omit<
+  InputProps,
+  'value' | 'onChange' | 'defaultValue'
+> {
   /** Value of the controlled input. */
   value?: string[]
   /**
