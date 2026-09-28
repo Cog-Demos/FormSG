@@ -1,6 +1,7 @@
 import {
   createContext,
   FC,
+  PropsWithChildren,
   useCallback,
   useContext,
   useEffect,
@@ -180,7 +181,9 @@ export const useCreatePageSidebarContext =
  * Provider component that makes drawer context object available to any
  * child component that calls `useCreatePageDrawer()`.
  */
-export const CreatePageSidebarProvider: FC = ({ children }) => {
+export const CreatePageSidebarProvider: FC<PropsWithChildren> = ({
+  children,
+}) => {
   const context = useCreatePageSidebarContext()
 
   return (

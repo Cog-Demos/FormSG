@@ -75,12 +75,10 @@ async function decryptIntoCsv(
   // Something to do with babel-loader.
 
   // TODO: May be removed when we move to Webpack 5, where web workers are now first class citizens?
-  const { processDecryptedContent, processDecryptedContentV3 } = await import(
-    '../utils/processDecryptedContent'
-  )
-  const { downloadAndDecryptAttachmentsAsZip } = await import(
-    '../utils/downloadAndDecryptAttachment'
-  )
+  const { processDecryptedContent, processDecryptedContentV3 } =
+    await import('../utils/processDecryptedContent')
+  const { downloadAndDecryptAttachmentsAsZip } =
+    await import('../utils/downloadAndDecryptAttachment')
 
   const { SubmissionStreamDto, SubmissionType } = await import('~shared/types')
 
@@ -182,11 +180,13 @@ async function decryptIntoCsv(
         })
 
         try {
-          downloadBlob = await queue.add(() =>
-            downloadAndDecryptAttachmentsAsZip(
-              attachmentDownloadUrls,
-              attachmentDecryptionKey,
-            ),
+          downloadBlob = await queue.add(
+            () =>
+              downloadAndDecryptAttachmentsAsZip(
+                attachmentDownloadUrls,
+                attachmentDecryptionKey,
+              ),
+            { throwOnTimeout: true },
           )
           csvRecord.setStatus(
             CsvRecordStatus.Ok,

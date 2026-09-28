@@ -14,18 +14,17 @@ import {
   useStyles,
 } from '@chakra-ui/react'
 
-export interface TileProps
-  extends Omit<
-    ButtonProps,
-    | 'colorScheme'
-    | 'iconSpacing'
-    | 'leftIcon'
-    | 'rightIcon'
-    | 'loadingText'
-    | 'spinner'
-    | 'spinnerPlacement'
-    | 'title'
-  > {
+export interface TileProps extends Omit<
+  ButtonProps,
+  | 'colorScheme'
+  | 'iconSpacing'
+  | 'leftIcon'
+  | 'rightIcon'
+  | 'loadingText'
+  | 'spinner'
+  | 'spinnerPlacement'
+  | 'title'
+> {
   // The typing here is to satisfy the ts compiler
   // because otherwise, it will complain about assigning null to the as prop
   /**
@@ -48,6 +47,11 @@ export interface TileProps
    * Defaults to simple.
    */
   variant: 'complex' | 'simple'
+
+  /**
+   * Whether the tile should take up the full width of its container.
+   */
+  isFullWidth?: boolean
 }
 
 type TileWithParts = ComponentWithAs<'button', TileProps> & {
@@ -58,12 +62,17 @@ type TileWithParts = ComponentWithAs<'button', TileProps> & {
 }
 
 export const Tile = forwardRef<TileProps, 'button'>(
-  ({ badge, icon, children, ...props }, ref) => {
+  ({ badge, icon, children, isFullWidth, ...props }, ref) => {
     const styles = useMultiStyleConfig('Tile', props)
     return (
       // Ref passed into the component as a whole so that it can be focused
       <StylesProvider value={styles}>
-        <Button sx={styles.container} ref={ref} {...props}>
+        <Button
+          sx={styles.container}
+          ref={ref}
+          {...(isFullWidth ? { width: '100%' } : {})}
+          {...props}
+        >
           <HStack spacing="1rem">
             <Icon __css={styles.icon} as={icon} />
             {badge}
