@@ -21,10 +21,6 @@ Machine: Ubuntu 22.04 x86_64, Node `v18.20.2` (from `.nvmrc`), npm 10.5.0.
 | Backend Jest (incl. `serverless/virus-scanner` via root `jest.config.js`) | `npm run test:backend:ci`                                                                         | see `BASELINE_BACKEND_JEST` below                                                                  | `mongodb-memory-server` downloads `mongod 4.0.22`, which needs `libcrypto.so.1.1`; on Ubuntu 22.04 install `libssl1.1` from the focal archive (`http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.24_amd64.deb`). Without it every DB-backed suite fails with `Instance failed to start because a library is missing … libcrypto.so.1.1`. |
 | `serverless/virus-scanner` install + `tsc`                                | `cd serverless/virus-scanner && npm ci && npx tsc --noEmit`                                       | pass                                                                                               | `cmake`, `autoconf automake libtool libcurl4-openssl-dev`, and a Python with `distutils` (Python ≤ 3.11; use `npm_config_python=/usr/bin/python3`) for the native `clamscan`/`node-gyp` build                                                                                                                                                                           |
 
-`BASELINE_BACKEND_JEST`: recorded in the consolidated PR description once the
-run with `libssl1.1` installed completes (the first run on this machine failed
-purely because of the missing library above).
-
 ## 2. Dependency foundation (this ticket's `frontend/package.json` change)
 
 Removed: `react-scripts`, `@craco/craco`, `craco-alias`, `worker-loader`,
