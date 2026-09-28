@@ -1,6 +1,7 @@
-import { composeStories } from '@storybook/testing-react'
-import { act, render, screen } from '@testing-library/react'
+import { composeStories } from '@storybook/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
 
 import { REQUIRED_ERROR } from '~constants/validation'
 
@@ -37,11 +38,9 @@ describe('required field', () => {
     render(<WithoutOthersOption />)
     const submitButton = screen.getByRole('button', { name: /submit/i })
     // Act
-    await act(async () =>
-      checkboxOptionsToSelect.forEach((optionVal) =>
-        user.click(screen.getByLabelText(optionVal)),
-      ),
-    )
+    for (const optionVal of checkboxOptionsToSelect) {
+      await user.click(screen.getByLabelText(optionVal))
+    }
     await user.click(submitButton)
 
     // Assert

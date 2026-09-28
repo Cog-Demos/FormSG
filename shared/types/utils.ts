@@ -1,4 +1,4 @@
-import { DateString } from './generic'
+import type { DateString } from './generic'
 
 export type ExtractTypeFromArray<T> = T extends readonly (infer E)[] ? E : T
 
