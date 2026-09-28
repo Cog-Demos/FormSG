@@ -1,10 +1,9 @@
 import { InputProps } from '@chakra-ui/react'
 
-export interface DatePickerBaseProps
-  extends Omit<
-    InputProps,
-    'value' | 'defaultValue' | 'onChange' | 'colorScheme'
-  > {
+export interface DatePickerBaseProps extends Omit<
+  InputProps,
+  'value' | 'defaultValue' | 'onChange' | 'colorScheme'
+> {
   /**
    * The `date-fns` format to display the date.
    * @defaultValue `dd/MM/yyyy`

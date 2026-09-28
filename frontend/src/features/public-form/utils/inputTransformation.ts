@@ -218,8 +218,7 @@ const transformToChildOutput = (
 }
 
 type FormFieldValueOrFieldResponseAnswerV3<T extends BasicField> =
-  | FormFieldValue<T>
-  | FieldResponseAnswerMapV3<T>
+  FormFieldValue<T> | FieldResponseAnswerMapV3<T>
 
 /**
  * Transforms form inputs to their desire output shapes for sending to the server

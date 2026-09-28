@@ -105,8 +105,7 @@ type CreateMultirespondentSubmissionFormDataArgs =
  */
 export const createClearSubmissionFormData = (
   formDataArgs:
-    | CreateEmailSubmissionFormDataArgs
-    | CreateStorageSubmissionFormDataArgs,
+    CreateEmailSubmissionFormDataArgs | CreateStorageSubmissionFormDataArgs,
 ) => {
   const { formFields, formInputs, ...formDataArgsRest } = formDataArgs
   const responses = createResponsesArray(formFields, formInputs)
@@ -140,8 +139,7 @@ export const createClearSubmissionFormData = (
  */
 export const createClearSubmissionWithVirusScanningFormData = (
   formDataArgs:
-    | CreateEmailSubmissionFormDataArgs
-    | CreateStorageSubmissionFormDataArgs,
+    CreateEmailSubmissionFormDataArgs | CreateStorageSubmissionFormDataArgs,
   fieldIdToQuarantineKeyMap: FieldIdToQuarantineKeyType[],
 ) => {
   const { formFields, formInputs, ...formDataArgsRest } = formDataArgs
@@ -271,8 +269,7 @@ const createResponsesV3 = (
       case BasicField.CountryRegion:
       case BasicField.YesNo: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (!input) break
         returnedInputs[ff._id] = {
           fieldType: ff.fieldType,
@@ -283,8 +280,7 @@ const createResponsesV3 = (
       case BasicField.Email:
       case BasicField.Mobile: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (!input?.value) break
         returnedInputs[ff._id] = {
           fieldType: ff.fieldType,
@@ -294,8 +290,7 @@ const createResponsesV3 = (
       }
       case BasicField.Table: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (!input) break
         if (input.every((row) => Object.values(row).every((value) => !value))) {
           break
@@ -308,8 +303,7 @@ const createResponsesV3 = (
       }
       case BasicField.Checkbox: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (
           (!input?.value || input?.value.length === 0) &&
           !input?.othersInput
@@ -324,8 +318,7 @@ const createResponsesV3 = (
       }
       case BasicField.Children: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (
           !input ||
           input.child.every((child) => child.every((value) => !value))
@@ -340,8 +333,7 @@ const createResponsesV3 = (
       }
       case BasicField.Attachment: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (!input) break
         // for each attachment response, find the corresponding quarantine bucket key
         const fieldIdToQuarantineKeyEntry = fieldIdToQuarantineKeyMap.find(
@@ -362,8 +354,7 @@ const createResponsesV3 = (
       }
       case BasicField.Radio: {
         const input = formInputs[ff._id] as
-          | FormFieldValue<typeof ff.fieldType>
-          | undefined
+          FormFieldValue<typeof ff.fieldType> | undefined
         if (!input?.value && !input?.othersInput) break
         returnedInputs[ff._id] = {
           fieldType: ff.fieldType,
