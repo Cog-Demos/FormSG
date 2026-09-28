@@ -30,7 +30,7 @@ RUN npm ci --legacy-peer-deps
 COPY . ./
 
 # Only used in the build stage, not the start stage.
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NODE_OPTIONS="--max-old-space-size=6144"
 
 ARG APP_VERSION
 ARG APP_URL
