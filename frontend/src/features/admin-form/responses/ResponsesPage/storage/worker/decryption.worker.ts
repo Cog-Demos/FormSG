@@ -168,11 +168,13 @@ async function decryptIntoCsv(
         })
 
         try {
-          downloadBlob = await queue.add(() =>
-            downloadAndDecryptAttachmentsAsZip(
-              attachmentDownloadUrls,
-              attachmentDecryptionKey,
-            ),
+          downloadBlob = await queue.add(
+            () =>
+              downloadAndDecryptAttachmentsAsZip(
+                attachmentDownloadUrls,
+                attachmentDecryptionKey,
+              ),
+            { throwOnTimeout: true },
           )
           csvRecord.setStatus(
             CsvRecordStatus.Ok,
