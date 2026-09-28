@@ -1,8 +1,8 @@
-import { Opaque } from 'type-fest'
+import type { Tagged } from 'type-fest'
 import { FormId } from './form'
 import { UserId } from './user'
 
-export type WorkspaceId = Opaque<string, 'WorkspaceId'>
+export type WorkspaceId = Tagged<string, 'WorkspaceId'>
 
 export type Workspace = {
   _id: WorkspaceId

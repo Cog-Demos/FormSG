@@ -1,8 +1,8 @@
-import type { Opaque } from 'type-fest'
+import type { Tagged } from 'type-fest'
 import { z } from 'zod'
 import { isDate, parseISO } from 'date-fns'
 
-export type DateString = Opaque<string, 'DateString'>
+export type DateString = Tagged<string, 'DateString'>
 
 export const DateString = z.custom<DateString>().refine(
   (val) => isDate(parseISO(val)),

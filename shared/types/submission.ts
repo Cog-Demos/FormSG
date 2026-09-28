@@ -1,4 +1,4 @@
-import type { Opaque, RequireAtLeastOne } from 'type-fest'
+import type { RequireAtLeastOne, Tagged } from 'type-fest'
 import { z } from 'zod'
 
 import { ErrorDto } from './core'
@@ -9,7 +9,7 @@ import { EmailResponse, FieldResponse, MobileResponse } from './response'
 import { PaymentStatus } from './payment'
 import { FormWorkflowDto, LogicDto, ProductItem } from './form'
 import { ErrorCode } from './errorCodes'
-export type SubmissionId = Opaque<string, 'SubmissionId'>
+export type SubmissionId = Tagged<string, 'SubmissionId'>
 export const SubmissionId = z.string() as unknown as z.Schema<SubmissionId>
 
 export enum SubmissionType {
