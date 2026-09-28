@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import Menu from '../../components/Menu'
 
@@ -25,24 +25,23 @@ export default {
   },
 } as Meta<AvatarMenuProps>
 
-const AvatarTemplate: Story<AvatarMenuProps> = (args) => (
-  <AvatarMenu {...args} />
-)
+export const Default = {}
 
-export const Default = AvatarTemplate.bind({})
-
-export const OpenMenu = AvatarTemplate.bind({})
-OpenMenu.args = {
-  defaultIsOpen: true,
+export const OpenMenu = {
+  args: {
+    defaultIsOpen: true,
+  },
 }
 
-export const WithNotification = AvatarTemplate.bind({})
-WithNotification.args = {
-  hasNotification: true,
+export const WithNotification = {
+  args: {
+    hasNotification: true,
+  },
 }
 
-export const OpenMenuWithNotification = AvatarTemplate.bind({})
-OpenMenuWithNotification.args = {
-  hasNotification: true,
-  defaultIsOpen: true,
+export const OpenMenuWithNotification = {
+  args: {
+    hasNotification: true,
+    defaultIsOpen: true,
+  },
 }

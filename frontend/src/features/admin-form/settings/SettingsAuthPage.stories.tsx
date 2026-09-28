@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { PaymentChannel } from '~shared/types'
 import {
@@ -47,252 +47,316 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsAuthPage />
-export const PrivateEmailNilAuthForm = Template.bind({})
-PrivateEmailNilAuthForm.parameters = {
-  msw: buildEmailModeMswRoutes({ status: FormStatus.Private }),
+const Template: StoryFn = () => <SettingsAuthPage />
+
+export const PrivateEmailNilAuthForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildEmailModeMswRoutes({ status: FormStatus.Private }),
+  },
 }
 
-export const PrivateStorageNilAuthForm = Template.bind({})
-PrivateStorageNilAuthForm.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    responseMode: FormResponseMode.Encrypt,
-    status: FormStatus.Private,
-  }),
-}
+export const PrivateStorageNilAuthForm = {
+  render: Template,
 
-export const PublicEmailNilAuthForm = Template.bind({})
-PublicEmailNilAuthForm.parameters = {
-  msw: buildEmailModeMswRoutes({
-    responseMode: FormResponseMode.Email,
-    status: FormStatus.Public,
-  }),
-}
-
-export const PublicStorageNilAuthForm = Template.bind({})
-PublicStorageNilAuthForm.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    responseMode: FormResponseMode.Encrypt,
-    status: FormStatus.Public,
-  }),
-}
-
-export const PublicStorageNilAuthFormSubmitterIdCollectionEnabled =
-  Template.bind({})
-PublicStorageNilAuthFormSubmitterIdCollectionEnabled.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    responseMode: FormResponseMode.Encrypt,
-    status: FormStatus.Public,
-    isSubmitterIdCollectionEnabled: true,
-  }),
-}
-
-export const PrivateStorageCorppassForm = Template.bind({})
-PrivateStorageCorppassForm.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    status: FormStatus.Private,
-    authType: FormAuthType.CP,
-    esrvcId: 'STORYBOOK-TEST',
-    responseMode: FormResponseMode.Encrypt,
-  }),
-}
-
-export const PublicEmailSingpassForm = Template.bind({})
-PublicEmailSingpassForm.parameters = {
-  msw: buildEmailModeMswRoutes({
-    status: FormStatus.Public,
-    authType: FormAuthType.SP,
-    esrvcId: 'STORYBOOK-TEST',
-    responseMode: FormResponseMode.Email,
-  }),
-}
-
-export const PrivateEmailMyInfoWithoutMyInfoFieldsForm = Template.bind({})
-PrivateEmailMyInfoWithoutMyInfoFieldsForm.parameters = {
-  msw: [
-    ...buildEmailModeMswRoutes({
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
+      responseMode: FormResponseMode.Encrypt,
       status: FormStatus.Private,
-      authType: FormAuthType.MyInfo,
-      esrvcId: 'STORYBOOK-TEST',
     }),
-    ...createFormBuilderMocks({ form_fields: [] }),
-  ],
+  },
 }
 
-export const PrivateEmailMyinfoForm = Template.bind({})
-PrivateEmailMyinfoForm.parameters = {
-  msw: [
-    ...buildEmailModeMswRoutes({
-      status: FormStatus.Private,
-      authType: FormAuthType.MyInfo,
-      esrvcId: 'STORYBOOK-TEST',
-    }),
-    ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-  ],
-}
+export const PublicEmailNilAuthForm = {
+  render: Template,
 
-export const PublicEmailMyInfoForm = Template.bind({})
-PublicEmailMyInfoForm.parameters = {
-  msw: [
-    ...buildEmailModeMswRoutes({
+  parameters: {
+    msw: buildEmailModeMswRoutes({
+      responseMode: FormResponseMode.Email,
       status: FormStatus.Public,
-      authType: FormAuthType.MyInfo,
-      esrvcId: 'STORYBOOK-TEST',
     }),
-    ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-  ],
+  },
 }
 
-export const PrivateEmailSingpassFormSubmitterIdCollectionEnabled =
-  Template.bind({})
-PrivateEmailSingpassFormSubmitterIdCollectionEnabled.parameters = {
-  msw: buildEmailModeMswRoutes({
-    status: FormStatus.Private,
-    authType: FormAuthType.SGID,
-    isSubmitterIdCollectionEnabled: true,
-  }),
+export const PublicStorageNilAuthForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
+      responseMode: FormResponseMode.Encrypt,
+      status: FormStatus.Public,
+    }),
+  },
 }
-export const PrivateEmailMyInfoFormSubmitterIdCollectionEnabled = Template.bind(
-  {},
-)
-PrivateEmailMyInfoFormSubmitterIdCollectionEnabled.parameters = {
-  msw: [
-    ...buildEmailModeMswRoutes({
-      status: FormStatus.Private,
-      authType: FormAuthType.MyInfo,
-      esrvcId: 'STORYBOOK-TEST',
+
+export const PublicStorageNilAuthFormSubmitterIdCollectionEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
+      responseMode: FormResponseMode.Encrypt,
+      status: FormStatus.Public,
       isSubmitterIdCollectionEnabled: true,
     }),
-    ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-  ],
+  },
 }
 
-export const PrivateEmailSingpassFormSingleSubmissionEnabled = Template.bind({})
-PrivateEmailSingpassFormSingleSubmissionEnabled.parameters = {
-  msw: buildEmailModeMswRoutes({
-    status: FormStatus.Private,
-    authType: FormAuthType.SGID,
-    isSingleSubmission: true,
-  }),
-}
+export const PrivateStorageCorppassForm = {
+  render: Template,
 
-// purpose: displays all available singpass settings in an enabled state
-export const PrivateStorageSingpassFormAllTogglesEnabled = Template.bind({})
-PrivateStorageSingpassFormAllTogglesEnabled.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    status: FormStatus.Private,
-    authType: FormAuthType.SGID,
-    isSingleSubmission: true,
-    isSubmitterIdCollectionEnabled: true,
-  }),
-}
-
-export const PublicEmailCorppassAllTogglesEnabledForm = Template.bind({})
-PublicEmailCorppassAllTogglesEnabledForm.parameters = {
-  msw: buildEmailModeMswRoutes({
-    status: FormStatus.Public,
-    authType: FormAuthType.CP,
-    isSingleSubmission: true,
-    isSubmitterIdCollectionEnabled: true,
-  }),
-}
-
-export const PrivateStorageMyInfoPaymentEnabledForm = Template.bind({})
-PrivateStorageMyInfoPaymentEnabledForm.parameters = {
-  msw: [
-    ...buildEncryptModeMswRoutes({
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
       status: FormStatus.Private,
-      authType: FormAuthType.MyInfo,
+      authType: FormAuthType.CP,
       esrvcId: 'STORYBOOK-TEST',
       responseMode: FormResponseMode.Encrypt,
-      payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
     }),
-    ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-  ],
+  },
 }
 
-export const PublicStorageMyInfoPaymentEnabledForm = Template.bind({})
-PublicStorageMyInfoPaymentEnabledForm.parameters = {
-  msw: [
-    ...buildEncryptModeMswRoutes({
+export const PublicEmailSingpassForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildEmailModeMswRoutes({
       status: FormStatus.Public,
-      authType: FormAuthType.MyInfo,
+      authType: FormAuthType.SP,
       esrvcId: 'STORYBOOK-TEST',
-      responseMode: FormResponseMode.Encrypt,
-      payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
+      responseMode: FormResponseMode.Email,
     }),
-    ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-  ],
+  },
 }
 
-export const PrivateStorageSgidPaymentEnabledForm = Template.bind({})
-PrivateStorageSgidPaymentEnabledForm.parameters = {
-  msw: [
-    ...buildEncryptModeMswRoutes({
+export const PrivateEmailMyInfoWithoutMyInfoFieldsForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEmailModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+      }),
+      ...createFormBuilderMocks({ form_fields: [] }),
+    ],
+  },
+}
+
+export const PrivateEmailMyinfoForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEmailModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+      }),
+      ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+    ],
+  },
+}
+
+export const PublicEmailMyInfoForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEmailModeMswRoutes({
+        status: FormStatus.Public,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+      }),
+      ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+    ],
+  },
+}
+
+export const PrivateEmailSingpassFormSubmitterIdCollectionEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: buildEmailModeMswRoutes({
       status: FormStatus.Private,
       authType: FormAuthType.SGID,
-      responseMode: FormResponseMode.Encrypt,
-      payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
+      isSubmitterIdCollectionEnabled: true,
     }),
-  ],
+  },
 }
 
-// stories for whitelist setting
-export const PrivateStorageSgidWhitelistEnabledForm = Template.bind({})
-PrivateStorageSgidWhitelistEnabledForm.parameters = {
-  msw: [
-    ...buildEncryptModeMswRoutes({
+export const PrivateEmailMyInfoFormSubmitterIdCollectionEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEmailModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+        isSubmitterIdCollectionEnabled: true,
+      }),
+      ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+    ],
+  },
+}
+
+export const PrivateEmailSingpassFormSingleSubmissionEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: buildEmailModeMswRoutes({
       status: FormStatus.Private,
       authType: FormAuthType.SGID,
-      responseMode: FormResponseMode.Encrypt,
-      whitelistedSubmitterIds: {
-        isWhitelistEnabled: true,
-      },
+      isSingleSubmission: true,
     }),
-  ],
+  },
 }
 
-export const PrivateStorageMyInfoUpdateWhitelistValidationErrorForm =
-  Template.bind({})
-PrivateStorageMyInfoUpdateWhitelistValidationErrorForm.parameters = {
-  msw: [
-    ...buildEncryptModeMswRoutes({
+export const PrivateStorageSingpassFormAllTogglesEnabled = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
       status: FormStatus.Private,
-      authType: FormAuthType.MyInfo,
-      responseMode: FormResponseMode.Encrypt,
-      whitelistedSubmitterIds: {
-        isWhitelistEnabled: false,
-      },
+      authType: FormAuthType.SGID,
+      isSingleSubmission: true,
+      isSubmitterIdCollectionEnabled: true,
     }),
-    putFormWhitelistSettingSimulateCsvStringValidationError('12345'),
-  ],
-  docs: {
-    description: {
-      story:
-        'Uploading a valid CSV file should display a mock validation error. This story is used to simulate validation errors are displayed correctly in the UI.',
+  },
+}
+
+export const PublicEmailCorppassAllTogglesEnabledForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildEmailModeMswRoutes({
+      status: FormStatus.Public,
+      authType: FormAuthType.CP,
+      isSingleSubmission: true,
+      isSubmitterIdCollectionEnabled: true,
+    }),
+  },
+}
+
+export const PrivateStorageMyInfoPaymentEnabledForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEncryptModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+        responseMode: FormResponseMode.Encrypt,
+        payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
+      }),
+      ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+    ],
+  },
+}
+
+export const PublicStorageMyInfoPaymentEnabledForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEncryptModeMswRoutes({
+        status: FormStatus.Public,
+        authType: FormAuthType.MyInfo,
+        esrvcId: 'STORYBOOK-TEST',
+        responseMode: FormResponseMode.Encrypt,
+        payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
+      }),
+      ...createFormBuilderMocks({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+    ],
+  },
+}
+
+export const PrivateStorageSgidPaymentEnabledForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEncryptModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.SGID,
+        responseMode: FormResponseMode.Encrypt,
+        payments_channel: DUMMY_STRIPE_PAYMENT_CHANNEL_VALUE,
+      }),
+    ],
+  },
+}
+
+export const PrivateStorageSgidWhitelistEnabledForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEncryptModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.SGID,
+        responseMode: FormResponseMode.Encrypt,
+        whitelistedSubmitterIds: {
+          isWhitelistEnabled: true,
+        },
+      }),
+    ],
+  },
+}
+
+export const PrivateStorageMyInfoUpdateWhitelistValidationErrorForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...buildEncryptModeMswRoutes({
+        status: FormStatus.Private,
+        authType: FormAuthType.MyInfo,
+        responseMode: FormResponseMode.Encrypt,
+        whitelistedSubmitterIds: {
+          isWhitelistEnabled: false,
+        },
+      }),
+      putFormWhitelistSettingSimulateCsvStringValidationError('12345'),
+    ],
+    docs: {
+      description: {
+        story:
+          'Uploading a valid CSV file should display a mock validation error. This story is used to simulate validation errors are displayed correctly in the UI.',
+      },
     },
   },
 }
 
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+    msw: PrivateStorageSingpassFormAllTogglesEnabled.parameters.msw,
   },
-  chromatic: { viewports: [viewports.md] },
-  msw: PrivateStorageSingpassFormAllTogglesEnabled.parameters.msw,
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: PrivateStorageSingpassFormAllTogglesEnabled.parameters.msw,
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: PrivateStorageSingpassFormAllTogglesEnabled.parameters.msw,
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: [getAdminFormSettings({ delay: 'infinite' })],
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: [getAdminFormSettings({ delay: 'infinite' })],
+  },
 }

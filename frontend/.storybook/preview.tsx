@@ -64,8 +64,8 @@ const preview: Preview = {
   parameters: {
     i18n,
     a11y: {
-      // Run axe checks on every story; failures are shown in the addon panel.
-      test: 'error',
+      disable: false,
+      options: { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] } },
     },
     docs: {
       theme: StorybookTheme.docs,

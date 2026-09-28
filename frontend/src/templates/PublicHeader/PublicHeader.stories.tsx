@@ -1,5 +1,5 @@
 import { Button } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BxsHelpCircle } from '~assets/icons/BxsHelpCircle'
 import {
@@ -39,17 +39,19 @@ export default {
   args: DEFAULT_ARGS,
 } as Meta
 
-const Template: Story<PublicHeaderProps> = (args) => <PublicHeader {...args} />
-export const Default = Template.bind({})
+export const Default = {}
 
-export const WithoutCTA = Template.bind({})
-WithoutCTA.args = {
-  ...DEFAULT_ARGS,
-  ctaElement: undefined,
+export const WithoutCTA = {
+  args: {
+    ...DEFAULT_ARGS,
+    ctaElement: undefined,
+  },
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const Mobile = {
+  parameters: getMobileViewParameters(),
+}
 
-export const Tablet = Template.bind({})
-Tablet.parameters = getTabletViewParameters()
+export const Tablet = {
+  parameters: getTabletViewParameters(),
+}

@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { DateString } from '~shared/types/generic'
 
@@ -24,31 +24,32 @@ export default {
   },
 } as Meta<AdminFormNavbarProps>
 
-const Template: Story<AdminFormNavbarProps> = (args) => (
-  <AdminFormNavbar {...args} />
-)
-export const DefaultEditor = Template.bind({})
+export const DefaultEditor = {}
 
-export const DefaultViewOnly = Template.bind({})
-DefaultViewOnly.args = {
-  formInfo: MOCK_FORM,
-  viewOnly: true,
-  previewFormLink: '/test',
-}
-
-export const Skeleton = Template.bind({})
-Skeleton.args = {
-  formInfo: undefined,
-  previewFormLink: '/test',
-}
-
-export const Mobile = Template.bind({})
-Mobile.args = {
-  formInfo: {
-    ...MOCK_FORM,
-    title:
-      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+export const DefaultViewOnly = {
+  args: {
+    formInfo: MOCK_FORM,
+    viewOnly: true,
+    previewFormLink: '/test',
   },
-  previewFormLink: '/test',
 }
-Mobile.parameters = getMobileViewParameters()
+
+export const Skeleton = {
+  args: {
+    formInfo: undefined,
+    previewFormLink: '/test',
+  },
+}
+
+export const Mobile = {
+  args: {
+    formInfo: {
+      ...MOCK_FORM,
+      title:
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    },
+    previewFormLink: '/test',
+  },
+
+  parameters: getMobileViewParameters(),
+}

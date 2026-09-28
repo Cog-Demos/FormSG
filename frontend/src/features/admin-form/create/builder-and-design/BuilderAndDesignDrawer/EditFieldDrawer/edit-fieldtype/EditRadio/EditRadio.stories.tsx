@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, RadioFieldBase } from '~shared/types'
 
@@ -35,30 +35,38 @@ interface StoryArgs {
   field: RadioFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditRadio field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithValues = Template.bind({})
-WithValues.args = {
-  field: {
-    ...DEFAULT_RADIO_FIELD,
-    title: 'Storybook Radio',
-    description: 'Some description',
-    fieldOptions: ['Option 1', 'Option 2', 'Option 3'],
-    othersRadioButton: true,
+export const WithValues = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_RADIO_FIELD,
+      title: 'Storybook Radio',
+      description: 'Some description',
+      fieldOptions: ['Option 1', 'Option 2', 'Option 3'],
+      othersRadioButton: true,
+    },
   },
 }
 
-export const Placeholders = Template.bind({})
-Placeholders.args = {
-  field: {
-    ...DEFAULT_RADIO_FIELD,
-    title: '',
-    description: '',
-    fieldOptions: [],
-    required: false,
+export const Placeholders = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_RADIO_FIELD,
+      title: '',
+      description: '',
+      fieldOptions: [],
+      required: false,
+    },
   },
 }

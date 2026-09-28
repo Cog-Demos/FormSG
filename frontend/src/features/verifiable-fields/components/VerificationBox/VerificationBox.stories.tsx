@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -17,37 +17,40 @@ export default {
   },
 } as Meta<VerificationBoxProps>
 
-const Template: Story<VerificationBoxProps> = (args) => (
-  <VerificationBox {...args} />
-)
-export const MobileVerificationBox = Template.bind({})
-MobileVerificationBox.args = {
-  fieldType: BasicField.Mobile,
-}
-
-export const MobileVerificationBoxMobile = Template.bind({})
-MobileVerificationBoxMobile.args = {
-  fieldType: BasicField.Mobile,
-}
-MobileVerificationBoxMobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const MobileVerificationBox = {
+  args: {
+    fieldType: BasicField.Mobile,
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const EmailVerificationBox = Template.bind({})
-EmailVerificationBox.args = {
-  fieldType: BasicField.Email,
-}
-
-export const EmailVerificationBoxMobile = Template.bind({})
-EmailVerificationBoxMobile.args = {
-  fieldType: BasicField.Email,
-}
-EmailVerificationBoxMobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const MobileVerificationBoxMobile = {
+  args: {
+    fieldType: BasicField.Mobile,
   },
-  chromatic: { viewports: [viewports.xs] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const EmailVerificationBox = {
+  args: {
+    fieldType: BasicField.Email,
+  },
+}
+
+export const EmailVerificationBoxMobile = {
+  args: {
+    fieldType: BasicField.Email,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }

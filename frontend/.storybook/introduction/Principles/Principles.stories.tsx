@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { StoryObj, Meta, StoryFn } from '@storybook/react'
 
 import { Principles as Component } from './Principles'
 
@@ -10,5 +10,7 @@ export default {
   },
 } as Meta
 
-export const Principles: Story = () => <Component />
-Principles.storyName = 'Guiding principles'
+export const Principles: StoryObj = {
+  render: () => <Component />,
+  name: 'Guiding principles',
+}

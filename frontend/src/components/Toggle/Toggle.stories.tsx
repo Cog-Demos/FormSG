@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { VStack } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { StoryObj, Meta, StoryFn } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -11,7 +11,7 @@ export default {
   title: 'Components/Toggle',
 } as Meta
 
-const AllToggleStates: Story<ToggleProps> = (args) => {
+const AllToggleStates: StoryFn<ToggleProps> = (args) => {
   return (
     <VStack align="left" w="50%">
       <Toggle
@@ -76,29 +76,33 @@ const AllToggleStates: Story<ToggleProps> = (args) => {
   )
 }
 
-export const ToggleStates = AllToggleStates.bind({})
-ToggleStates.storyName = 'All states'
+export const ToggleStates = {
+  render: AllToggleStates,
+  name: 'All states',
+}
 
-export const Playground: Story<ToggleProps> = (args) => {
-  const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
-  const { register, handleSubmit } = useForm()
-  const onSubmit = (data: unknown) => alert(JSON.stringify(data))
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <VStack align="left" w="30%">
-        {labels.map((l, idx) => (
-          <Toggle
-            key={idx}
-            {...args}
-            {...register(l)}
-            label={l}
-            description={`${l} description`}
-          />
-        ))}
-      </VStack>
-      <Button mt="1rem" type="submit">
-        Submit
-      </Button>
-    </form>
-  )
+export const Playground: StoryObj<ToggleProps> = {
+  render: (args) => {
+    const labels = ['Toggle 1', 'Toggle 2', 'Toggle 3']
+    const { register, handleSubmit } = useForm()
+    const onSubmit = (data: unknown) => alert(JSON.stringify(data))
+    return (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <VStack align="left" w="30%">
+          {labels.map((l, idx) => (
+            <Toggle
+              key={idx}
+              {...args}
+              {...register(l)}
+              label={l}
+              description={`${l} description`}
+            />
+          ))}
+        </VStack>
+        <Button mt="1rem" type="submit">
+          Submit
+        </Button>
+      </form>
+    )
+  },
 }
