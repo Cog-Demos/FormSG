@@ -9,7 +9,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ChakraProvider } from '@chakra-ui/react'
 import type { Decorator, Preview } from '@storybook/react'
-import { initialize, mswLoader } from 'msw-storybook-addon'
+import { initialize, mswDecorator, mswLoader } from 'msw-storybook-addon'
 
 import { AuthProvider } from '~contexts/AuthContext'
 import * as dayjsUtils from '~utils/dayjs'
@@ -49,7 +49,7 @@ const withHelmet: Decorator = (storyFn) => (
 )
 
 const preview: Preview = {
-  decorators: [withReactQuery, withChakra, withHelmet],
+  decorators: [withReactQuery, withChakra, withHelmet, mswDecorator],
   loaders: [mswLoader],
   parameters: {
     i18n,
