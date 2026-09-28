@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import {
   WorkspaceSearchbar,
@@ -11,6 +11,8 @@ export default {
   decorators: [],
 } as Meta
 
-export const Default: Story<WorkspaceSearchbarProps> = (args) => {
-  return <WorkspaceSearchbar {...args} />
+export const Default: StoryObj<WorkspaceSearchbarProps> = {
+  render: (args) => {
+    return <WorkspaceSearchbar {...args} />
+  },
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 
@@ -11,7 +11,7 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<PaginationProps> = (args) => {
+const Template: StoryFn<PaginationProps> = (args) => {
   const [currentPage, setCurrentPage] = useState(args.currentPage)
 
   useEffect(() => {
@@ -26,102 +26,138 @@ const Template: Story<PaginationProps> = (args) => {
     />
   )
 }
-export const Default = Template.bind({})
-Default.args = {
-  currentPage: 5,
-  totalCount: 1000,
-  pageSize: 10,
-}
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  currentPage: 5,
-  totalCount: 1000,
-  pageSize: 10,
-  isDisabled: true,
-}
+export const Default = {
+  render: Template,
 
-export const SiblingCountEquals2 = Template.bind({})
-SiblingCountEquals2.args = {
-  currentPage: 31,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 2,
-}
-
-export const Exactly7Pages = Template.bind({})
-Exactly7Pages.args = {
-  currentPage: 1,
-  totalCount: 70,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const Exactly8Pages = Template.bind({})
-Exactly8Pages.args = {
-  currentPage: 1,
-  totalCount: 80,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const LessThan7Pages = Template.bind({})
-LessThan7Pages.args = {
-  currentPage: 1,
-  totalCount: 60,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const StartOf100Pages = Template.bind({})
-StartOf100Pages.args = {
-  currentPage: 1,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const EndOf100Pages = Template.bind({})
-EndOf100Pages.args = {
-  currentPage: 100,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const MiddleOf100Pages = Template.bind({})
-MiddleOf100Pages.args = {
-  currentPage: 31,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 1,
-}
-
-export const Mobile = Template.bind({})
-Mobile.args = {
-  currentPage: 31,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 1,
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    currentPage: 5,
+    totalCount: 1000,
+    pageSize: 10,
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const MobileDisabled = Template.bind({})
-MobileDisabled.args = {
-  currentPage: 31,
-  totalCount: 1000,
-  pageSize: 10,
-  siblingCount: 1,
-  isDisabled: true,
-}
-MobileDisabled.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Disabled = {
+  render: Template,
+
+  args: {
+    currentPage: 5,
+    totalCount: 1000,
+    pageSize: 10,
+    isDisabled: true,
   },
-  chromatic: { viewports: [viewports.xs] },
+}
+
+export const SiblingCountEquals2 = {
+  render: Template,
+
+  args: {
+    currentPage: 31,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 2,
+  },
+}
+
+export const Exactly7Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 1,
+    totalCount: 70,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const Exactly8Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 1,
+    totalCount: 80,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const LessThan7Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 1,
+    totalCount: 60,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const StartOf100Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 1,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const EndOf100Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 100,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const MiddleOf100Pages = {
+  render: Template,
+
+  args: {
+    currentPage: 31,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+}
+
+export const Mobile = {
+  render: Template,
+
+  args: {
+    currentPage: 31,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 1,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const MobileDisabled = {
+  render: Template,
+
+  args: {
+    currentPage: 31,
+    totalCount: 1000,
+    pageSize: 10,
+    siblingCount: 1,
+    isDisabled: true,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }

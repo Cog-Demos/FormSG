@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -41,7 +41,7 @@ interface StoryNricFieldProps extends NricFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryNricFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryNricFieldProps> = ({ defaultValue, ...args }) => {
   const formMethods = useForm({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -76,25 +76,37 @@ const Template: Story<StoryNricFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  defaultValue: '',
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '',
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const ValidationInvalidNric = Template.bind({})
-ValidationInvalidNric.args = {
-  schema: baseSchema,
-  defaultValue: 'S0000002Z',
+export const ValidationInvalidNric = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: 'S0000002Z',
+  },
 }
 
-export const ValidationValidNric = Template.bind({})
-ValidationValidNric.args = {
-  schema: baseSchema,
-  defaultValue: 'S0000001I',
+export const ValidationValidNric = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: 'S0000001I',
+  },
 }

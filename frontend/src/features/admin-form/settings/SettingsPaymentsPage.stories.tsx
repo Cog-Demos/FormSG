@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormResponseMode, FormSettings } from '~shared/types'
 
@@ -25,24 +25,31 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsPaymentsPage />
-export const IsSingleSubmissionEnabledWithoutEmailNotifications = Template.bind(
-  {},
-)
-IsSingleSubmissionEnabledWithoutEmailNotifications.parameters = {
-  msw: buildEncryptModeMswRoutes({ isSingleSubmission: true, emails: [] }),
+const Template: StoryFn = () => <SettingsPaymentsPage />
+
+export const IsSingleSubmissionEnabledWithoutEmailNotifications = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({ isSingleSubmission: true, emails: [] }),
+  },
 }
 
-export const IsSingleSubmissionEnabledWithEmailNotifications = Template.bind({})
-IsSingleSubmissionEnabledWithEmailNotifications.parameters = {
-  msw: buildEncryptModeMswRoutes({
-    isSingleSubmission: true,
-    emails: ['dummy@dummy.com'],
-  }),
+export const IsSingleSubmissionEnabledWithEmailNotifications = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({
+      isSingleSubmission: true,
+      emails: ['dummy@dummy.com'],
+    }),
+  },
 }
 
-export const IsSingleSubmissionDisabledWithoutEmailNotifications =
-  Template.bind({})
-IsSingleSubmissionDisabledWithoutEmailNotifications.parameters = {
-  msw: buildEncryptModeMswRoutes({ isSingleSubmission: false, emails: [] }),
+export const IsSingleSubmissionDisabledWithoutEmailNotifications = {
+  render: Template,
+
+  parameters: {
+    msw: buildEncryptModeMswRoutes({ isSingleSubmission: false, emails: [] }),
+  },
 }

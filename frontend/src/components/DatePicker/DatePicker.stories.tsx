@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { getMobileViewParameters, mockDateDecorator } from '~utils/storybook'
 
@@ -13,30 +13,34 @@ export default {
   },
 } as Meta<DatePickerProps>
 
-const Template: Story<DatePickerProps> = (args) => <DatePicker {...args} />
-export const Default = Template.bind({})
+export const Default = {}
 
-export const DatePickerWithValue = Template.bind({})
-DatePickerWithValue.args = {
-  defaultValue: new Date('2001-01-01'),
+export const DatePickerWithValue = {
+  args: {
+    defaultValue: new Date('2001-01-01'),
+  },
 }
 
-export const DatePickerDisallowManualInput = Template.bind({})
-DatePickerDisallowManualInput.args = {
-  allowManualInput: false,
-  defaultValue: new Date('2021-09-13'),
+export const DatePickerDisallowManualInput = {
+  args: {
+    allowManualInput: false,
+    defaultValue: new Date('2021-09-13'),
+  },
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
-
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  defaultValue: new Date('2021-09-13'),
-  isDisabled: true,
+export const Mobile = {
+  parameters: getMobileViewParameters(),
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
+export const Prefilled = {
+  args: {
+    defaultValue: new Date('2021-09-13'),
+    isDisabled: true,
+  },
+}
+
+export const Error = {
+  args: {
+    isInvalid: true,
+  },
 }

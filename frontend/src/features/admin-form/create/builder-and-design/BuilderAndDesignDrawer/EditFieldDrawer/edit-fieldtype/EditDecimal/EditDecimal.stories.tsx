@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, DecimalFieldBase } from '~shared/types'
 
@@ -35,23 +35,29 @@ interface StoryArgs {
   field: DecimalFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditDecimal field={field} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  field: DEFAULT_DECIMAL_FIELD,
+export const Default = {
+  render: Template,
+
+  args: {
+    field: DEFAULT_DECIMAL_FIELD,
+  },
 }
 
-export const WithNumberValidation = Template.bind({})
-WithNumberValidation.args = {
-  field: {
-    ...DEFAULT_DECIMAL_FIELD,
-    validateByValue: true,
-    ValidationOptions: {
-      customMin: 3,
-      customMax: null,
+export const WithNumberValidation = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_DECIMAL_FIELD,
+      validateByValue: true,
+      ValidationOptions: {
+        customMin: 3,
+        customMax: null,
+      },
     },
   },
 }

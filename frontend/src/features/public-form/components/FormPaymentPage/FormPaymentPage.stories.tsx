@@ -1,7 +1,7 @@
 import React from 'react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
-import { FormColorTheme, PaymentType } from '~shared/types'
+import { FormColorTheme, FormPaymentsField, PaymentType } from '~shared/types'
 
 import { envHandlers } from '~/mocks/msw/handlers/env'
 import {
@@ -48,76 +48,83 @@ export default {
   },
 } as Meta
 
-const Template: (children: React.ReactElement) => Story = (children) => () => (
-  <PublicFormProvider formId="61540ece3d4a6e50ac0cc6ff" startTime={Date.now()}>
-    <PaymentStack>{children}</PaymentStack>
-  </PublicFormProvider>
-)
+const Template: (children: React.ReactElement) => StoryFn =
+  (children) => () => (
+    <PublicFormProvider
+      formId="61540ece3d4a6e50ac0cc6ff"
+      startTime={Date.now()}
+    >
+      <PaymentStack>{children}</PaymentStack>
+    </PublicFormProvider>
+  )
 
-export const PendingPaymentDetails = Template(
-  <FixedPaymentItemDetailsBlock
-    paymentItemName="Mock event registration"
-    paymentDescription="Mock event description"
-    paymentAmount={1000}
-    colorTheme={FormColorTheme.Blue}
-  />,
-).bind({})
-
-export const PaymentFailure = Template(
-  <CreatePaymentIntentFailureBlock submissionId="MOCK_SUBMISSION_ID" />,
-).bind({})
-
-export const GenericMessage = Template(
-  <GenericMessageBlockComponent
-    submissionId="MOCK_SUBMISSION_ID"
-    title="This is an example title"
-    subtitle="This is a subtitle. Read me here."
-  />,
-).bind({})
-
-export const CompleteWithoutReceipt = Template(
-  <StripeReceiptContainer
-    formId="61540ece3d4a6e50ac0cc6ff"
-    submissionId="MOCK_SUBMISSION_ID"
-    paymentId="MOCK_PAYMENT_ID"
-    amount={60}
-    products={[]}
-    paymentFieldsSnapshot={{
-      enabled: true,
-      name: 'productName',
-      gst_enabled: true,
-      payment_type: PaymentType.Variable,
-      min_amount: 50,
-      max_amount: 200,
-    }}
-    paymentDate={new Date(Date.now())}
-  />,
-).bind({})
-CompleteWithoutReceipt.parameters = {
-  msw: [
-    ...DEFAULT_MSW_HANDLERS,
-    getPaymentReceiptStatusResponse({ delay: 'infinite' }),
-  ],
+const MOCK_PAYMENT_FIELDS_SNAPSHOT: FormPaymentsField = {
+  enabled: true,
+  name: 'productName',
+  gst_enabled: true,
+  payment_type: PaymentType.Variable,
+  min_amount: 50,
+  max_amount: 200,
 }
 
-export const CompleteWithReceipt = Template(
-  <StripeReceiptContainer
-    formId="61540ece3d4a6e50ac0cc6ff"
-    submissionId="MOCK_SUBMISSION_ID"
-    paymentId="MOCK_PAYMENT_ID"
-    amount={60}
-    products={[]}
-    paymentFieldsSnapshot={{
-      enabled: true,
-      name: 'productName',
-      gst_enabled: true,
-      payment_type: PaymentType.Variable,
-      min_amount: 50,
-      max_amount: 200,
-    }}
-    paymentDate={new Date(Date.now())}
-  />,
-).bind({})
-CompleteWithReceipt.parameters = {
-  msw: [...DEFAULT_MSW_HANDLERS, getPaymentReceiptStatusResponse()],
+export const PendingPaymentDetails: StoryObj = {
+  render: Template(
+    <FixedPaymentItemDetailsBlock
+      paymentItemName="Mock event registration"
+      paymentDescription="Mock event description"
+      paymentAmount={1000}
+      colorTheme={FormColorTheme.Blue}
+    />,
+  ),
+}
+
+export const PaymentFailure: StoryObj = {
+  render: Template(
+    <CreatePaymentIntentFailureBlock submissionId="MOCK_SUBMISSION_ID" />,
+  ),
+}
+
+export const GenericMessage: StoryObj = {
+  render: Template(
+    <GenericMessageBlockComponent
+      submissionId="MOCK_SUBMISSION_ID"
+      title="This is an example title"
+      subtitle="This is a subtitle. Read me here."
+    />,
+  ),
+}
+
+export const CompleteWithoutReceipt: StoryObj = {
+  render: Template(
+    <StripeReceiptContainer
+      formId="61540ece3d4a6e50ac0cc6ff"
+      submissionId="MOCK_SUBMISSION_ID"
+      paymentId="MOCK_PAYMENT_ID"
+      amount={60}
+      products={[]}
+      paymentFieldsSnapshot={MOCK_PAYMENT_FIELDS_SNAPSHOT}
+    />,
+  ),
+  parameters: {
+    msw: [
+      ...DEFAULT_MSW_HANDLERS,
+      getPaymentReceiptStatusResponse({ delay: 'infinite' }),
+    ],
+  },
+}
+
+export const CompleteWithReceipt: StoryObj = {
+  render: Template(
+    <StripeReceiptContainer
+      formId="61540ece3d4a6e50ac0cc6ff"
+      submissionId="MOCK_SUBMISSION_ID"
+      paymentId="MOCK_PAYMENT_ID"
+      amount={60}
+      products={[]}
+      paymentFieldsSnapshot={MOCK_PAYMENT_FIELDS_SNAPSHOT}
+    />,
+  ),
+  parameters: {
+    msw: [...DEFAULT_MSW_HANDLERS, getPaymentReceiptStatusResponse()],
+  },
 }

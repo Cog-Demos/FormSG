@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { DecoratorFn, Meta, Story } from '@storybook/react'
+import { Decorator, Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -29,7 +29,7 @@ import {
   VerifiableMobileFieldSchema,
 } from './VerifiableMobileField'
 
-const MockProviders: DecoratorFn = (storyFn) => {
+const MockProviders: Decorator = (storyFn) => {
   return (
     <PublicFormContext.Provider
       value={
@@ -83,7 +83,10 @@ export default {
   },
 } as Meta<StoryMobileFieldProps>
 
-const Template: Story<StoryMobileFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryMobileFieldProps> = ({
+  defaultValue,
+  ...args
+}) => {
   const formMethods = useForm<VerifiableFieldInput>({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -125,23 +128,33 @@ const Template: Story<StoryMobileFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const VerifiableMobileField = Template.bind({})
+export const VerifiableMobileField = {
+  render: Template,
+}
 
-export const PendingVerification = Template.bind({})
-PendingVerification.args = {
-  defaultValue: {
-    value: '+6598888888',
+export const PendingVerification = {
+  render: Template,
+
+  args: {
+    defaultValue: {
+      value: '+6598888888',
+    },
   },
 }
 
-export const PendingVerificationMobile = Template.bind({})
-PendingVerificationMobile.args = PendingVerification.args
-PendingVerificationMobile.parameters = getMobileViewParameters()
+export const PendingVerificationMobile = {
+  render: Template,
+  args: PendingVerification.args,
+  parameters: getMobileViewParameters(),
+}
 
-export const Verified = Template.bind({})
-Verified.args = {
-  defaultValue: {
-    value: '+6598888888',
-    signature: 'some-signature',
+export const Verified = {
+  render: Template,
+
+  args: {
+    defaultValue: {
+      value: '+6598888888',
+      signature: 'some-signature',
+    },
   },
 }

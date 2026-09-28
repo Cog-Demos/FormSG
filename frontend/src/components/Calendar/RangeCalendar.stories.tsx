@@ -1,5 +1,5 @@
 import { useControllableState } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { isWeekend } from 'date-fns'
 
 import { mockDateDecorator } from '~utils/storybook'
@@ -16,7 +16,7 @@ export default {
   },
 } as Meta<RangeCalendarProps>
 
-const RangeCalendarOnlyTemplate: Story<RangeCalendarProps> = ({
+const RangeCalendarOnlyTemplate: StoryFn<RangeCalendarProps> = ({
   value,
   onChange,
   ...args
@@ -35,19 +35,30 @@ const RangeCalendarOnlyTemplate: Story<RangeCalendarProps> = ({
   )
 }
 
-export const Default = RangeCalendarOnlyTemplate.bind({})
-
-export const RangeCalendarWithValue = RangeCalendarOnlyTemplate.bind({})
-RangeCalendarWithValue.args = {
-  value: [new Date('2001-01-01'), null],
+export const Default = {
+  render: RangeCalendarOnlyTemplate,
 }
 
-export const RangeCalendarWithRange = RangeCalendarOnlyTemplate.bind({})
-RangeCalendarWithRange.args = {
-  value: [new Date('2001-01-01'), new Date('2001-02-02')],
+export const RangeCalendarWithValue = {
+  render: RangeCalendarOnlyTemplate,
+
+  args: {
+    value: [new Date('2001-01-01'), null],
+  },
 }
 
-export const RangeCalendarWeekdayOnly = RangeCalendarOnlyTemplate.bind({})
-RangeCalendarWeekdayOnly.args = {
-  isDateUnavailable: (d) => isWeekend(d),
+export const RangeCalendarWithRange = {
+  render: RangeCalendarOnlyTemplate,
+
+  args: {
+    value: [new Date('2001-01-01'), new Date('2001-02-02')],
+  },
+}
+
+export const RangeCalendarWeekdayOnly = {
+  render: RangeCalendarOnlyTemplate,
+
+  args: {
+    isDateUnavailable: (d: Date) => isWeekend(d),
+  },
 }
