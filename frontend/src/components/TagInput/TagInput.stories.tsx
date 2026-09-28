@@ -47,7 +47,7 @@ export const InvalidFieldWithInvalidTags = {
   args: {
     isInvalid: true,
     defaultValue: ['foo', 'bar', 'bazinvalid'],
-    tagValidation: (tag) => tag.length <= 3,
+    tagValidation: (tag: string) => tag.length <= 3,
   },
 }
 

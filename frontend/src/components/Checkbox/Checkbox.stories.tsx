@@ -85,7 +85,15 @@ export const CheckboxStates = {
   render: AllStates,
 }
 
-export const Playground: StoryObj = {
+type PlaygroundArgs = CheckboxProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+  othersInputName: string
+  othersCheckboxName: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   render: ({
     name = 'checkbox',
     othersInputName = 'others-input',
@@ -100,7 +108,7 @@ export const Playground: StoryObj = {
       formState: { errors, isDirty },
       control,
       trigger,
-    } = useForm()
+    } = useForm<Record<string, string>>()
     const isOthersChecked = useWatch({
       name: othersCheckboxName,
       control,

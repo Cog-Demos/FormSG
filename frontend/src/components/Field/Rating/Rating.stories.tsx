@@ -218,7 +218,13 @@ export const Tablet = {
   },
 }
 
-export const Playground: StoryObj = {
+type PlaygroundArgs = RatingProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   render: ({
     name,
     label,
@@ -228,7 +234,7 @@ export const Playground: StoryObj = {
     numberOfRatings,
     ...args
   }) => {
-    const { handleSubmit, control } = useForm()
+    const { handleSubmit, control } = useForm<Record<string, number>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
     const {
       field,
@@ -258,10 +264,11 @@ export const Playground: StoryObj = {
             numberOfRatings={numberOfRatings}
             {...args}
             isDisabled={isDisabled}
+            isRequired={isRequired}
             {...field}
           />
           <FormErrorMessage>
-            {errors[name] && errors[name].message}
+            {errors[name]?.message}
           </FormErrorMessage>
         </FormControl>
         <Button type="submit" colorScheme={args.colorScheme}>

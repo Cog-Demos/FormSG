@@ -1,5 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react'
 
+import { SeenFlags } from '~shared/types/user'
+
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 
 import {
@@ -66,7 +68,7 @@ export const WhatsNewFeatureNotificationShown = {
         delay: 0,
         mockUser: {
           ...MOCK_USER,
-          flags: {},
+          flags: new Map(),
         },
       }),
     ],
@@ -80,7 +82,9 @@ export const WhatsNewFeatureNotificationNotShown = {
         delay: 0,
         mockUser: {
           ...MOCK_USER,
-          flags: { lastSeenFeatureUpdateVersion: FEATURE_UPDATE_LIST.version },
+          flags: new Map([
+            [SeenFlags.LastSeenFeatureUpdateVersion, FEATURE_UPDATE_LIST.version],
+          ]),
         },
       }),
     ],
@@ -95,7 +99,7 @@ export const WhatsNewFeatureMobileNotificationShown = {
         delay: 0,
         mockUser: {
           ...MOCK_USER,
-          flags: {},
+          flags: new Map(),
         },
       }),
     ],

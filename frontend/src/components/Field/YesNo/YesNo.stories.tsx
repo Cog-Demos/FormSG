@@ -11,7 +11,7 @@ import { StoryObj, Meta, StoryFn } from '@storybook/react'
 import { viewports } from '~utils/storybook'
 import Button from '~components/Button'
 
-import { YesNo, YesNoProps } from './YesNo'
+import { YesNo, YesNoOptionValue, YesNoProps } from './YesNo'
 
 export default {
   title: 'Components/Field/YesNo',
@@ -110,13 +110,19 @@ export const Tablet = {
   },
 }
 
-export const Playground: StoryObj = {
+type PlaygroundArgs = YesNoProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   render: ({ name, label, isDisabled, isRequired, ...args }) => {
     const {
       handleSubmit,
       control,
       formState: { errors },
-    } = useForm()
+    } = useForm<Record<string, YesNoOptionValue>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -141,7 +147,7 @@ export const Playground: StoryObj = {
             )}
           />
           <FormErrorMessage>
-            {errors[name] && errors[name].message}
+            {errors[name]?.message}
           </FormErrorMessage>
         </FormControl>
         <Button type="submit">Submit</Button>

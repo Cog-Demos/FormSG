@@ -4,7 +4,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-} from '@chakra-ui/form-control'
+} from '@chakra-ui/react'
 import { StoryObj, Meta, StoryFn } from '@storybook/react'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 
@@ -76,13 +76,20 @@ export const Disabled = {
   },
 }
 
-export const Playground: StoryObj = {
+export type PlaygroundArgs = PhoneNumberInputProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+  defaultValue?: string
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   render: ({ name, label, isDisabled, isRequired, defaultValue, ...args }) => {
     const {
       handleSubmit,
       formState: { errors },
       control,
-    } = useForm()
+    } = useForm<Record<string, string>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -110,7 +117,7 @@ export const Playground: StoryObj = {
           />
 
           <FormErrorMessage>
-            {errors[name] && errors[name].message}
+            {errors[name]?.message}
           </FormErrorMessage>
         </FormControl>
         <Button variant="solid" type="submit">

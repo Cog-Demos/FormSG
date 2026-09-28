@@ -99,7 +99,7 @@ const PlaygroundTemplate: StoryFn = ({
     formState: { errors },
     register,
     getValues,
-  } = useForm()
+  } = useForm<Record<string, string>>()
   const othersInputError: FieldError | undefined = get(errors, othersInputName)
 
   const othersInputValue = '!!FORMSG_INTERNAL_CHECKBOX_OTHERS_VALUE!!'

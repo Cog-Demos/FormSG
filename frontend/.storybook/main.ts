@@ -1,3 +1,5 @@
+import { resolve } from 'node:path'
+
 import type { StorybookConfig } from '@storybook/react-vite'
 import { mergeConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
@@ -36,9 +38,21 @@ const config: StorybookConfig = {
   viteFinal: async (viteConfig) =>
     mergeConfig(viteConfig, {
       plugins: [
-        tsconfigPaths({ projects: ['../tsconfig.json'] }),
-        svgr({ include: '**/*.svg?react' }),
+        tsconfigPaths({
+          projects: [resolve(__dirname, '../tsconfig.json')],
+        }),
+        svgr({
+          include: '**/*.svg',
+          svgrOptions: { exportType: 'named', namedExport: 'ReactComponent' },
+        }),
       ],
+      resolve: {
+        // Removed packages still imported by app code; drop once TICKET-E lands.
+        alias: [
+          { find: 'react-beautiful-dnd', replacement: '@hello-pangea/dnd' },
+          { find: 'p-queue/dist', replacement: 'p-queue' },
+        ],
+      },
       server: {
         fs: {
           allow: ['..', '../../shared'],

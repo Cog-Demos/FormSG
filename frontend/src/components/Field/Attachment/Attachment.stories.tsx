@@ -77,7 +77,7 @@ export const Playground: StoryObj<AttachmentProps> = {
       setError,
       clearErrors,
       formState: { errors },
-    } = useForm()
+    } = useForm<Record<string, File>>()
 
     const isInvalid = !!errors?.[args.name]
 
@@ -120,7 +120,7 @@ export const Playground: StoryObj<AttachmentProps> = {
             control={control}
           />
           <FormErrorMessage>
-            {errors[args.name] && errors[args.name].message}
+            {errors[args.name]?.message}
           </FormErrorMessage>
         </FormControl>
         <Button type="submit">Submit</Button>

@@ -1,8 +1,7 @@
 import { MemoryRouter, Route } from 'react-router'
 import { Routes } from 'react-router-dom'
-import { expect } from '@storybook/jest'
-import { Meta, StoryFn } from '@storybook/react'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { FormResponseMode } from '~shared/types/form'
 
@@ -148,7 +147,7 @@ export const StorageForm = {
   },
 }
 
-export const StorageFormUnlocked = {
+export const StorageFormUnlocked: StoryObj = {
   render: Template,
   parameters: StorageForm.parameters,
 

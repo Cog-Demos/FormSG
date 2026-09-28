@@ -3,7 +3,7 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-} from '@chakra-ui/form-control'
+} from '@chakra-ui/react'
 import { StoryObj, Meta, StoryFn } from '@storybook/react'
 
 import Button from '../Button'
@@ -64,13 +64,19 @@ export const Disabled = {
   },
 }
 
-export const Playground: StoryObj = {
+type PlaygroundArgs = InputProps & {
+  name: string
+  label: string
+  isRequired?: boolean
+}
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   render: ({ name, label, isDisabled, isRequired, ...args }) => {
     const {
       handleSubmit,
       register,
       formState: { errors },
-    } = useForm()
+    } = useForm<Record<string, string>>()
     const onSubmit = (data: unknown) => alert(JSON.stringify(data))
 
     return (
@@ -91,7 +97,7 @@ export const Playground: StoryObj = {
             })}
           />
           <FormErrorMessage>
-            {errors[name] && errors[name].message}
+            {errors[name]?.message}
           </FormErrorMessage>
         </FormControl>
         <Button variant="solid" type="submit">

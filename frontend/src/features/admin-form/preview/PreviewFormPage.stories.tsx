@@ -1,6 +1,5 @@
-import { expect } from '@storybook/jest'
-import { Meta, StoryFn } from '@storybook/react'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import dedent from 'dedent'
 
 import { BasicField } from '~shared/types/field'
@@ -386,7 +385,7 @@ export const WithShowFieldLogic = {
   },
 }
 
-export const WithPreventSubmissionLogic = {
+export const WithPreventSubmissionLogic: StoryObj = {
   render: Template,
 
   parameters: {

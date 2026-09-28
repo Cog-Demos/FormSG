@@ -47,6 +47,6 @@ export const CalendarWeekdayOnly = {
   render: CalendarOnlyTemplate,
 
   args: {
-    isDateUnavailable: (d) => isWeekend(d),
+    isDateUnavailable: (d: Date) => isWeekend(d),
   },
 }

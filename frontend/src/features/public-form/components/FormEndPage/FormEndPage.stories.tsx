@@ -50,7 +50,7 @@ export const Default = {
       id: 'mockSubmissionId',
       timestamp: 1648545566989,
     },
-    handleSubmitFeedback: (inputs) => console.log(inputs),
+    handleSubmitFeedback: (inputs: unknown) => console.log(inputs),
   },
 }
 
