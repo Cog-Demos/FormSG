@@ -83,6 +83,15 @@ const config: StorybookConfig = {
       resolve: {
         // Removed packages still imported by app code; drop once TICKET-E lands.
         alias: [
+          // Modules under ../shared/node_modules can't resolve the polyfill
+          // shims from frontend/node_modules.
+          {
+            find: /^vite-plugin-node-polyfills\/shims\/(.*)$/,
+            replacement: resolve(
+              __dirname,
+              '../node_modules/vite-plugin-node-polyfills/shims/$1',
+            ),
+          },
           { find: 'react-beautiful-dnd', replacement: '@hello-pangea/dnd' },
           { find: 'p-queue/dist', replacement: 'p-queue' },
         ],
