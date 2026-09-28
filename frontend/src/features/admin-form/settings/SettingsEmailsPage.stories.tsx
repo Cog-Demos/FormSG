@@ -1,7 +1,8 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { PaymentChannel, PaymentType } from '~shared/types'
 import {
+  AdminFormDto,
   FormResponseMode,
   FormSettings,
   FormStatus,
@@ -75,7 +76,7 @@ const buildMswRoutes = ({
   mode,
   delay,
 }: {
-  overrides?: Partial<FormSettings>
+  overrides?: Partial<FormSettings> & Partial<AdminFormDto>
   mode?: FormResponseMode
   delay?: number | 'infinite'
 } = {}) => [
@@ -95,135 +96,165 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsEmailsPage />
+const Template: StoryFn = () => <SettingsEmailsPage />
 
-export const PrivateStorageForm = Template.bind({})
-PrivateStorageForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Encrypt,
-    overrides: {
-      status: FormStatus.Private,
-      emails: [], // has one email by default
-      ...PAYMENTS_DISABLED,
-    },
-  }),
-}
+export const PrivateStorageForm = {
+  render: Template,
 
-export const PrivateEmailForm = Template.bind({})
-PrivateEmailForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Email,
-    overrides: {
-      status: FormStatus.Private,
-    },
-  }),
-}
-
-export const PrivateMultiRespondentForm = Template.bind({})
-PrivateMultiRespondentForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Multirespondent,
-    overrides: {
-      status: FormStatus.Private,
-      emails: [],
-      stepsToNotify: [],
-      workflow: [
-        {
-          _id: 'field_id_1',
-          workflow_type: WorkflowType.Dynamic,
-          field: 'email_field_id',
-          edit: [],
-        },
-        {
-          _id: 'field_id_2',
-          workflow_type: WorkflowType.Static,
-          emails: [],
-          edit: [],
-        },
-      ],
-    },
-  }),
-}
-
-export const PublicForm = Template.bind({})
-PublicForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Encrypt,
-    overrides: {
-      status: FormStatus.Public,
-      emails: [],
-      ...PAYMENTS_DISABLED,
-    },
-  }),
-}
-
-export const PublicMultiRespondentForm = Template.bind({})
-PublicMultiRespondentForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Multirespondent,
-    overrides: {
-      status: FormStatus.Public,
-      emails: ['expected1@example.com', 'expected2@example.com'],
-      stepsToNotify: ['field_1_id'],
-      workflow: [
-        {
-          _id: 'field_1_id',
-          workflow_type: WorkflowType.Dynamic,
-          field: 'email_field_id',
-          edit: [],
-        },
-        {
-          _id: 'field_2_id',
-          workflow_type: WorkflowType.Static,
-          emails: [],
-          edit: [],
-        },
-      ],
-      ...PAYMENTS_DISABLED,
-    },
-  }),
-}
-
-export const PaymentForm = Template.bind({})
-PaymentForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Encrypt,
-    overrides: {
-      status: FormStatus.Private,
-      emails: [],
-      ...PAYMENTS_ENABLED,
-    },
-  }),
-}
-
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: buildMswRoutes({ delay: 'infinite' }),
-}
-
-export const NoEmailsAddedForm = Template.bind({})
-NoEmailsAddedForm.parameters = {
-  msw: buildMswRoutes({
-    mode: FormResponseMode.Encrypt,
-    overrides: {
-      status: FormStatus.Private,
-      emails: [],
-      ...PAYMENTS_DISABLED,
-    },
-  }),
-}
-
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  ...NoEmailsAddedForm,
-  ...getMobileViewParameters(),
-}
-
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  ...NoEmailsAddedForm,
-  viewport: {
-    defaultViewport: 'tablet',
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Encrypt,
+      overrides: {
+        status: FormStatus.Private,
+        emails: [], // has one email by default
+        ...PAYMENTS_DISABLED,
+      },
+    }),
   },
-  chromatic: { viewports: [viewports.md] },
+}
+
+export const PrivateEmailForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Email,
+      overrides: {
+        status: FormStatus.Private,
+      },
+    }),
+  },
+}
+
+export const PrivateMultiRespondentForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Multirespondent,
+      overrides: {
+        status: FormStatus.Private,
+        emails: [],
+        stepsToNotify: [],
+        workflow: [
+          {
+            _id: 'field_id_1',
+            workflow_type: WorkflowType.Dynamic,
+            field: 'email_field_id',
+            edit: [],
+          },
+          {
+            _id: 'field_id_2',
+            workflow_type: WorkflowType.Static,
+            emails: [],
+            edit: [],
+          },
+        ],
+      },
+    }),
+  },
+}
+
+export const PublicForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Encrypt,
+      overrides: {
+        status: FormStatus.Public,
+        emails: [],
+        ...PAYMENTS_DISABLED,
+      },
+    }),
+  },
+}
+
+export const PublicMultiRespondentForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Multirespondent,
+      overrides: {
+        status: FormStatus.Public,
+        emails: ['expected1@example.com', 'expected2@example.com'],
+        stepsToNotify: ['field_1_id'],
+        workflow: [
+          {
+            _id: 'field_1_id',
+            workflow_type: WorkflowType.Dynamic,
+            field: 'email_field_id',
+            edit: [],
+          },
+          {
+            _id: 'field_2_id',
+            workflow_type: WorkflowType.Static,
+            emails: [],
+            edit: [],
+          },
+        ],
+        ...PAYMENTS_DISABLED,
+      },
+    }),
+  },
+}
+
+export const PaymentForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Encrypt,
+      overrides: {
+        status: FormStatus.Private,
+        emails: [],
+        ...PAYMENTS_ENABLED,
+      },
+    }),
+  },
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({ delay: 'infinite' }),
+  },
+}
+
+export const NoEmailsAddedForm = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      mode: FormResponseMode.Encrypt,
+      overrides: {
+        status: FormStatus.Private,
+        emails: [],
+        ...PAYMENTS_DISABLED,
+      },
+    }),
+  },
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    ...NoEmailsAddedForm,
+    ...getMobileViewParameters(),
+  },
+}
+
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    ...NoEmailsAddedForm,
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
 }

@@ -1,15 +1,17 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
 
 import { DateString } from '~shared/types/generic'
+
+import { createMockForm } from '~/mocks/msw/handlers/admin-form/form'
 
 import { getMobileViewParameters, StoryRouter } from '~utils/storybook'
 
 import { AdminFormNavbar, AdminFormNavbarProps } from './AdminFormNavbar'
 
-const MOCK_FORM: AdminFormNavbarProps['formInfo'] = {
+const MOCK_FORM: AdminFormNavbarProps['formInfo'] = createMockForm({
   title: 'Storybook Test Form',
   lastModified: '2020-01-01T00:00:00.000Z' as DateString,
-} as const
+}).form
 
 export default {
   title: 'Features/AdminForm/AdminFormNavbar',
@@ -24,31 +26,32 @@ export default {
   },
 } as Meta<AdminFormNavbarProps>
 
-const Template: Story<AdminFormNavbarProps> = (args) => (
-  <AdminFormNavbar {...args} />
-)
-export const DefaultEditor = Template.bind({})
+export const DefaultEditor = {}
 
-export const DefaultViewOnly = Template.bind({})
-DefaultViewOnly.args = {
-  formInfo: MOCK_FORM,
-  viewOnly: true,
-  previewFormLink: '/test',
-}
-
-export const Skeleton = Template.bind({})
-Skeleton.args = {
-  formInfo: undefined,
-  previewFormLink: '/test',
-}
-
-export const Mobile = Template.bind({})
-Mobile.args = {
-  formInfo: {
-    ...MOCK_FORM,
-    title:
-      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+export const DefaultViewOnly = {
+  args: {
+    formInfo: MOCK_FORM,
+    viewOnly: true,
+    previewFormLink: '/test',
   },
-  previewFormLink: '/test',
 }
-Mobile.parameters = getMobileViewParameters()
+
+export const Skeleton = {
+  args: {
+    formInfo: undefined,
+    previewFormLink: '/test',
+  },
+}
+
+export const Mobile = {
+  args: {
+    formInfo: {
+      ...MOCK_FORM,
+      title:
+        'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    },
+    previewFormLink: '/test',
+  },
+
+  parameters: getMobileViewParameters(),
+}

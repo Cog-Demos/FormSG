@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   ModalProps,
 } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { fullScreenDecorator, viewports } from '~utils/storybook'
 import Button from '~components/Button'
@@ -39,7 +39,7 @@ const generateLorem = (numParagraph = 1) => {
   return Array(numParagraph).fill(para).join('\n\n')
 }
 
-const Template: Story<StoryModalProps> = ({ bodyContent, ...args }) => {
+const Template: StoryFn<StoryModalProps> = ({ bodyContent, ...args }) => {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   return (
     <>
@@ -66,28 +66,40 @@ const Template: Story<StoryModalProps> = ({ bodyContent, ...args }) => {
   )
 }
 
-export const BasicUsage = Template.bind({})
-
-export const InsideScroll = Template.bind({})
-InsideScroll.args = {
-  scrollBehavior: 'inside',
-  bodyContent: generateLorem(5),
+export const BasicUsage = {
+  render: Template,
 }
 
-export const FullWithLongContent = Template.bind({})
-FullWithLongContent.args = {
-  size: 'full',
-  bodyContent: generateLorem(30),
-}
+export const InsideScroll = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  size: 'mobile',
-  bodyContent: generateLorem(5),
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    scrollBehavior: 'inside',
+    bodyContent: generateLorem(5),
   },
-  chromatic: { viewports: [viewports.xs] },
+}
+
+export const FullWithLongContent = {
+  render: Template,
+
+  args: {
+    size: 'full',
+    bodyContent: generateLorem(30),
+  },
+}
+
+export const Mobile = {
+  render: Template,
+
+  args: {
+    size: 'mobile',
+    bodyContent: generateLorem(5),
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }

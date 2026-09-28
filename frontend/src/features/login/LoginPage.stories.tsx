@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { authHandlers, otpGenerationResponse } from '~/mocks/msw/handlers/auth'
 
@@ -23,26 +23,38 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <LoginPage />
-export const Desktop = Template.bind({})
+const Template: StoryFn = () => <LoginPage />
 
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
-  },
-  chromatic: { viewports: [viewports.md] },
+export const Desktop = {
+  render: Template,
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const InvalidAgencyResponse = Template.bind({})
-InvalidAgencyResponse.parameters = {
-  msw: [otpGenerationResponse({ isInvalid: true }), ...authHandlers.slice(1)],
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const InvalidAgencyResponse = {
+  render: Template,
+
+  parameters: {
+    msw: [otpGenerationResponse({ isInvalid: true }), ...authHandlers.slice(1)],
+  },
 }

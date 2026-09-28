@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { AttachmentSize, BasicField, FormFieldDto } from '~shared/types/field'
 import {
@@ -129,65 +129,93 @@ const FORM_WITH_LOGIC: Partial<AdminFormDto> = {
   form_logics: [if_12_show_34, if_12_preventsubmit],
 }
 
-const Template: Story = () => <CreatePageLogicTab />
-export const NoLogic = Template.bind({})
-NoLogic.parameters = {
-  msw: buildMswRoutes({ form_logics: [] }),
-}
+const Template: StoryFn = () => <CreatePageLogicTab />
 
-export const MobileNoLogic = Template.bind({})
-MobileNoLogic.parameters = {
-  msw: buildMswRoutes({ form_logics: [] }),
-  viewport: {
-    defaultViewport: 'mobile1',
+export const NoLogic = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({ form_logics: [] }),
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const WithLogic = Template.bind({})
-WithLogic.parameters = {
-  msw: buildMswRoutes(FORM_WITH_LOGIC),
-}
+export const MobileNoLogic = {
+  render: Template,
 
-export const MobileWithLogic = Template.bind({})
-MobileWithLogic.parameters = {
-  msw: buildMswRoutes(FORM_WITH_LOGIC),
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    msw: buildMswRoutes({ form_logics: [] }),
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const ErrorIfDeleted = Template.bind({})
-ErrorIfDeleted.parameters = {
-  msw: buildMswRoutes({
-    form_fields: [form_field_2, form_field_3, form_field_4],
-    form_logics: [if_12_show_34, if_12_preventsubmit],
-  }),
+export const WithLogic = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes(FORM_WITH_LOGIC),
+  },
 }
 
-export const ErrorShowSomeDeleted = Template.bind({})
-ErrorShowSomeDeleted.parameters = {
-  msw: buildMswRoutes({
-    form_fields: [form_field_1, form_field_2, form_field_4],
-    form_logics: [if_12_show_34, if_12_preventsubmit],
-  }),
+export const MobileWithLogic = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes(FORM_WITH_LOGIC),
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-export const ErrorShowAllDeleted = Template.bind({})
-ErrorShowAllDeleted.parameters = {
-  msw: buildMswRoutes({
-    form_fields: [form_field_1, form_field_2],
-    form_logics: [if_12_show_34, if_12_preventsubmit],
-  }),
+export const ErrorIfDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      form_fields: [form_field_2, form_field_3, form_field_4],
+      form_logics: [if_12_show_34, if_12_preventsubmit],
+    }),
+  },
 }
 
-export const ErrorAllDeleted = Template.bind({})
-ErrorAllDeleted.parameters = {
-  msw: buildMswRoutes({ form_logics: [if_12_show_34, if_12_preventsubmit] }),
+export const ErrorShowSomeDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      form_fields: [form_field_1, form_field_2, form_field_4],
+      form_logics: [if_12_show_34, if_12_preventsubmit],
+    }),
+  },
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: buildMswRoutes({}, 'infinite'),
+export const ErrorShowAllDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      form_fields: [form_field_1, form_field_2],
+      form_logics: [if_12_show_34, if_12_preventsubmit],
+    }),
+  },
+}
+
+export const ErrorAllDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({ form_logics: [if_12_show_34, if_12_preventsubmit] }),
+  },
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({}, 'infinite'),
+  },
 }
