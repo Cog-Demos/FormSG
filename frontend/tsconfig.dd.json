@@ -1,15 +1,16 @@
-// Config file for ts-loader in webpack.dd.config.js
+// Type-checks datadog-chunk.ts, a separate Vite entry (see vite.build.mts)
+// outside the app's tsconfig.json `include`.
 {
-    "compilerOptions": {
-      "outDir": "../../dist/frontend/static/js/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "target": "es2015",
-      "jsx": "react",
-      "allowJs": true,
-      "moduleResolution": "node"
-    },
-    "include": [
-      "datadog-chunk.ts"
-    ]
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": ["dom", "esnext"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": ["datadog-chunk.ts"]
 }
