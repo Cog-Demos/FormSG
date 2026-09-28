@@ -1,8 +1,8 @@
-import type { Opaque } from 'type-fest'
+import type { Tagged } from 'type-fest'
 import { z } from 'zod'
 import { DateString } from './generic'
 
-export type AgencyId = Opaque<string, 'AgencyId'>
+export type AgencyId = Tagged<string, 'AgencyId'>
 export const AgencyId = z.string() as unknown as z.Schema<AgencyId>
 
 // Base used for being referenced by schema/model in the backend.
