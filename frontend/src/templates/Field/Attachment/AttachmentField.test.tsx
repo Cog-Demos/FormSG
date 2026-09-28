@@ -1,8 +1,9 @@
-import { composeStories } from '@storybook/testing-react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { composeStories } from '@storybook/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import JSZip from 'jszip'
 import { merge } from 'lodash'
+import { describe, expect, it } from 'vitest'
 
 import { MB } from '~shared/constants/file'
 import { AttachmentSize } from '~shared/types/field'
@@ -174,7 +175,9 @@ describe('attachment validation', () => {
     // Arrange
     const user = userEvent.setup()
     const schema = ValidationRequired.args?.schema
-    render(<ValidationRequired />)
+    await act(async () => {
+      render(<ValidationRequired />)
+    })
     const input = screen.getByTestId(schema!._id) as HTMLInputElement
     const mockZip = async () => {
       const zip = new JSZip()
@@ -212,7 +215,9 @@ describe('attachment validation', () => {
     // Arrange
     const user = userEvent.setup()
     const schema = ValidationRequired.args?.schema
-    render(<ValidationRequired />)
+    await act(async () => {
+      render(<ValidationRequired />)
+    })
     const input = screen.getByTestId(schema!._id) as HTMLInputElement
     const submitButton = screen.getByRole('button', {
       name: /submit/i,
