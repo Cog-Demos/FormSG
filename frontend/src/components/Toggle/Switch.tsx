@@ -20,7 +20,6 @@ import {
   useMultiStyleConfig,
   usePrefersReducedMotion,
 } from '@chakra-ui/react'
-import { cx, dataAttr } from '@chakra-ui/utils'
 import { keyframes } from '@emotion/react'
 
 import { BxCheck, BxLockAlt, BxX } from '~/assets/icons'
@@ -156,7 +155,7 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
           as={ThumbIcon}
           animation={animation}
           __css={styles.icon}
-          data-checked={dataAttr(state.isChecked)}
+          data-checked={state.isChecked ? '' : undefined}
         />
       )
     }, [
@@ -170,7 +169,7 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
     return (
       <chakra.label
         {...getRootProps()}
-        className={cx('chakra-switch', props.className)}
+        className={['chakra-switch', props.className].filter(Boolean).join(' ')}
         __css={containerStyles}
       >
         <input className="chakra-switch__input" {...getInputProps({}, ref)} />
@@ -182,8 +181,8 @@ export const Switch = forwardRef<SwitchProps, 'input'>(
           <chakra.span
             __css={styles.thumb}
             className="chakra-switch__thumb"
-            data-checked={dataAttr(state.isChecked)}
-            data-hover={dataAttr(state.isHovered)}
+            data-checked={state.isChecked ? '' : undefined}
+            data-hover={state.isHovered ? '' : undefined}
           >
             {iconComponent}
           </chakra.span>

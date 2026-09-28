@@ -179,9 +179,7 @@ export const ColumnCell = ({
         // On desktop, errors are shown directly under the table field and should not
         // be shown in the individual column cells.
         isMobile ? (
-          <FormErrorMessage>
-            {get(errors, `${inputName}.message`)}
-          </FormErrorMessage>
+          <FormErrorMessage>{get(errors, inputName)?.message}</FormErrorMessage>
         ) : null
       }
     </FormControl>
