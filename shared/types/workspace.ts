@@ -1,6 +1,6 @@
-import { Opaque } from 'type-fest'
-import { FormId } from './form'
-import { UserId } from './user'
+import type { Opaque } from 'type-fest'
+import type { FormId } from './form'
+import type { UserId } from './user'
 
 export type WorkspaceId = Opaque<string, 'WorkspaceId'>
 
