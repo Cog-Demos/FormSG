@@ -29,22 +29,19 @@ RUN npm ci --legacy-peer-deps
 
 COPY . ./
 
-# --openssl-legacy-provider flag
-# A breaking change in the SSL provider was introduced in node 17. This caused
-# webpack 4 to break. This is an interim solution; we should investigate removing
-# this flag once angular has been removed and we have upgraded to CRA5 (which uses
-# webpack 5).
-# See also:
-# * https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported
-# * https://github.com/webpack/webpack/issues/14532#issuecomment-1304378535
 # These options are only used in the build stage, not the start stage.
-ENV NODE_OPTIONS="--max-old-space-size=4096 --openssl-legacy-provider"
-
-RUN npm run build
+ENV NODE_OPTIONS="--max-old-space-size=6144"
 
 ARG APP_VERSION
 ARG APP_URL
 ARG REPO_URL
+
+# Frontend build-time env (Vite inlines VITE_APP_* via import.meta.env).
+# Remaining VITE_APP_* values come from frontend/.env written by the workflow.
+ENV VITE_APP_VERSION=$APP_VERSION
+ENV VITE_APP_URL=$APP_URL
+
+RUN npm run build
 
 # Upload datadog source maps from secret mount, id MUST be `id=dd_api_key` in the docker build command
 # Mount creates a file inside /run/secrets/dd_api_key, and source to load the environment variables
