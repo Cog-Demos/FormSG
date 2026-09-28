@@ -1,4 +1,7 @@
 import { Meta } from '@storybook/react'
+import { rest } from 'msw'
+
+import { SeenFlags } from '~shared/types/user'
 
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 
@@ -13,6 +16,12 @@ import {
 import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
 import { AdminNavBar } from './AdminNavBar'
+
+// `UserDto['flags']` is typed as a Map, but the API serialises it as a plain object.
+const getUserWithSeenFlags = (flags: Partial<Record<SeenFlags, number>>) =>
+  rest.get('/api/v3/user', (_req, res, ctx) =>
+    res(ctx.delay(0), ctx.status(200), ctx.json({ ...MOCK_USER, flags })),
+  )
 
 export default {
   title: 'App/AdminNavBar',
@@ -61,27 +70,15 @@ export const Tablet = {
 
 export const WhatsNewFeatureNotificationShown = {
   parameters: {
-    msw: [
-      getUser({
-        delay: 0,
-        mockUser: {
-          ...MOCK_USER,
-          flags: {},
-        },
-      }),
-    ],
+    msw: [getUserWithSeenFlags({})],
   },
 }
 
 export const WhatsNewFeatureNotificationNotShown = {
   parameters: {
     msw: [
-      getUser({
-        delay: 0,
-        mockUser: {
-          ...MOCK_USER,
-          flags: { lastSeenFeatureUpdateVersion: FEATURE_UPDATE_LIST.version },
-        },
+      getUserWithSeenFlags({
+        [SeenFlags.LastSeenFeatureUpdateVersion]: FEATURE_UPDATE_LIST.version,
       }),
     ],
   },
@@ -90,14 +87,6 @@ export const WhatsNewFeatureNotificationNotShown = {
 export const WhatsNewFeatureMobileNotificationShown = {
   parameters: {
     ...Mobile.parameters,
-    msw: [
-      getUser({
-        delay: 0,
-        mockUser: {
-          ...MOCK_USER,
-          flags: {},
-        },
-      }),
-    ],
+    msw: [getUserWithSeenFlags({})],
   },
 }
