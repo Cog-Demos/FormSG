@@ -1,6 +1,6 @@
 import { BiRadioCircleMarked } from 'react-icons/bi'
 import { SimpleGrid, Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { Tag, TagCloseButton, TagLeftIcon, TagProps, TagRightIcon } from './Tag'
 
@@ -10,46 +10,49 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<TagProps> = (args) => <Tag {...args} />
-
-export const Subtle = Template.bind({})
-Subtle.args = {
-  children: 'Subtle tag',
-  variant: 'subtle',
-}
-export const Solid = Template.bind({})
-Solid.args = {
-  children: 'Solid tag',
-  variant: 'solid',
-  colorScheme: 'secondary',
+export const Subtle = {
+  args: {
+    children: 'Subtle tag',
+    variant: 'subtle',
+  },
 }
 
-export const WithCloseButton = Template.bind({})
-WithCloseButton.args = {
-  children: (
-    <>
-      Solid tag
-      <TagCloseButton />
-    </>
-  ),
-  variant: 'subtle',
-  colorScheme: 'secondary',
+export const Solid = {
+  args: {
+    children: 'Solid tag',
+    variant: 'solid',
+    colorScheme: 'secondary',
+  },
 }
 
-export const WithLeftRightIcon = Template.bind({})
-WithLeftRightIcon.args = {
-  children: (
-    <>
-      <TagLeftIcon as={BiRadioCircleMarked} />
-      Solid tag
-      <TagRightIcon as={BiRadioCircleMarked} />
-    </>
-  ),
-  variant: 'solid',
-  colorScheme: 'secondary',
+export const WithCloseButton = {
+  args: {
+    children: (
+      <>
+        Solid tag
+        <TagCloseButton />
+      </>
+    ),
+    variant: 'subtle',
+    colorScheme: 'secondary',
+  },
 }
 
-const TemplateGroup: Story<TagProps> = (args) => (
+export const WithLeftRightIcon = {
+  args: {
+    children: (
+      <>
+        <TagLeftIcon as={BiRadioCircleMarked} />
+        Solid tag
+        <TagRightIcon as={BiRadioCircleMarked} />
+      </>
+    ),
+    variant: 'solid',
+    colorScheme: 'secondary',
+  },
+}
+
+const TemplateGroup: StoryFn<TagProps> = (args) => (
   <SimpleGrid
     columns={3}
     spacing={8}
@@ -74,14 +77,20 @@ const TemplateGroup: Story<TagProps> = (args) => (
   </SimpleGrid>
 )
 
-export const SubtleColours = TemplateGroup.bind({})
-SubtleColours.args = {
-  children: 'Subtle',
-  variant: 'subtle',
+export const SubtleColours = {
+  render: TemplateGroup,
+
+  args: {
+    children: 'Subtle',
+    variant: 'subtle',
+  },
 }
 
-export const SolidColours = TemplateGroup.bind({})
-SolidColours.args = {
-  children: 'Solid',
-  variant: 'solid',
+export const SolidColours = {
+  render: TemplateGroup,
+
+  args: {
+    children: 'Solid',
+    variant: 'solid',
+  },
 }

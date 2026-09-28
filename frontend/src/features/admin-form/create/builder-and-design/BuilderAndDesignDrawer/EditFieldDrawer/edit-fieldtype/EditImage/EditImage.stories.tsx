@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, ImageFieldBase } from '~shared/types'
 
@@ -44,19 +44,24 @@ export default {
   },
 } as Meta<EditFieldProps<ImageFieldBase>>
 
-const Template: Story<EditFieldProps<ImageFieldBase>> = ({ field }) => {
+const Template: StoryFn<EditFieldProps<ImageFieldBase>> = ({ field }) => {
   return <EditImage field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithUploadedImage = Template.bind({})
-WithUploadedImage.args = {
-  field: {
-    ...DEFAULT_IMAGE_FIELD,
-    url: 'not-used-for-this-drawer',
-    fileMd5Hash: 'random md5 hash',
-    name: 'mock-storybook-upload.jpg',
-    size: '1.99 MB',
+export const WithUploadedImage = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_IMAGE_FIELD,
+      url: 'not-used-for-this-drawer',
+      fileMd5Hash: 'random md5 hash',
+      name: 'mock-storybook-upload.jpg',
+      size: '1.99 MB',
+    },
   },
 }
