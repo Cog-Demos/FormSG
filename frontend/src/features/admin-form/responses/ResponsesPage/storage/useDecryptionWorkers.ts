@@ -82,7 +82,7 @@ const useDecryptionWorkers = ({
   const { data: adminForm } = useAdminForm()
   const { user } = useUser()
 
-  const isTest = process.env.NODE_ENV === 'test'
+  const isTest = import.meta.env.MODE === 'test'
   const isFasterDownloadsFeatureOn = useFeatureIsOn('faster-downloads')
   const isFasterDownloadsEnabled = isTest || isFasterDownloadsFeatureOn
 

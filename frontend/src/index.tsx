@@ -11,7 +11,7 @@ import * as dayjs from './utils/dayjs'
 import reportWebVitals from './reportWebVitals'
 import * as serviceWorker from './serviceWorker'
 
-if (process.env.NODE_ENV === 'test') {
+if (import.meta.env.MODE === 'test') {
   import('./mocks/msw/browser').then(({ worker }) => worker.start())
 }
 
@@ -27,7 +27,7 @@ function gtag(...args: unknown[]) {
   dataLayer.push(arguments)
 }
 gtag('js', new Date())
-gtag('config', process.env.REACT_APP_GA_TRACKING_ID || '')
+gtag('config', import.meta.env.VITE_APP_GA_TRACKING_ID || '')
 window.gtag = gtag
 
 // Init dayjs
