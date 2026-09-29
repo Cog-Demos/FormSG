@@ -1,6 +1,7 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
 
 import { REQUIRED_ERROR } from '~constants/validation'
 
@@ -11,13 +12,14 @@ const { ValidationRequired, ValidationOptional } = composeStories(stories)
 describe('validation required', () => {
   it('renders error when field is not filled before submitting', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       render(<ValidationRequired />)
     })
     const submitButton = screen.getByRole('button', { name: /submit/i })
 
     // Act
-    await act(async () => userEvent.click(submitButton))
+    await user.click(submitButton)
 
     // Assert
     // Should show error message.
@@ -27,6 +29,7 @@ describe('validation required', () => {
 
   it('renders success when field has valid landline number when submitted', async () => {
     // Arrange
+    const user = userEvent.setup()
     const schema = ValidationRequired.args?.schema
     await act(async () => {
       render(<ValidationRequired />)
@@ -41,8 +44,8 @@ describe('validation required', () => {
     // Act
     // Valid landline number
     const validTestNumber = '61234567'
-    await act(async () => userEvent.type(input, validTestNumber))
-    await act(async () => userEvent.click(submitButton))
+    await user.type(input, validTestNumber)
+    await user.click(submitButton)
 
     // Assert
     // Should show success message.
@@ -58,13 +61,14 @@ describe('validation required', () => {
 describe('validation optional', () => {
   it('renders success even when field is empty before submitting', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       render(<ValidationOptional />)
     })
     const submitButton = screen.getByRole('button', { name: /submit/i })
 
     // Act
-    await act(async () => userEvent.click(submitButton))
+    await user.click(submitButton)
 
     // Assert
     // Should show success message.
@@ -74,6 +78,7 @@ describe('validation optional', () => {
 
   it('renders success when field has valid landline number when submitted', async () => {
     // Arrange
+    const user = userEvent.setup()
     const schema = ValidationOptional.args?.schema
     await act(async () => {
       render(<ValidationOptional />)
@@ -88,8 +93,8 @@ describe('validation optional', () => {
     // Act
     // Valid landline number
     const validTestNumber = '61234567'
-    await act(async () => userEvent.type(input, validTestNumber))
-    await act(async () => userEvent.click(submitButton))
+    await user.type(input, validTestNumber)
+    await user.click(submitButton)
 
     // Assert
     // Should show success message.
@@ -105,6 +110,7 @@ describe('validation optional', () => {
 describe('homeno input validation', () => {
   it('renders error when valid mobile number is submitted', async () => {
     // Arrange
+    const user = userEvent.setup()
     const schema = ValidationOptional.args?.schema
     await act(async () => {
       render(<ValidationOptional />)
@@ -119,8 +125,8 @@ describe('homeno input validation', () => {
     // Act
     // Invalid landline number, mobile number instead
     const validTestNumber = '98765432'
-    await act(async () => userEvent.type(input, validTestNumber))
-    await act(async () => userEvent.click(submitButton))
+    await user.type(input, validTestNumber)
+    await user.click(submitButton)
 
     // Assert
     // Should show error message.
@@ -130,6 +136,7 @@ describe('homeno input validation', () => {
 
   it('renders error when invalid landline number is submitted', async () => {
     // Arrange
+    const user = userEvent.setup()
     const schema = ValidationOptional.args?.schema
     await act(async () => {
       render(<ValidationOptional />)
@@ -144,8 +151,8 @@ describe('homeno input validation', () => {
     // Act
     // Invalid landline number too short
     const validTestNumber = '1234'
-    await act(async () => userEvent.type(input, validTestNumber))
-    await act(async () => userEvent.click(submitButton))
+    await user.type(input, validTestNumber)
+    await user.click(submitButton)
 
     // Assert
     // Should show error message.

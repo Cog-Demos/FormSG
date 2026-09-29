@@ -1,7 +1,8 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { merge } from 'lodash'
+import { describe, expect, it } from 'vitest'
 
 import { TextSelectedValidation } from '~shared/types/field'
 
