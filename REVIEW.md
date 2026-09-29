@@ -16,9 +16,9 @@ FormSG is a Singapore public-sector form platform handling NRIC/UIN/FIN, Singpas
 Findings are short — a title line and one or two sentences of explanation — so the citation must live inside that text, not in a separate block. Every finding must:
 
 1. **Start the title with the SCR ID** and quote the guideline's own wording for the item (the bold vulnerability name or the checklist sentence):
-   `[SCR AUTHZ-1] Insecure direct object reference — formId used without permission check`
+   `[SCR AUTHZ-V1] Insecure direct object reference — formId used without permission check`
 2. **End the explanation with the citation in parentheses**: the section name and the section's deep link listed under its heading below, e.g.
-   `… lets any signed-in user read another agency's form. (SCR AUTHZ-1, Authorization: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization)`
+   `… lets any signed-in user read another agency's form. (SCR AUTHZ-V1, Authorization: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization)`
 
 The explanation itself states what the code does, why it violates the item, and the FormSG-specific attacker path, and names the minimal fix. Never cite the bare guideline URL — always the section deep link. A finding with no `[SCR <ID>]` prefix or no `(SCR <ID>, <Section>: <deep link>)` suffix is incomplete.
 
