@@ -13,21 +13,14 @@ FormSG is a Singapore public-sector form platform handling NRIC/UIN/FIN, Singpas
 
 ## Finding format (required)
 
-Every finding must cite the guideline section and the specific item it violates, using the IDs below:
+Findings are short — a title line and one or two sentences of explanation — so the citation must live inside that text, not in a separate block. Every finding must:
 
-```
-[SCR <ID>] <Section> — <checklist item or vulnerability type>
-Severity: Critical | High | Medium | Low
-Location: <file>:<line(s)>
-Issue: <what the code does and why it violates the item>
-Exploit scenario: <concrete attacker path in FormSG terms>
-Fix: <minimal remediation, preferring existing FormSG utilities>
-Reference: <the section's deep link listed under its heading below>
-```
+1. **Start the title with the SCR ID** and quote the guideline's own wording for the item (the bold vulnerability name or the checklist sentence):
+   `[SCR AUTHZ-1] Insecure direct object reference — formId used without permission check`
+2. **End the explanation with the citation in parentheses**: the section name and the section's deep link listed under its heading below, e.g.
+   `… lets any signed-in user read another agency's form. (SCR AUTHZ-1, Authorization: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization)`
 
-Example title: `[SCR AUTHZ-1] Authorization — Insecure direct object reference: formId used without permission check`
-
-The `Section` and `checklist item or vulnerability type` fields quote the guideline's own wording (the bold vulnerability name or the checklist sentence), and `Reference` is the deep link to that section, e.g. `Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization` — never the bare guideline URL.
+The explanation itself states what the code does, why it violates the item, and the FormSG-specific attacker path, and names the minimal fix. Never cite the bare guideline URL — always the section deep link. A finding with no `[SCR <ID>]` prefix or no `(SCR <ID>, <Section>: <deep link>)` suffix is incomplete.
 
 Severity guidance: **Critical** = unauthenticated access to submissions/NRIC/secrets or auth bypass; **High** = authenticated privilege escalation, cross-form/cross-user data access, injection; **Medium** = information leakage, missing rate limit on sensitive endpoint, sensitive data in logs; **Low** = defence-in-depth gaps against a listed checklist item.
 
