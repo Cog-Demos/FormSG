@@ -6,9 +6,7 @@ import { API_BASE_URL } from '~services/ApiService'
 import { ADMIN_FORM_ENDPOINT } from '~features/admin-form/common/AdminViewFormService'
 
 import { ndjsonStream } from './utils/ndjsonStream'
-import DecryptionWorker, {
-  DecryptionWorkerApi,
-} from './worker/decryption.worker'
+import type { DecryptionWorkerApi } from './worker/decryption.worker'
 import { CleanableDecryptionWorkerApi } from './types'
 
 export type EncryptedResponsesStreamParams = {
@@ -49,7 +47,10 @@ export const getEncryptedResponsesStream = async (
  */
 export const makeWorkerApiAndCleanup = (): CleanableDecryptionWorkerApi => {
   // Create a worker and wrap it with comlink for ease of interaction.
-  const worker = new DecryptionWorker()
+  const worker = new Worker(
+    new URL('./worker/decryption.worker.ts', import.meta.url),
+    { type: 'module' },
+  )
   const workerApi = wrap<DecryptionWorkerApi>(worker)
 
   // A cleanup function that releases the comlink proxy and terminates the worker
