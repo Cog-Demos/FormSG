@@ -1,7 +1,6 @@
-import { useMemo, useState } from 'react'
+import { ElementType, useMemo, useState } from 'react'
 import { Link as ReactLink, useParams, useSearchParams } from 'react-router-dom'
 import {
-  As,
   Box,
   Divider,
   Flex,
@@ -271,7 +270,7 @@ const ConnectionStatusText = ({
   text,
 }: {
   color: string
-  icon: As
+  icon: ElementType
   text: string
 }) => (
   <>

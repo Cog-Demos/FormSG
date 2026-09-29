@@ -32,7 +32,10 @@ import { useMutateTwilioCreds } from '../../mutations'
 
 import { DeleteTwilioModal } from './DeleteTwilioModal'
 
-const TWILIO_INPUT_RULES: Record<keyof TwilioCredentials, RegisterOptions> = {
+const TWILIO_INPUT_RULES: Record<
+  keyof TwilioCredentials,
+  RegisterOptions<TwilioCredentials>
+> = {
   accountSid: {
     required: 'Account SID is required',
     pattern: {
