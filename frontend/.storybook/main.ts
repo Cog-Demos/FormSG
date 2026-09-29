@@ -16,7 +16,6 @@ const config: StorybookConfig = {
     './introduction/Principles/Principles.stories.tsx',
     './foundations/**/*.mdx',
     './foundations/**/*.stories.@(js|jsx|ts|tsx)',
-    '../src/**/*.mdx',
     '../src/**/*.stories.@(js|jsx|ts|tsx)',
   ],
   addons: [
@@ -40,6 +39,22 @@ const config: StorybookConfig = {
     plugins: (viteConfig.plugins ?? [])
       .flat()
       .filter((plugin) => !isBuildOnlyPlugin(plugin)),
+    optimizeDeps: {
+      ...viteConfig.optimizeDeps,
+      // Pre-bundle preview.tsx deps so the first story load doesn't trigger
+      // a re-optimize + full reload.
+      include: [
+        ...(viteConfig.optimizeDeps?.include ?? []),
+        'vite-plugin-node-polyfills/shims/global',
+        'vite-plugin-node-polyfills/shims/process',
+        'focus-visible/dist/focus-visible.min.js',
+        'i18next',
+        'i18next-browser-languagedetector',
+        'i18next-icu',
+        'dayjs/plugin/calendar',
+        'dayjs/plugin/updateLocale',
+      ],
+    },
     define: {
       ...viteConfig.define,
       'process.env.NODE_ENV': JSON.stringify('test'),
