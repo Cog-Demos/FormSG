@@ -1,4 +1,4 @@
-import { ProductItem } from '../types'
+import type { ProductItem } from '../types'
 
 export const calculatePrice = (productItems: Array<ProductItem>) => {
   const total = productItems.reduce((accum, item) => {

@@ -1,4 +1,4 @@
-import { BasicField, FieldBase } from './base'
+import type { BasicField, FieldBase } from './base'
 
 export type CheckboxValidationOptions = {
   customMax: number | '' | null

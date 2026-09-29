@@ -1,4 +1,4 @@
-import type { Opaque } from 'type-fest'
+import type { Tagged } from 'type-fest'
 import { z } from 'zod'
 import { BasicField, MyInfoAttribute } from './field'
 
@@ -118,7 +118,7 @@ export const NricResponse = SingleAnswerResponse.extend({
 })
 export type NricResponse = z.infer<typeof NricResponse>
 
-export type TableRow = Opaque<string[], 'TableRow'>
+export type TableRow = Tagged<string[], 'TableRow'>
 
 export const TableResponse = ResponseBase.extend({
   // Table fields have an array of array of strings.

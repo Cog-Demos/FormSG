@@ -24,6 +24,8 @@ export type LoginOtpData = {
   email: string
 }
 
+const LOGIN_STATUS_TOAST_ID = 'login-status-toast'
+
 // Temporary page to show login via sgID
 export const TempLoginPage = (): JSX.Element => {
   const { t } = useTranslation()
@@ -49,8 +51,8 @@ export const TempLoginPage = (): JSX.Element => {
   }, [statusCode])
 
   useEffect(() => {
-    if (!toastMessage) return
-    toast({ description: toastMessage })
+    if (!toastMessage || toast.isActive(LOGIN_STATUS_TOAST_ID)) return
+    toast({ id: LOGIN_STATUS_TOAST_ID, description: toastMessage })
   }, [toast, toastMessage])
 
   const handleSendOtp = async ({ email }: LoginFormInputs) => {

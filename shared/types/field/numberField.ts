@@ -1,4 +1,4 @@
-import { BasicField, MyInfoableFieldBase } from './base'
+import type { BasicField, MyInfoableFieldBase } from './base'
 
 export enum NumberSelectedValidation {
   Length = 'Length',

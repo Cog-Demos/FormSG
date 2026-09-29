@@ -1,6 +1,6 @@
-import { Opaque } from 'type-fest'
+import type { Tagged } from 'type-fest'
 
-export type ProductId = Opaque<string, 'ProductId'>
+export type ProductId = Tagged<string, 'ProductId'>
 export type Product = {
   name: string
   description: string

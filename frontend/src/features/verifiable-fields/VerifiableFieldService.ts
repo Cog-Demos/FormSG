@@ -10,8 +10,7 @@ import { ApiService } from '~services/ApiService'
  * current form does not have any verifiable fields.
  */
 export type FetchNewTransactionResponse =
-  | { expireAt: Date; transactionId: string }
-  | Record<string, never>
+  { expireAt: Date; transactionId: string } | Record<string, never>
 
 type VerifiedFieldSignature = Opaque<string, 'VerifiedFieldSignature'>
 
