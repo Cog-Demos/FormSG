@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/layout'
+import { Text } from '@chakra-ui/react'
 
 import FormLabel from '~components/FormControl/FormLabel'
 

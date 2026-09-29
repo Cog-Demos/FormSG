@@ -19,4 +19,4 @@ const handler = {
   },
 }
 
-export const datadogRum = new Proxy(_datadogRum || {}, handler)
+export const datadogRum = new Proxy(_datadogRum ?? ({} as RumGlobal), handler)

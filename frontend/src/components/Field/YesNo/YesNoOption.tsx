@@ -49,11 +49,11 @@ export const YesNoOption = forwardRef<YesNoOptionProps, 'input'>(
   ({ leftIcon, label, ...props }, ref) => {
     const styles = useMultiStyleConfig(YESNO_THEME_KEY, props)
 
-    const { getInputProps, getCheckboxProps } = useRadio(props)
+    const { getInputProps, getRadioProps } = useRadio(props)
     // Empty object needed here as ref is the second argument,
     // and ref is required so that any refs passed in gets forwarded.
     const inputProps = getInputProps(undefined, ref)
-    const checkboxProps = getCheckboxProps()
+    const checkboxProps = getRadioProps()
 
     const handleSelect = useCallback(() => {
       // Do not do anything if the input is readonly

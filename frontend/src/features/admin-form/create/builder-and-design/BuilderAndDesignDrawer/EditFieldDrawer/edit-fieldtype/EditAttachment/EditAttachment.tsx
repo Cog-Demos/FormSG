@@ -124,7 +124,7 @@ export const EditAttachment = ({ field }: EditAttachmentProps): JSX.Element => {
   }, [form])
 
   const attachmentSizeValidationRule = useMemo(
-    (): RegisterOptions => ({
+    (): RegisterOptions<EditAttachmentInputs, 'attachmentSize'> => ({
       validate: (val) => {
         return (
           maxTotalSizeMb - otherAttachmentsSize >= Number(val) ||

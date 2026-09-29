@@ -1,4 +1,4 @@
-import { DeepPartialSkipArrayKey, UnpackNestedValue } from 'react-hook-form'
+import { DeepPartialSkipArrayKey } from 'react-hook-form'
 import { CamelCasedProperties } from 'type-fest'
 
 import { FormDto } from '~shared/types'
@@ -80,7 +80,7 @@ export const getLogicUnitPreventingSubmit = ({
  * @returns a set of IDs of visible fields in the submission
  */
 export const getVisibleFieldIds = (
-  formInputs: UnpackNestedValue<DeepPartialSkipArrayKey<FormFieldValues>>,
+  formInputs: DeepPartialSkipArrayKey<FormFieldValues>,
   {
     formFields,
     formLogics,

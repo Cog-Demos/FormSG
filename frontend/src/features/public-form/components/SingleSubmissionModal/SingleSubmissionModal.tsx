@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,6 +14,7 @@ import {
 import { FORM_SINGLE_SUBMISSION_VALIDATION_ERROR_MESSAGE } from '~shared/constants/'
 
 import { useIsMobile } from '~hooks/useIsMobile'
+import Button from '~components/Button'
 import ButtonGroup from '~components/ButtonGroup'
 
 import { usePublicFormContext } from '~features/public-form/PublicFormContext'
