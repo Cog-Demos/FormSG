@@ -166,4 +166,317 @@ TICKET-0). Branches from earlier runs (`feature/vite-migration-base*`,
 
 ## 6. Local verification setup
 
-Filled in by TICKET-G (full stack for the end-to-end recording).
+Ubuntu x86_64; isolated worktree `/home/ubuntu/wt/e2e`. All values below are
+synthetic local development values, not production credentials. These commands
+describe the actual native Mongo/MailDev/ClamAV + Docker LocalStack setup used.
+Use separate terminals for long-running services. No product source edits.
+
+### Worktree, Node, dependencies
+
+```bash
+git -C /home/ubuntu/repos/FormSG fetch origin
+mkdir -p "$HOME/wt" "$HOME/e2e-runtime"
+git -C /home/ubuntu/repos/FormSG worktree add --detach "$HOME/wt/e2e" \
+  origin/feature/vite-20260929-2123-G-consolidation
+cd "$HOME/wt/e2e"
+source "$HOME/.nvm/nvm.sh"
+nvm install 18.20.2
+nvm use 18.20.2
+npm ci
+```
+
+Root postinstall installs frontend/shared. `.envrc` may report blocked; do not
+allow it merely to suppress the message (it sources a nonexistent root `.env`).
+Export the generated environment explicitly below.
+
+Native prerequisites (libssl/native-build prerequisites were already installed
+on this machine; ClamAV was added during setup):
+
+```bash
+sudo apt-get update
+sudo apt-get install -y cmake autoconf automake libtool libcurl4-openssl-dev \
+  g++ make python3 python3-distutils clamav clamav-daemon
+curl -fsSL -o /tmp/libssl1.1.deb \
+  https://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.24_amd64.deb
+echo '7cf39d70a639017d1dd7c8d36daa2258063608688e449fddf40ffdd46f992a78  /tmp/libssl1.1.deb' | sha256sum -c -
+sudo dpkg -i /tmp/libssl1.1.deb
+cd "$HOME/wt/e2e"
+npm_config_python=/usr/bin/python3 npm ci --prefix serverless/virus-scanner
+npm run build --prefix serverless/virus-scanner
+npm run build --prefix frontend
+```
+
+The frontend production build is needed even when using Vite: backend startup
+reads `dist/frontend/index.html`. No frontend `.env.local` was required.
+
+### MongoDB: primary AND secondary
+
+Used the already cached mongodb-memory-server binary (4.0.22), not a Mongo
+container. The backend Submission model explicitly reads from `secondary`;
+a single-member replica set allows writes but response-count reads time out.
+
+```bash
+mkdir -p "$HOME/e2e-runtime/mongo" "$HOME/e2e-runtime/mongo-secondary"
+MONGOD="$HOME/.cache/mongodb-binaries/mongod-x64-ubuntu-4.0.22"
+test -x "$MONGOD"
+"$MONGOD" --dbpath "$HOME/e2e-runtime/mongo" --replSet rs0 \
+  --bind_ip 127.0.0.1 --port 27017 \
+  --logpath "$HOME/e2e-runtime/mongo.log" --fork
+"$MONGOD" --dbpath "$HOME/e2e-runtime/mongo-secondary" --replSet rs0 \
+  --bind_ip 127.0.0.1 --port 27018 \
+  --logpath "$HOME/e2e-runtime/mongo-secondary.log" --fork
+```
+
+On a fresh box without the cached binary, obtain the same Ubuntu 18.04 x86_64
+MongoDB 4.0.22 distribution first. Do not silently replace it with a newer
+version when trying to reproduce this exact environment.
+
+### MailDev and LocalStack
+
+```bash
+cd "$HOME/wt/e2e"
+node node_modules/.bin/maildev
+# Default UI http://localhost:1080, SMTP localhost:1025.
+```
+
+```bash
+docker run -d --name formsg-e2e-localstack -p 4566:4566 \
+  -e SERVICES=s3,sqs,secretsmanager \
+  -e EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3000 \
+  localstack/localstack:3.3
+curl -fsS http://127.0.0.1:4566/_localstack/health
+```
+
+Actual image: `localstack/localstack:3.3`. If Docker Hub rate limits pulls,
+`mirror.gcr.io/localstack/localstack:3.3` can be pulled and retagged locally.
+Mongo/MailDev image pulls were rate limited; native alternatives above were used.
+
+### Generate backend env, initialize replica set, seed agency, create S3/SQS
+
+The script below derives every synthetic default from the checked-out
+`docker-compose.yml` backend environment and writes the complete shell-loadable
+`~/e2e-runtime/backend.env`. This includes the repository's synthetic signing,
+verification, Twilio, OIDC, SGID, session and Postman values without redaction.
+The explicit overrides are all listed below. No real GrowthBook key was needed:
+`sdk-local-e2e` allows defaults/fallbacks. External SSO/payments are not tested.
+
+```bash
+cat > "$HOME/e2e-runtime/initialize.cjs" <<'JS'
+const fs = require('fs')
+const path = '/home/ubuntu/wt/e2e'
+const yaml = require(path + '/node_modules/js-yaml')
+const { MongoClient } = require(path + '/node_modules/mongodb')
+const AWS = require(path + '/node_modules/aws-sdk')
+async function main() {
+  const defaults = yaml.load(fs.readFileSync(path + '/docker-compose.yml', 'utf8')).services.backend.environment
+  const env = Object.fromEntries(defaults.filter(x => x.includes('=')).map(x => [x.slice(0, x.indexOf('=')), x.slice(x.indexOf('=') + 1)]))
+  Object.assign(env, {
+    PORT: '5001',
+    DB_HOST: 'mongodb://127.0.0.1:27017/formsg?replicaSet=rs0',
+    SES_HOST: '127.0.0.1',
+    AWS_REGION: 'ap-southeast-1',
+    VIRUS_SCANNER_LAMBDA_ENDPOINT: 'http://127.0.0.1:9999',
+    WEBHOOK_SQS_URL: 'http://sqs.ap-southeast-1.localhost.localstack.cloud:4566/000000000000/local-webhooks-sqs-main',
+    GOOGLE_CAPTCHA: '',
+    GOOGLE_CAPTCHA_PUBLIC: '',
+    GROWTHBOOK_CLIENT_KEY: 'sdk-local-e2e'
+  })
+  fs.writeFileSync('/home/ubuntu/e2e-runtime/backend.env',
+    Object.entries(env).map(([k,v]) => `${k}=${JSON.stringify(v)}`).join('\n') + '\n')
+  const client = new MongoClient('mongodb://127.0.0.1:27017/?directConnection=true')
+  await client.connect()
+  try {
+    await client.db('admin').command({ replSetInitiate: {
+      _id: 'rs0', members: [{ _id: 0, host: '127.0.0.1:27017' }]
+    } })
+  } catch (e) { if (e.codeName !== 'AlreadyInitialized') throw e }
+  for (let n=0; n<60; n++) {
+    if ((await client.db('admin').command({ isMaster: 1 })).ismaster) break
+    await new Promise(r => setTimeout(r, 1000))
+  }
+  const { config } = await client.db('admin').command({ replSetGetConfig: 1 })
+  if (!config.members.some(m => m.host === '127.0.0.1:27018')) {
+    config.version++
+    config.members.push({ _id: 1, host: '127.0.0.1:27018', priority: 0, votes: 0 })
+    await client.db('admin').command({ replSetReconfig: config })
+  }
+  for (let n=0; n<120; n++) {
+    const status = await client.db('admin').command({ replSetGetStatus: 1 })
+    if (status.members.some(m => m.stateStr === 'SECONDARY')) break
+    if (n === 119) throw Error('Secondary did not become ready')
+    await new Promise(r => setTimeout(r, 1000))
+  }
+  await client.db('formsg').collection('agencies').updateOne(
+    { shortName: 'govtech' },
+    { $setOnInsert: {
+      shortName: 'govtech', fullName: 'Government Technology Agency',
+      logo: 'https://s3-ap-southeast-1.amazonaws.com/agency-logo.form.sg/govtech.jpg',
+      emailDomain: ['tech.gov.sg', 'data.gov.sg', 'form.sg', 'open.gov.sg']
+    } }, { upsert: true })
+  await client.close()
+  const options = {
+    endpoint: 'http://127.0.0.1:4566', region: env.AWS_REGION,
+    accessKeyId: 'fakeKey', secretAccessKey: 'fakeSecret'
+  }
+  const s3 = new AWS.S3({ ...options, s3ForcePathStyle: true })
+  for (const bucket of Object.entries(env).filter(([k]) => k.endsWith('_S3_BUCKET')).map(([,v]) => v)) {
+    try { await s3.createBucket({ Bucket: bucket }).promise() }
+    catch (e) { if (!['BucketAlreadyOwnedByYou','BucketAlreadyExists'].includes(e.code)) throw e }
+    await s3.putBucketCors({ Bucket: bucket, CORSConfiguration: { CORSRules: [{
+      AllowedHeaders: ['*'], AllowedMethods: ['GET','PUT','POST','HEAD'],
+      AllowedOrigins: ['http://localhost:3000'], ExposeHeaders: ['ETag'],
+      MaxAgeSeconds: 3600
+    }] } }).promise()
+    if (bucket.includes('virus-scanner'))
+      await s3.putBucketVersioning({ Bucket: bucket, VersioningConfiguration: { Status: 'Enabled' } }).promise()
+    console.log('Bucket ready:', bucket)
+  }
+  const sqs = new AWS.SQS(options)
+  const dlq = await sqs.createQueue({ QueueName: 'local-webhooks-sqs-deadLetter' }).promise()
+  const arn = (await sqs.getQueueAttributes({ QueueUrl: dlq.QueueUrl, AttributeNames: ['QueueArn'] }).promise()).Attributes.QueueArn
+  await sqs.createQueue({ QueueName: 'local-webhooks-sqs-main', Attributes: {
+    ReceiveMessageWaitTimeSeconds: '20',
+    RedrivePolicy: JSON.stringify({ deadLetterTargetArn: arn, maxReceiveCount: 1 })
+  } }).promise()
+  console.log('Replica set, agency seed, buckets and queues initialized.')
+}
+main().catch(e => { console.error(e); process.exit(1) })
+JS
+node "$HOME/e2e-runtime/initialize.cjs"
+cat "$HOME/e2e-runtime/backend.env"
+```
+
+Buckets: `local-attachment-bucket`, `local-payment-proof-bucket`,
+`local-image-bucket`, `local-logo-bucket`, `local-static-assets-bucket`,
+`local-virus-scanner-quarantine-bucket`, `local-virus-scanner-clean-bucket`.
+Versioning on quarantine/clean is mandatory for scanner version IDs.
+
+### ClamAV and Lambda emulator
+
+The system freshclam daemon downloaded signatures to `/var/lib/clamav`.
+Observed versions: main 63, daily 28138, bytecode 339. Do not run another
+freshclam concurrently (log-file lock); either await the system daemon or stop
+it before a manual refresh. These alternative manual commands refresh the DB:
+
+```bash
+sudo systemctl stop clamav-freshclam
+sudo freshclam
+cat > "$HOME/e2e-runtime/clamd.conf" <<'CONF'
+LocalSocket /tmp/clamd.ctl
+LocalSocketMode 666
+DatabaseDirectory /var/lib/clamav
+LogFile /tmp/e2e-clamd.log
+PidFile /tmp/e2e-clamd.pid
+User clamav
+Foreground yes
+CONF
+sudo /usr/sbin/clamd --config-file="$HOME/e2e-runtime/clamd.conf"
+```
+
+Start the unmodified compiled scanner:
+
+```bash
+curl -fsSL -o "$HOME/e2e-runtime/aws-lambda-rie" \
+  https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie
+chmod +x "$HOME/e2e-runtime/aws-lambda-rie"
+cd "$HOME/wt/e2e/serverless/virus-scanner"
+source "$HOME/.nvm/nvm.sh" && nvm use 18.20.2
+export NODE_ENV=development
+export VIRUS_SCANNER_QUARANTINE_S3_BUCKET=local-virus-scanner-quarantine-bucket
+export VIRUS_SCANNER_CLEAN_S3_BUCKET=local-virus-scanner-clean-bucket
+"$HOME/e2e-runtime/aws-lambda-rie" \
+  --runtime-interface-emulator-address 127.0.0.1:9999 \
+  ./node_modules/.bin/aws-lambda-ric build/index.handler
+```
+
+### Backend, Vite, Storybook
+
+```bash
+cd "$HOME/wt/e2e"
+source "$HOME/.nvm/nvm.sh" && nvm use 18.20.2
+set -a
+source "$HOME/e2e-runtime/backend.env"
+set +a
+./node_modules/.bin/tsnd --poll --respawn --transpile-only \
+  --inspect=0.0.0.0 --exit-child -r dotenv/config -- src/app/server.ts \
+  > "$HOME/e2e-runtime/backend.log" 2>&1
+```
+
+```bash
+cd "$HOME/wt/e2e/frontend"
+source "$HOME/.nvm/nvm.sh" && nvm use 18.20.2
+npm start
+# Vite http://localhost:3000; /api proxied to localhost:5001.
+```
+
+```bash
+cd "$HOME/wt/e2e/frontend"
+source "$HOME/.nvm/nvm.sh" && nvm use 18.20.2
+npm run storybook -- --ci
+# http://localhost:6006/?path=/story/components-button--solid-primary
+```
+
+### Browser prerequisite and test data
+
+- Log in at `http://localhost:3000/login` as `e2e.admin@open.gov.sg`.
+  Read its OTP at `http://localhost:1080`; no seeded user/password is required.
+- New forms default to captcha enabled. In each form's Settings turn OFF
+  **Enable reCAPTCHA** because this local environment has no captcha keys.
+  Empty backend keys alone do not turn off the per-form setting.
+- Download and retain the storage form secret key; upload it for activation and
+  response decryption. Do not substitute a stored/plaintext response fixture.
+- Open public form in a **separate browser tab**, submit there, switch to admin,
+  then click Results inside the app. Do not replace that with same-tab Back.
+
+```bash
+cat > "$HOME/e2e-runtime/synthetic-evidence.txt" <<'TXT'
+FormSG frontend modernization verification
+Synthetic data only. No real personal or government information.
+Vite 5 / React 18 / Chakra UI 2 / TypeScript 5.4
+Attachment encryption round-trip: 2026-09-29
+TXT
+sha256sum "$HOME/e2e-runtime/synthetic-evidence.txt"
+# df319c49791cae1d1d5b76a82e48a11a0c62ff35a2eb8e4f12a3354c3f150479
+```
+
+#### Automated browser / MSW debugger caveat
+
+Storybook manager loaded while its iframe spun indefinitely. The browser's CDP
+automation had suspended `localhost:6006/mockServiceWorker.js` before execution.
+An inert registration was visible with no active worker; a clean incognito
+context behaved the same. Sending `Runtime.runIfWaitingForDebugger` to those
+worker targets immediately allowed rendering. No source change is necessary.
+Only use this diagnostic when worker suspension is actually present. Example
+for this machine's CDP endpoint (the port may differ in another session):
+
+```bash
+cd "$HOME/wt/e2e"
+node <<'JS'
+const WebSocket = require('ws')
+fetch('http://localhost:29229/json/list').then(r => r.json()).then(targets => {
+  for (const target of targets.filter(t => t.type === 'service_worker' &&
+      t.url === 'http://localhost:6006/mockServiceWorker.js')) {
+    const ws = new WebSocket(target.webSocketDebuggerUrl)
+    ws.on('open', () => ws.send(JSON.stringify({
+      id: 1, method: 'Runtime.runIfWaitingForDebugger'
+    })))
+    ws.on('message', data => { console.log(data.toString()); ws.close() })
+  }
+})
+JS
+```
+
+### Before recording / terminal evidence
+
+```bash
+git -C "$HOME/wt/e2e" fetch origin feature/vite-20260929-2123-G-consolidation
+git -C "$HOME/wt/e2e" rev-parse HEAD FETCH_HEAD
+# Both must match; update checkout and recheck affected flows if not.
+# Maximize browser and terminal on this Linux/KDE machine:
+wmctrl -r :ACTIVE: -b add,maximized_vert,maximized_horz
+# Restart npm start visibly for step 1; no setup/debugging in the take.
+sha256sum "$HOME/e2e-runtime/synthetic-evidence.txt" "$HOME/Downloads/synthetic-evidence.txt"
+cmp "$HOME/e2e-runtime/synthetic-evidence.txt" "$HOME/Downloads/synthetic-evidence.txt"
+cd "$HOME/wt/e2e/frontend"
+npx vitest run
+```
