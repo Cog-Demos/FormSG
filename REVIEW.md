@@ -171,10 +171,32 @@ FormSG focus:
 - Singpass/Corppass/sgID JWT cookies must be HTTP-only, signed, scoped, and short-lived; never pass session tokens or JWTs in URLs/query strings (SESS-1, SESS-V1).
 - Custom tokens (e.g. verification transaction IDs, MRF/pending submission links) used as bearer credentials must be unguessable (SESS-2).
 
+## 9. Migration Correctness (MIG)
+
+Applies to PRs that change build tooling, framework or UI-library versions. Severity: **Medium** unless the item says otherwise.
+
+| ID | Item |
+|----|------|
+| MIG-1 | UI-library props and exports must use the API of the version in `package.json` (e.g. Chakra v2 `isDisabled`/`isInvalid`/`isRequired`, not native `disabled`), so controls keep their disabled/invalid state and aria attributes. |
+| MIG-2 | Environment reads must use the bundler's mechanism (`import.meta.env.*` under Vite); a leftover `process.env.*` read is always `undefined` at runtime and silently disables the branch that depends on it. |
+| MIG-3 | Web workers and dynamic imports must use the bundler's supported syntax (`new Worker(new URL(..., import.meta.url), { type: 'module' })`); code that works in dev but breaks in the production bundle is a violation. |
+| MIG-4 | Framework upgrade semantics must be honoured (React 18 `createRoot`, effect cleanup under StrictMode, awaited user-event calls). |
+
+## 10. Build & Tooling Hygiene (HYG)
+
+Severity: **Low**. Report these as flags, not blockers.
+
+| ID | Item |
+|----|------|
+| HYG-1 | Production builds must not ship source maps or debug artefacts (`build.sourcemap`, `console.*`, `debugger`). |
+| HYG-2 | Dev servers must not bind to all interfaces by default (`server.host: true`, `0.0.0.0`). |
+| HYG-3 | `@ts-expect-error` / `@ts-ignore` / `eslint-disable` must carry a reason or ticket reference. |
+| HYG-4 | Leftover references to removed tooling (`REACT_APP_*`, `%PUBLIC_URL%`, `react-scripts`, `craco`, `worker-loader`) after a migration. |
+
 ---
 
 ## Out of scope — do not report
 
-- Issues not mapped to an ID above (style, performance, typing, naming, test coverage, dependency version bumps, general best practices).
+- Issues not mapped to an ID above (style, performance, naming, test coverage, dependency version bumps, general best practices).
 - Generated/vendored files: `package-lock.json`, `frontend/package-lock.json`, `shared/package-lock.json`, `CHANGELOG.md`, `credits-patch`, build output.
 - Test files (`__tests__/`, `*.spec.ts`, `*.test.ts`), unless they contain real hardcoded secrets (DATA-V2).
