@@ -48,7 +48,7 @@ const createTableFieldSchema = () => {
       min: 2,
       validate: {
         validator: function (this: ITableFieldSchema, v?: number) {
-          return !v || v > this.minimumRows
+          return !v || v > Number(this.minimumRows)
         },
         message: 'Maximum number of rows must be greater than minimum.',
       },
