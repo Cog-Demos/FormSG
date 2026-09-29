@@ -1,4 +1,4 @@
-import { BasicField, FieldBase } from './base'
+import type { BasicField, FieldBase } from './base'
 
 export enum RatingShape {
   Heart = 'Heart',

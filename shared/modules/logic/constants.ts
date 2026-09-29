@@ -1,5 +1,5 @@
 import { BasicField } from '../../types/field'
-import { LogicCondition, LogicConditionState } from '../../types/form'
+import { type LogicCondition, LogicConditionState } from '../../types/form'
 
 const LOGIC_CONDITIONS: LogicCondition[] = [
   [
