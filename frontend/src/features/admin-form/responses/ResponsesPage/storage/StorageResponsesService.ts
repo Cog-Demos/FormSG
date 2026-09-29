@@ -49,7 +49,9 @@ export const getEncryptedResponsesStream = async (
  */
 export const makeWorkerApiAndCleanup = (): CleanableDecryptionWorkerApi => {
   // Create a worker and wrap it with comlink for ease of interaction.
-  const worker = new DecryptionWorker()
+  const worker = new Worker(
+    new URL('./worker/decryption.worker.ts', import.meta.url),
+  )
   const workerApi = wrap<DecryptionWorkerApi>(worker)
 
   // A cleanup function that releases the comlink proxy and terminates the worker
