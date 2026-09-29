@@ -125,7 +125,7 @@ export const PublicFormSubmitButton = ({
         colorScheme={`theme-${colorTheme}` as ThemeColorScheme}
         type="button"
         isLoading={isSubmitting}
-        isDisabled={!!preventSubmissionLogic || !onSubmit}
+        disabled={!!preventSubmissionLogic || !onSubmit}
         loadingText={t(
           'features.publicForm.components.PublicFormSubmitButton.loadingText',
         )}

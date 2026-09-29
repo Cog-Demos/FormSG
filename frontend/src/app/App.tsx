@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { BrowserRouter } from 'react-router-dom'
 import { ChakraProvider } from '@chakra-ui/react'
 import { datadogLogs } from '@datadog/browser-logs'
+import { datadogRum } from '@datadog/browser-rum'
 
 import { theme } from '~theme/index'
 import { AuthProvider } from '~contexts/AuthContext'
@@ -33,14 +34,29 @@ const queryClient = new QueryClient({
 
 // Init Datadog browser logs
 datadogLogs.init({
-  clientToken: process.env.REACT_APP_DD_RUM_CLIENT_TOKEN || '',
-  env: process.env.REACT_APP_DD_RUM_ENV,
+  clientToken: import.meta.env.VITE_APP_DD_RUM_CLIENT_TOKEN || '',
+  env: import.meta.env.VITE_APP_DD_RUM_ENV,
   site: 'datadoghq.com',
   service: 'formsg',
   // Specify a version number to identify the deployed version of your application in Datadog
-  version: process.env.REACT_APP_VERSION,
+  version: import.meta.env.VITE_APP_VERSION,
   forwardErrorsToLogs: true,
   sampleRate: 100,
+})
+
+datadogRum.init({
+  applicationId: import.meta.env.VITE_APP_DD_RUM_APP_ID || '',
+  clientToken: import.meta.env.VITE_APP_DD_RUM_CLIENT_TOKEN || '',
+  env: import.meta.env.VITE_APP_DD_RUM_ENV,
+  site: 'datadoghq.com',
+  service: 'formsg',
+  version: import.meta.env.VITE_APP_VERSION,
+  sessionSampleRate: 100,
+  sessionReplaySampleRate: 20,
+  trackUserInteractions: true,
+  trackResources: true,
+  trackLongTasks: true,
+  defaultPrivacyLevel: 'allow',
 })
 
 export const App = (): JSX.Element => {
