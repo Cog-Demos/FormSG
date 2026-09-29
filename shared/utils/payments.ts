@@ -1,4 +1,4 @@
-import { PaymentsUpdateDto, PaymentType } from '../types'
+import { type PaymentsUpdateDto, PaymentType } from '../types'
 
 export const centsToDollars = (amountCents: number) => {
   const decimalPlaces = 2

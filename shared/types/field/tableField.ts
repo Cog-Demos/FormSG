@@ -1,7 +1,7 @@
 import type { Merge } from 'type-fest'
-import { FieldBase, BasicField } from './base'
-import { DropdownFieldBase } from './dropdownField'
-import { ShortTextFieldBase } from './shortTextField'
+import type { FieldBase, BasicField } from './base'
+import type { DropdownFieldBase } from './dropdownField'
+import type { ShortTextFieldBase } from './shortTextField'
 
 // Column types do not have most field base props.
 type ColumnBase<T extends FieldBase> = Omit<T, keyof FieldBase> & {

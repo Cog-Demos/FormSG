@@ -1,4 +1,4 @@
-import { BasicField, FormFieldDto } from '../field'
+import type { BasicField, FormFieldDto } from '../field'
 
 export enum LogicConditionState {
   Equal = 'is equals to',

@@ -1,4 +1,4 @@
-import { BasicField, FieldBase, VerifiableFieldBase } from './base'
+import type { BasicField, FieldBase, VerifiableFieldBase } from './base'
 
 export type AutoReplyOptions = {
   hasAutoReply: boolean
