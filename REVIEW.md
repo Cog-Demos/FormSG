@@ -22,16 +22,20 @@ Location: <file>:<line(s)>
 Issue: <what the code does and why it violates the item>
 Exploit scenario: <concrete attacker path in FormSG terms>
 Fix: <minimal remediation, preferring existing FormSG utilities>
-Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines
+Reference: <the section's deep link listed under its heading below>
 ```
 
 Example title: `[SCR AUTHZ-1] Authorization — Insecure direct object reference: formId used without permission check`
+
+The `Section` and `checklist item or vulnerability type` fields quote the guideline's own wording (the bold vulnerability name or the checklist sentence), and `Reference` is the deep link to that section, e.g. `Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization` — never the bare guideline URL.
 
 Severity guidance: **Critical** = unauthenticated access to submissions/NRIC/secrets or auth bypass; **High** = authenticated privilege escalation, cross-form/cross-user data access, injection; **Medium** = information leakage, missing rate limit on sensitive endpoint, sensitive data in logs; **Low** = defence-in-depth gaps against a listed checklist item.
 
 ---
 
 ## 1. Authentication (AUTHN)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authentication
 
 Guideline: mistakes in authentication code allow unintended access to protected data and functions.
 
@@ -49,6 +53,8 @@ FormSG focus:
 - API key auth (`authenticateApiKey` in `src/app/modules/auth/auth.middlewares.ts`) and cron/secret-based auth must not be bypassable, and keys must be compared via hash (AUTHN-V2).
 
 ## 2. Authorization (AUTHZ)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=authorization
 
 Guideline: improper authorization allows users to perform unwanted actions on otherwise protected resources.
 
@@ -69,6 +75,8 @@ FormSG focus:
 
 ## 3. Business Logic & Design (BIZ)
 
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=business-logic-amp-design
+
 Guideline: flaws in the design and implementation of business logic can lead to unintended behaviour.
 
 | ID | Item |
@@ -85,6 +93,8 @@ FormSG focus:
 - Frontend controls that enforce a business rule (submit disabled until validation passes, closed-form banners, step gating) must actually be inert, using the prop names of the Chakra version in `frontend/package.json`: on Chakra v2 that means `isDisabled`/`isInvalid`/`isRequired`, not native `disabled`; a control that renders enabled lets the user act against the rule (BIZ-1, BIZ-V2, Medium).
 
 ## 4. Data Management (DATA)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=data-management
 
 Guideline: sensitive data such as IC numbers deserve extra protection, including encryption at rest and in transit.
 
@@ -104,6 +114,8 @@ FormSG focus:
 - NRIC/UIN/FIN and MyInfo attributes must not be persisted or returned in plaintext beyond what the existing design requires (DATA).
 
 ## 5. Exception Handling (EXC)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=exception-handling
 
 Guideline: improper exception handling can lead to leaking of valuable system information.
 
@@ -126,6 +138,8 @@ FormSG focus:
 
 ## 6. Injection Attack (INJ)
 
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=injection-attack
+
 Guideline: injection allows a malicious user to add content into an application to modify its behaviour.
 
 | ID | Item |
@@ -141,6 +155,8 @@ FormSG focus:
 - Frontend validation alone is never sufficient (INJ-2).
 
 ## 7. Logging (LOG)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=logging
 
 Guideline: developers should mitigate common unintended behaviours arising from application logs.
 
@@ -160,6 +176,8 @@ FormSG focus:
 - Frontend telemetry (Datadog RUM/Logs) is a log sink: it must not record respondent input. `defaultPrivacyLevel` must stay `mask`/`mask-user-input`, and `trackUserInteractions`/session replay must not capture form field values (LOG-2, LOG-V1, Medium).
 
 ## 8. Session Management (SESS)
+
+Reference: https://docs.developer.tech.gov.sg/docs/secure-code-review-guidelines/?id=session-management
 
 Guideline: improper session management can lead to impersonation and access to privileged data or functions.
 
