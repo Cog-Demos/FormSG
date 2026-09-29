@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type { Tagged } from 'type-fest'
 
 import { DateString } from './generic'
-import { AgencyBase, AgencyDto, PublicAgencyDto } from './agency'
+import { AgencyBase, AgencyDto, type PublicAgencyDto } from './agency'
 export type UserId = Tagged<string, 'UserId'>
 
 export enum SeenFlags {

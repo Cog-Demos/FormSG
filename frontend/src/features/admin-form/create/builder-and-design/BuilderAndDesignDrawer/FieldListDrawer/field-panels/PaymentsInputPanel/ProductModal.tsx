@@ -43,8 +43,9 @@ const MAX_QTY_KEY = `max_qty`
 const DISPLAY_AMOUNT_KEY = 'display_amount'
 const MULTI_QTY_KEY = 'multi_qty'
 
-const parseIntElseNull = (val: string) => {
-  const parsedInt = parseInt(val, 10)
+// Quantity inputs are typed as numbers but arrive as strings from the DOM.
+const parseIntElseNull = (val: string | number) => {
+  const parsedInt = parseInt(String(val), 10)
   return Number.isNaN(parsedInt) ? null : parsedInt
 }
 
@@ -134,18 +135,17 @@ export const ProductModal = ({
     onClose()
   })
 
-  const minQtyValidation: RegisterOptions = {
-    validate: (valStr: string) => {
+  const minQtyValidation: RegisterOptions<ProductInput, typeof MIN_QTY_KEY> = {
+    validate: (val: number) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 
-      const valNumber = parseIntElseNull(valStr)
+      const valNumber = parseIntElseNull(val)
       if (!valNumber || valNumber <= 0) {
         return 'Enter a value greater than 0'
       }
 
       const maxNumber =
-        parseIntElseNull(getValues(MAX_QTY_KEY) as unknown as string) ||
-        Number.MAX_SAFE_INTEGER
+        parseIntElseNull(getValues(MAX_QTY_KEY)) || Number.MAX_SAFE_INTEGER
 
       if (valNumber > maxNumber) {
         return 'Enter a value smaller than the maximum quantity'
@@ -153,11 +153,11 @@ export const ProductModal = ({
       return true
     },
   }
-  const maxQtyValidation: RegisterOptions = {
-    validate: (valStr: string) => {
+  const maxQtyValidation: RegisterOptions<ProductInput, typeof MAX_QTY_KEY> = {
+    validate: (val: number) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 
-      const valNumber = parseIntElseNull(valStr)
+      const valNumber = parseIntElseNull(val)
       if (!valNumber || valNumber <= 0) {
         return 'Enter a value greater than 0'
       }
@@ -174,8 +174,7 @@ export const ProductModal = ({
         return `The maximum quantity for this amount is ${maxQty}`
       }
       const minNumber =
-        parseIntElseNull(getValues(MIN_QTY_KEY) as unknown as string) ||
-        Number.MIN_SAFE_INTEGER
+        parseIntElseNull(getValues(MIN_QTY_KEY)) || Number.MIN_SAFE_INTEGER
 
       if (valNumber < minNumber) {
         return 'Enter a value greater than the minimum quantity'

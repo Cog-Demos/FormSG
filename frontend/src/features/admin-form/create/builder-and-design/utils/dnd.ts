@@ -1,10 +1,10 @@
-import { DragStart, DragUpdate } from 'react-beautiful-dnd'
+import { DragStart, DragUpdate } from '@hello-pangea/dnd'
 
 import { FIELD_LIST_DROP_ID } from '~features/admin-form/create/builder-and-design/constants'
 
 /**
  * onDrag handler functions to get props to render placeholders since
- * react-beautiful-dnd does not natively support custom placeholders.
+ * @hello-pangea/dnd (react-beautiful-dnd fork) does not natively support custom placeholders.
  * See https://medium.com/@Dedanade/how-to-add-a-custom-placeholder-for-more-than-one-column-react-beautiful-dnd-3d59b64fe2d2
  * for original code.
  */

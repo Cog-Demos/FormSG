@@ -40,6 +40,12 @@ export const theme = extendTheme({
     },
   },
   colors: colours,
+  semanticTokens: {
+    colors: {
+      // Chakra's default component styles expect `white` to be a flat colour.
+      white: '#FFFFFF',
+    },
+  },
   textStyles,
   breakpoints,
   shadows,

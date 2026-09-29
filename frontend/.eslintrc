@@ -25,9 +25,21 @@
     {
       "files": [
         "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
+        "**/?(*.)+(spec|test).[jt]s?(x)",
+        "src/test/**/*.[jt]s?(x)"
       ],
       "extends": ["plugin:testing-library/react"],
+      "globals": {
+        "vi": "readonly",
+        "describe": "readonly",
+        "it": "readonly",
+        "test": "readonly",
+        "expect": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly"
+      },
       "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
         "testing-library/no-unnecessary-act": "off",
@@ -36,7 +48,7 @@
       }
     }
   ],
-  "ignorePatterns": ["build/**/*", "!.storybook"],
+  "ignorePatterns": ["build/**/*", "!.storybook", "public/mockServiceWorker.js"],
   "env": { "es6": true },
   "parserOptions": {
     "ecmaVersion": 2018,

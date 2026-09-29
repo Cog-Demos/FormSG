@@ -1,5 +1,5 @@
+import { ElementType } from 'react'
 import {
-  As,
   chakra,
   Flex,
   FlexProps,
@@ -7,10 +7,10 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import { ReactComponent as BrandHortSvg } from '~assets/svgs/brand/brand-hort-colour.svg'
-import { ReactComponent as BrandHortDarkSvg } from '~assets/svgs/brand/brand-hort-dark.svg'
-import { ReactComponent as BrandMarkSvg } from '~assets/svgs/brand/brand-mark-colour.svg'
-import { ReactComponent as BrandMarkDarkSvg } from '~assets/svgs/brand/brand-mark-dark.svg'
+import BrandHortSvg from '~assets/svgs/brand/brand-hort-colour.svg?react'
+import BrandHortDarkSvg from '~assets/svgs/brand/brand-hort-dark.svg?react'
+import BrandMarkSvg from '~assets/svgs/brand/brand-mark-colour.svg?react'
+import BrandMarkDarkSvg from '~assets/svgs/brand/brand-mark-dark.svg?react'
 import { useIsMobile } from '~hooks/useIsMobile'
 import IconButton from '~components/IconButton'
 import Link from '~components/Link'
@@ -19,7 +19,7 @@ type PublicHeaderLinkProps = {
   label: string
   href: string
   showOnMobile?: boolean
-  MobileIcon?: As
+  MobileIcon?: ElementType
   bg?: string
 }
 

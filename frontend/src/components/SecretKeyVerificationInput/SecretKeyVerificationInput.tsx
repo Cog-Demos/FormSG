@@ -66,7 +66,10 @@ export const SecretKeyVerificationInput = ({
 
   const fileUploadRef = useRef<HTMLInputElement | null>(null)
 
-  const secretKeyValidationRules: RegisterOptions = useMemo(() => {
+  const secretKeyValidationRules: RegisterOptions<
+    SecretKeyFormInputs,
+    typeof SECRET_KEY_NAME
+  > = useMemo(() => {
     return {
       required: "Please enter the form's secret key",
       validate: (secretKey: string) => {

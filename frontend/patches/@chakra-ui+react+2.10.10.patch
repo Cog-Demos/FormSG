@@ -1,0 +1,24 @@
+diff --git a/node_modules/@chakra-ui/react/dist/cjs/form-control/use-form-control.cjs b/node_modules/@chakra-ui/react/dist/cjs/form-control/use-form-control.cjs
+index 5ac282e..de575ba 100644
+--- a/node_modules/@chakra-ui/react/dist/cjs/form-control/use-form-control.cjs
++++ b/node_modules/@chakra-ui/react/dist/cjs/form-control/use-form-control.cjs
+@@ -10,7 +10,6 @@ function useFormControl(props) {
+     ...rest,
+     disabled: isDisabled,
+     readOnly: isReadOnly,
+-    required: isRequired,
+     "aria-invalid": utils.ariaAttr(isInvalid),
+     "aria-required": utils.ariaAttr(isRequired),
+     "aria-readonly": utils.ariaAttr(isReadOnly)
+diff --git a/node_modules/@chakra-ui/react/dist/esm/form-control/use-form-control.mjs b/node_modules/@chakra-ui/react/dist/esm/form-control/use-form-control.mjs
+index e0e2654..5950eee 100644
+--- a/node_modules/@chakra-ui/react/dist/esm/form-control/use-form-control.mjs
++++ b/node_modules/@chakra-ui/react/dist/esm/form-control/use-form-control.mjs
+@@ -8,7 +8,6 @@ function useFormControl(props) {
+     ...rest,
+     disabled: isDisabled,
+     readOnly: isReadOnly,
+-    required: isRequired,
+     "aria-invalid": ariaAttr(isInvalid),
+     "aria-required": ariaAttr(isRequired),
+     "aria-readonly": ariaAttr(isReadOnly)

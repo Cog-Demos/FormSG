@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
+import { ElementType, useCallback } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
-import { As, FormControl, Stack, Text } from '@chakra-ui/react'
+import { FormControl, Stack, Text } from '@chakra-ui/react'
 import { get } from 'lodash'
 import isEmail from 'validator/lib/isEmail'
 
@@ -70,7 +70,7 @@ const StaticRespondentOption = ({
             isReadOnly={isLoading}
             id="emails"
             isRequired
-            isInvalid={staticTagInputErrorMessage}
+            isInvalid={!!staticTagInputErrorMessage}
             key="emails"
           >
             <Controller
@@ -114,7 +114,7 @@ interface DynamicRespondentOptionProps extends RespondentOptionProps {
   emailFieldItems: {
     label: string
     value: string
-    icon?: As
+    icon?: ElementType
   }[]
 }
 
@@ -212,7 +212,7 @@ export const RespondentBlock = ({
   } = formMethods
 
   // TODO: (MRF-email-notif) Remove isTest check when MRF email notifications is out of beta
-  const isTest = process.env.NODE_ENV === 'test'
+  const isTest = import.meta.env.MODE === 'test'
 
   const { emailFormFields = [] } = useAdminFormWorkflow()
 
@@ -230,7 +230,7 @@ export const RespondentBlock = ({
     // invalid form field id but cannot be seen or cleared in the SingleSelect component
     // since no matching Yes/No item can be found.
     // Hence, we clear the approval_field to allow the user to re-select a new valid value.
-    (value) => {
+    (value: string) => {
       if (!isLoading && value && !emailFieldIds.includes(value)) {
         setValue('field', '')
         return ''

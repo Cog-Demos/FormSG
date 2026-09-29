@@ -63,4 +63,21 @@ to security on FormSG.
 
 The frontend is written in React and can be found in `frontend/src`.
 
-The index file is located at `frontend/public/index.html`. The frontend is built with CRA.
+The index file is located at `frontend/index.html` and the entry point is
+`frontend/src/index.tsx`. Static assets that are copied verbatim into the build
+live in `frontend/public`.
+
+The frontend is built with [Vite](https://vitejs.dev/) (`frontend/vite.config.ts`,
+with production build options in `frontend/vite.build.ts`). `npm run build:frontend`
+writes the bundle to `dist/frontend`, which the backend serves. The Datadog RUM
+initialisation (`frontend/datadog-chunk.ts`) is emitted as a separate script that
+is loaded in `<head>` before the app, and no inline scripts are emitted, as the
+CSP forbids them. Build-time variables are read from `import.meta.env` and must be
+prefixed with `VITE_APP_`.
+
+In development, `npm run dev:frontend` starts the Vite dev server on port 3000 and
+proxies `/api` to the backend on port 5001.
+
+Unit tests run with [Vitest](https://vitest.dev/) (`frontend/vitest.config.ts`) and
+components are documented in [Storybook 8](https://storybook.js.org/)
+(`frontend/.storybook`).

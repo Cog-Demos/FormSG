@@ -33,6 +33,8 @@ import {
 } from '~shared/types/form'
 import { dollarsToCents } from '~shared/utils/payments'
 
+import { PublicForm } from '~/i18n/locales/features/public-form'
+
 import { MONGODB_ID_REGEX } from '~constants/routes'
 import { useBrowserStm } from '~hooks/payments'
 import { useTimeout } from '~hooks/useTimeout'
@@ -397,7 +399,7 @@ export const PublicFormProvider = ({
   }, [hasMyInfoError, toast, t])
 
   const showErrorToast = useCallback(
-    (error, form: PublicFormDto) => {
+    (error: unknown, form: PublicFormDto) => {
       toast({
         status: 'danger',
         description:
@@ -436,7 +438,9 @@ export const PublicFormProvider = ({
 
     // Decryption failed for previous submission
     if (isSubmissionSecretKeyInvalid) {
-      return t('features.publicForm.errors.submissionSecretKeyInvalid')
+      return t('features.publicForm.errors.submissionSecretKeyInvalid', {
+        returnObjects: true,
+      }) as PublicForm['errors']['submissionSecretKeyInvalid']
     }
   }, [error, data, previousSubmissionId, isSubmissionSecretKeyInvalid, t])
 

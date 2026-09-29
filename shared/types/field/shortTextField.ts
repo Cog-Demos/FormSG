@@ -1,5 +1,5 @@
-import { BasicField, FieldBase, MyInfoableFieldBase } from './base'
-import { TextValidationOptions } from './utils'
+import type { BasicField, FieldBase, MyInfoableFieldBase } from './base'
+import type { TextValidationOptions } from './utils'
 
 export interface ShortTextFieldBase extends MyInfoableFieldBase, FieldBase {
   fieldType: BasicField.ShortText

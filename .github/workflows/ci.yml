@@ -73,8 +73,10 @@ jobs:
           key: ${{ runner.OS }}-node-modules-${{ hashFiles('**/package-lock.json') }}
       - run: npm run build
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096 --openssl-legacy-provider'
+          NODE_OPTIONS: '--max-old-space-size=6144'
           AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE: 1
+      - name: Check built index.html (no inline scripts, Datadog chunk in head)
+        run: node .github/scripts/check-frontend-html.mjs dist/frontend/index.html
       - name: Upload build files
         uses: actions/upload-artifact@v4
         if: always()

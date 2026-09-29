@@ -17,11 +17,10 @@ import { MarkdownText } from '~components/MarkdownText'
 
 export type ToastStatus = 'danger' | 'success' | 'warning'
 
-export interface ToastProps
-  extends Omit<
-    UseToastOptions,
-    'duration' | 'position' | 'render' | 'status' | 'variant'
-  > {
+export interface ToastProps extends Omit<
+  UseToastOptions,
+  'duration' | 'position' | 'render' | 'status' | 'variant'
+> {
   /**
    * The status variant of the toast.
    */

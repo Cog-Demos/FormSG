@@ -26,7 +26,9 @@ import {
 
 export interface MultiSelectProviderProps<
   Item extends ComboboxItem = ComboboxItem,
-> extends Omit<
+>
+  extends
+    Omit<
       SharedSelectContextReturnProps<Item>,
       'isClearable' | 'virtualListRef' | 'virtualListHeight'
     >,
@@ -299,6 +301,7 @@ export const MultiSelectProvider = ({
       value={{
         inputRef,
         isClearable: false,
+        fullWidth: false,
         selectedItem: null,
         isOpen,
         isItemSelected,
