@@ -56,14 +56,18 @@ interface MyInfoFieldOptionProps extends FieldOptionProps {
   fieldType: MyInfoAttribute
 }
 
-interface DraggableBasicFieldOptionProps
-  extends Omit<FieldOptionProps, 'isActive'> {
+interface DraggableBasicFieldOptionProps extends Omit<
+  FieldOptionProps,
+  'isActive'
+> {
   index: number
   fieldType: BasicField
 }
 
-interface DraggableMyInfoFieldOptionProps
-  extends Omit<FieldOptionProps, 'isActive'> {
+interface DraggableMyInfoFieldOptionProps extends Omit<
+  FieldOptionProps,
+  'isActive'
+> {
   index: number
   fieldType: MyInfoAttribute
 }
@@ -151,7 +155,7 @@ export const DraggableMyInfoFieldListOption = ({
 export const BasicFieldOption = forwardRef<BasicFieldOptionProps, 'button'>(
   ({ fieldType, isDisabled, ...props }, ref) => {
     // TODO: (MRF-email-notif) Remove isTest and useUser when approvals is out of beta
-    const isTest = process.env.NODE_ENV === 'test'
+    const isTest = import.meta.env.MODE === 'test'
     const { user } = useUser()
     const meta = useMemo(
       () => BASICFIELD_TO_DRAWER_META[fieldType],
