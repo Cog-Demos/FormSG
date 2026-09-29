@@ -39,6 +39,19 @@ sudo apt-get install -y cmake autoconf automake libtool libcurl4-openssl-dev g++
 npm_config_python=/usr/bin/python3 npm ci --prefix serverless/virus-scanner
 ```
 
+The husky hooks call `git-secrets` and use the bash-only `&>` redirect, but
+husky runs them with `sh` (dash on Ubuntu), so every commit fails with
+"git-secrets is not installed". Install `git-secrets` and make husky's `sh`
+resolve to bash for this user only:
+
+```bash
+git clone -q https://github.com/awslabs/git-secrets.git /tmp/git-secrets
+mkdir -p ~/.local/bin ~/.local/shimbin ~/.config/husky
+cp /tmp/git-secrets/git-secrets ~/.local/bin/
+ln -sf /bin/bash ~/.local/shimbin/sh
+echo 'export PATH="$HOME/.local/shimbin:$HOME/.local/bin:$PATH"' > ~/.config/husky/init.sh
+```
+
 ## 2. Dependency foundation (TICKET-0)
 
 The only `frontend/package.json` + lockfile change before TICKET-G. Phase 1
