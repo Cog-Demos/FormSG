@@ -1,17 +1,17 @@
 import { stringify } from 'csv-string'
 import FileSaver from 'file-saver'
-import { mocked } from 'jest-mock'
+import { afterAll, describe, expect, it, vi } from 'vitest'
 
 import { CsvGenerator } from './CsvGenerator'
 
 const UTF8_BYTE_ORDER_MARK = '\uFEFF'
 
-jest.mock('file-saver')
-const MockFileSaver = mocked(FileSaver)
+vi.mock('file-saver')
+const MockFileSaver = vi.mocked(FileSaver)
 
 describe('CsvGenerator', () => {
   afterAll(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Constructor', () => {

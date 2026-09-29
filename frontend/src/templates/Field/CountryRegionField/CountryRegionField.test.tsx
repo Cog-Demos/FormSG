@@ -1,6 +1,7 @@
-import { composeStories } from '@storybook/testing-react'
-import { act, render, screen } from '@testing-library/react'
+import { composeStories } from '@storybook/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
 
 import { REQUIRED_ERROR } from '~constants/validation'
 
@@ -12,11 +13,12 @@ const { ValidationOptional, ValidationRequired } = composeStories(stories)
 describe('required field', () => {
   it('renders error when field is not selected before submitting', async () => {
     // Arrange
+    const user = userEvent.setup()
     render(<ValidationRequired />)
     const submitButton = screen.getByRole('button', { name: /submit/i })
 
     // Act
-    await act(async () => userEvent.click(submitButton))
+    await user.click(submitButton)
 
     // Assert
     // Should show error message.

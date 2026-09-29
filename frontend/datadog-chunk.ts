@@ -1,6 +1,8 @@
 /**
- * This file compiles to datadog-chunk.js which is then loaded in the <head> of the react app
- * This ensures that datadog is initialised before the react app
+ * This file is bundled by the Datadog plugin in vite.build.ts into a
+ * self-contained static/js/datadog-chunk.[hash].js, which is loaded in the
+ * <head> of the react app. This ensures that datadog is initialised before the
+ * react app.
  */
 
 import { datadogRum, RumInitConfiguration } from '@datadog/browser-rum'
@@ -26,19 +28,21 @@ const ddBeforeSend: RumInitConfiguration['beforeSend'] = (event) => {
   return true
 }
 
+const appUrl: string | undefined = import.meta.env.VITE_APP_URL
+
 // Init Datadog RUM
-// Values for REACT_APP_DD_RUM_APP_ID, REACT_APP_DD_RUM_CLIENT_TOKEN, REACT_APP_DD_RUM_ENV, REACT_APP_VERSION, REACT_APP_DD_SAMPLE_RATE will be injected at build time
+// VITE_APP_* values are statically replaced by Vite at build time.
 datadogRum.init({
-  applicationId: '@REACT_APP_DD_RUM_APP_ID',
-  clientToken: '@REACT_APP_DD_RUM_CLIENT_TOKEN',
-  env: '@REACT_APP_DD_RUM_ENV',
+  applicationId: import.meta.env.VITE_APP_DD_RUM_APP_ID ?? '',
+  clientToken: import.meta.env.VITE_APP_DD_RUM_CLIENT_TOKEN ?? '',
+  env: import.meta.env.VITE_APP_DD_RUM_ENV,
   site: 'datadoghq.com',
   service: 'formsg-react',
-  allowedTracingUrls: ['@REACT_APP_URL'],
+  allowedTracingUrls: appUrl ? [appUrl] : [],
 
   // Specify a version number to identify the deployed version of your application in Datadog
-  version: '@REACT_APP_VERSION',
-  sessionSampleRate: Number('@REACT_APP_DD_SAMPLE_RATE') || 5,
+  version: import.meta.env.VITE_APP_VERSION,
+  sessionSampleRate: Number(import.meta.env.VITE_APP_DD_SAMPLE_RATE) || 5,
   sessionReplaySampleRate: 100,
   trackUserInteractions: true,
   defaultPrivacyLevel: 'mask-user-input',

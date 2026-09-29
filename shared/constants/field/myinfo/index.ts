@@ -3,7 +3,7 @@ import {
   BasicField,
   MyInfoAttribute,
   MyInfoChildVaxxStatus,
-  MyInfoField,
+  type MyInfoField,
 } from '../../../types/field'
 import { myInfoCountries } from './myinfo-countries'
 import { myInfoDialects } from './myinfo-dialects'

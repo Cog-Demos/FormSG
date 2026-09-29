@@ -1,6 +1,6 @@
-import { AgencyDto } from './agency'
-import { FormDto } from './form/form'
-import { UserDto } from './user'
+import type { AgencyDto } from './agency'
+import type { FormDto } from './form/form'
+import type { UserDto } from './user'
 
 /**
  * The name `Login` may cause confusion.

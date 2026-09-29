@@ -16,7 +16,7 @@ import { SeenFlags } from '~shared/types'
 
 import { BxsHelpCircle } from '~assets/icons/BxsHelpCircle'
 import { BxsRocket } from '~assets/icons/BxsRocket'
-import { ReactComponent as BrandMarkSvg } from '~assets/svgs/brand/brand-mark-colour.svg'
+import BrandMarkSvg from '~assets/svgs/brand/brand-mark-colour.svg?react'
 import { FEATURE_REQUEST, FORM_GUIDE } from '~constants/links'
 import {
   EMERGENCY_CONTACT_KEY_PREFIX,
