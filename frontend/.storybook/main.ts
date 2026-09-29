@@ -32,8 +32,8 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen-typescript',
   },
   // The builder merges frontend/vite.config.mts. Drop production-only plugins
-  // and keep NODE_ENV=test, which app code checks to show beta-gated UI and
-  // to skip real decryption workers in stories.
+  // and set MODE=test, which app code checks to show beta-gated UI and to skip
+  // real decryption workers in stories.
   viteFinal: async (viteConfig) => ({
     ...viteConfig,
     plugins: (viteConfig.plugins ?? [])
@@ -41,7 +41,7 @@ const config: StorybookConfig = {
       .filter((plugin) => !isBuildOnlyPlugin(plugin)),
     define: {
       ...viteConfig.define,
-      'process.env.NODE_ENV': JSON.stringify('test'),
+      'import.meta.env.MODE': JSON.stringify('test'),
     },
   }),
 }
