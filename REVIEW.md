@@ -65,6 +65,7 @@ FormSG focus:
 - New admin routes must be mounted behind `withUserAuthentication` / `authenticateApiKeyAndPlatform`; frontend-only gating is a violation (AUTHZ-V2).
 - Read vs write vs delete must use the least permission level needed; destructive/ownership-transfer/collaborator/billing/payment/webhook actions warrant `Delete`/owner checks (AUTHZ-2, AUTHZ-3).
 - Public form endpoints must not expose private/admin fields or other respondents' data; MRF/pending-submission flows must bind the submission to the intended respondent (AUTHZ-1).
+- Frontend tooling: the Vite dev server must not listen on all interfaces (`server.host: true` / `0.0.0.0`) so a developer machine does not expose the app to the network (AUTHZ-2, Low).
 
 ## 3. Business Logic & Design (BIZ)
 
@@ -81,6 +82,7 @@ FormSG focus:
 - Payments (`src/app/modules/payments/`, Stripe): amounts, quantities and product selections must be validated server-side against the form definition; never trust client-sent price (BIZ-2, BIZ-V1).
 - Submission validation (`src/app/utils/field-validation/`): field constraints (min/max, length, options, attachments size/type, table rows) and logic (hidden/required fields, form logic) must be enforced server-side (BIZ-2, BIZ-V1).
 - Form state (closed/private forms, submission limits, auth type, MRF step order, workflow approvals) must not be bypassable by crafted requests (BIZ-V2).
+- Frontend controls that enforce a business rule (submit disabled until validation passes, closed-form banners, step gating) must actually be inert: with Chakra v2 that means `isDisabled`/`isInvalid`/`isRequired`, not native `disabled`; a control that renders enabled lets the user act against the rule (BIZ-1, BIZ-V2, Medium).
 
 ## 4. Data Management (DATA)
 
@@ -118,6 +120,9 @@ FormSG focus:
 - `neverthrow` `Result`/`ResultAsync` chains must handle every error branch; unhandled promise rejections or ignored `.isErr()` paths are violations (EXC-2).
 - A failed step (e.g. payment, verification, encryption, S3 upload, webhook) must not lead to a submission being accepted or state being left partially written (EXC-V2).
 - Remove `console.log`, debug endpoints, and verbose debug logging (EXC-1).
+- Production builds must not ship debugging artefacts: `build.sourcemap` enabled for the production bundle, `console.*`/`debugger` statements, or dev-only branches. Source maps reveal application internals and library versions (EXC-1, EXC-V1, Low).
+- Environment checks must use the bundler's mechanism (`import.meta.env.MODE`/`PROD` under Vite). A leftover `process.env.NODE_ENV` read is `undefined` at runtime, so dev-mode logging levels and configuration silently reach production (EXC-1, Medium).
+- Client-side decryption must fail gracefully: the decryption worker must be created with syntax the production bundler supports (`new Worker(new URL(..., import.meta.url), { type: 'module' })`); a worker that loads in dev but throws in the production bundle leaves the responses view in an insecure, half-processed state (EXC-3, EXC-V2, Medium).
 
 ## 6. Injection Attack (INJ)
 
@@ -152,6 +157,7 @@ FormSG focus:
 - Use `createLoggerWithLabel` (`src/app/config/logger.ts`) with structured `meta` objects, not string concatenation of user input (LOG-V3).
 - Never log NRIC/UIN/FIN, MyInfo attributes, OTPs, session IDs, API keys, JWTs, passwords, decrypted submission content, or full request bodies/headers; mask where identifiers are needed (LOG-2, LOG-V1).
 - Public, unauthenticated endpoints must not log per-request at high volume or log unbounded payloads (LOG-3, LOG-V2).
+- Frontend telemetry (Datadog RUM/Logs) is a log sink: it must not record respondent input. `defaultPrivacyLevel` must stay `mask`/`mask-user-input`, and `trackUserInteractions`/session replay must not capture form field values (LOG-2, LOG-V1, Medium).
 
 ## 8. Session Management (SESS)
 
@@ -171,32 +177,10 @@ FormSG focus:
 - Singpass/Corppass/sgID JWT cookies must be HTTP-only, signed, scoped, and short-lived; never pass session tokens or JWTs in URLs/query strings (SESS-1, SESS-V1).
 - Custom tokens (e.g. verification transaction IDs, MRF/pending submission links) used as bearer credentials must be unguessable (SESS-2).
 
-## 9. Migration Correctness (MIG)
-
-Applies to PRs that change build tooling, framework or UI-library versions. Severity: **Medium** unless the item says otherwise.
-
-| ID | Item |
-|----|------|
-| MIG-1 | UI-library props and exports must use the API of the version in `package.json` (e.g. Chakra v2 `isDisabled`/`isInvalid`/`isRequired`, not native `disabled`), so controls keep their disabled/invalid state and aria attributes. |
-| MIG-2 | Environment reads must use the bundler's mechanism (`import.meta.env.*` under Vite); a leftover `process.env.*` read is always `undefined` at runtime and silently disables the branch that depends on it. |
-| MIG-3 | Web workers and dynamic imports must use the bundler's supported syntax (`new Worker(new URL(..., import.meta.url), { type: 'module' })`); code that works in dev but breaks in the production bundle is a violation. |
-| MIG-4 | Framework upgrade semantics must be honoured (React 18 `createRoot`, effect cleanup under StrictMode, awaited user-event calls). |
-
-## 10. Build & Tooling Hygiene (HYG)
-
-Severity: **Low**. Report these as flags, not blockers.
-
-| ID | Item |
-|----|------|
-| HYG-1 | Production builds must not ship source maps or debug artefacts (`build.sourcemap`, `console.*`, `debugger`). |
-| HYG-2 | Dev servers must not bind to all interfaces by default (`server.host: true`, `0.0.0.0`). |
-| HYG-3 | `@ts-expect-error` / `@ts-ignore` / `eslint-disable` must carry a reason or ticket reference. |
-| HYG-4 | Leftover references to removed tooling (`REACT_APP_*`, `%PUBLIC_URL%`, `react-scripts`, `craco`, `worker-loader`) after a migration. |
-
 ---
 
 ## Out of scope — do not report
 
-- Issues not mapped to an ID above (style, performance, naming, test coverage, dependency version bumps, general best practices).
+- Issues not mapped to an ID above (style, performance, typing, naming, test coverage, dependency version bumps, general best practices).
 - Generated/vendored files: `package-lock.json`, `frontend/package-lock.json`, `shared/package-lock.json`, `CHANGELOG.md`, `credits-patch`, build output.
 - Test files (`__tests__/`, `*.spec.ts`, `*.test.ts`), unless they contain real hardcoded secrets (DATA-V2).
