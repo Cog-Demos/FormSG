@@ -26,6 +26,11 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const queue = new PQueue({ concurrency: 1 })
+queue.on('active', () => {
+  console.log(
+    `[decryption] processing record, ${queue.size} queued, ${queue.pending} pending`,
+  )
+})
 
 /**
  * Verifies that the signatures for every field that has a corresponding
