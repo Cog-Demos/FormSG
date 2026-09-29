@@ -109,6 +109,20 @@ variable keeps its name with the prefix swapped.
 `frontend/.env.local` (git-ignored). GitHub secret names stay unchanged; only
 the env names they map to change (TICKET-B).
 
+### Intentional leftover-search hits (TICKET-G)
+
+`rg -n -i 'react-scripts|craco|worker-loader|storyshots|REACT_APP_|openssl-legacy-provider|setupProxy|%PUBLIC_URL%' --glob '!**/node_modules/**' --glob '!**/package-lock.json' .`
+has no hits in code, config or scripts. The remaining hits are intentional:
+
+- `.github/workflows/deploy-eb.yml` (`VITE_APP_FORMSG_SDK_MODE: ${{ secrets.REACT_APP_FORMSG_SDK_MODE }}`;
+  only found with `--hidden`) and the `REACT_APP_FORMSG_SDK_MODE` row in
+  `docs/DEPLOYMENT_SETUP.md`: the GitHub secret keeps its name (secrets cannot
+  be renamed from the repo); it is mapped to the Vite variable at build time.
+- This document: the baseline table (CRA / Storybook 6 commands), the removed
+  dependency list, the env-var rename table and the file-ownership map describe
+  the pre-migration state.
+- `CHANGELOG.md`: historical release notes.
+
 ## 4. Phase 1 file-ownership map
 
 | Ticket                   | Owns                                                                                                                                                                                                                                                                                                                                                                                                                                                                | Must not touch                                                                                                     |

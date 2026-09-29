@@ -2,10 +2,12 @@ import path from 'node:path'
 import {
   build,
   type BuildOptions,
+  isCSSRequest,
   loadEnv,
   type Plugin,
   type PluginOption,
   type ResolvedConfig,
+  type Rollup,
 } from 'vite'
 
 // Owned by TICKET-B: production build options and build-only plugins
@@ -13,6 +15,57 @@ import {
 
 const DATADOG_ENTRY = 'datadog-chunk.ts'
 const JS_DIR = 'static/js'
+
+const isStaticallyImportedByEntry = (
+  id: string,
+  getModuleInfo: Rollup.GetModuleInfo,
+  cache: Map<string, boolean>,
+  importStack: string[] = [],
+): boolean => {
+  const cached = cache.get(id)
+  if (cached !== undefined) return cached
+  if (importStack.includes(id)) {
+    cache.set(id, false)
+    return false
+  }
+  const mod = getModuleInfo(id)
+  if (!mod) {
+    cache.set(id, false)
+    return false
+  }
+  if (mod.isEntry) {
+    cache.set(id, true)
+    return true
+  }
+  const result = mod.importers.some((importer) =>
+    isStaticallyImportedByEntry(
+      importer,
+      getModuleInfo,
+      cache,
+      importStack.concat(id),
+    ),
+  )
+  cache.set(id, result)
+  return result
+}
+
+/**
+ * Moves node_modules that the entry imports statically into a `vendor` chunk;
+ * dependencies of lazy routes stay in their lazy chunks. Rendering the
+ * sourcemap of one ~6.5 MB entry chunk otherwise needs ~7.4 GB of heap.
+ */
+const createVendorChunks = (): Rollup.ManualChunksOption => {
+  const cache = new Map<string, boolean>()
+  return (id, { getModuleInfo }) => {
+    if (
+      id.includes('/node_modules/') &&
+      !isCSSRequest(id) &&
+      isStaticallyImportedByEntry(id, getModuleInfo, cache)
+    ) {
+      return 'vendor'
+    }
+  }
+}
 
 // Everything the app emits lives under `static/`, which the backend serves
 // from dist/frontend and falls back to the S3 static assets bucket for.
@@ -23,6 +76,7 @@ export const buildOptions: BuildOptions = {
   assetsDir: 'static',
   rollupOptions: {
     output: {
+      manualChunks: createVendorChunks(),
       entryFileNames: `${JS_DIR}/[name].[hash].js`,
       chunkFileNames: `${JS_DIR}/[name].[hash].chunk.js`,
       assetFileNames: ({ name }) =>

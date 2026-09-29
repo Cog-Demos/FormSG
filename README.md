@@ -85,10 +85,10 @@ To install the relevant npm packages (frontend, backend and virus-scanner), run 
 npm install && npm --prefix serverless/virus-scanner install
 ```
 
-The React frontend is built with [Vite](https://vitejs.dev/). Frontend build-time variables must be prefixed with `VITE_APP_` (e.g. `VITE_APP_GA_TRACKING_ID`); put local overrides in `frontend/.env.local`, which is git-ignored. No special `NODE_OPTIONS` are needed; if a production build runs out of memory, raise the heap limit (CI and Docker use `--max-old-space-size=4096`):
+The React frontend is built with [Vite](https://vitejs.dev/). Frontend build-time variables must be prefixed with `VITE_APP_` (e.g. `VITE_APP_GA_TRACKING_ID`); put local overrides in `frontend/.env.local`, which is git-ignored. A production build (`npm run build`, with sourcemaps) peaks at about 3.4 GB of V8 heap, above Node's default limit on most machines, so raise the heap limit to the value CI and Docker use:
 
 ```bash
-export NODE_OPTIONS=--max-old-space-size=4096
+export NODE_OPTIONS=--max-old-space-size=6144
 ```
 
 If you are on Mac OS X, you may want to allow Docker to use more RAM (minimum of 4GB) by clicking on the Docker icon on the toolbar, clicking on the "Preferences" menu item, then clicking on the "Resources" link on the left.
