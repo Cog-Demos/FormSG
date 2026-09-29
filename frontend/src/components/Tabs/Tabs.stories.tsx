@@ -1,5 +1,5 @@
 import { TabList, TabPanel, TabPanels, Tabs, TabsProps } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { useDraggable } from '~hooks/useDraggable'
 import { viewports } from '~utils/storybook'
@@ -20,7 +20,7 @@ export default {
   },
 } as Meta
 
-const TabTemplate: Story<TabsProps> = (args) => {
+const TabTemplate: StoryFn<TabsProps> = (args) => {
   const { ref, onMouseDown } = useDraggable()
 
   return (
@@ -39,40 +39,57 @@ const TabTemplate: Story<TabsProps> = (args) => {
   )
 }
 
-export const LightTab = TabTemplate.bind({})
-LightTab.args = {
-  variant: 'line-light',
-}
+export const LightTab = {
+  render: TabTemplate,
 
-export const DarkTab = TabTemplate.bind({})
-DarkTab.args = {
-  variant: 'line-dark',
-}
-
-export const WithScrollingLight = TabTemplate.bind({})
-WithScrollingLight.args = {
-  variant: 'line-light',
-}
-WithScrollingLight.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    variant: 'line-light',
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const WithScrollingDark = TabTemplate.bind({})
-WithScrollingDark.args = {
-  variant: 'line-dark',
-}
-WithScrollingDark.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const DarkTab = {
+  render: TabTemplate,
+
+  args: {
+    variant: 'line-dark',
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const VerticalLine = TabTemplate.bind({})
-VerticalLine.args = {
-  variant: 'line',
-  orientation: 'vertical',
+export const WithScrollingLight = {
+  render: TabTemplate,
+
+  args: {
+    variant: 'line-light',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const WithScrollingDark = {
+  render: TabTemplate,
+
+  args: {
+    variant: 'line-dark',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const VerticalLine = {
+  render: TabTemplate,
+
+  args: {
+    variant: 'line',
+    orientation: 'vertical',
+  },
 }

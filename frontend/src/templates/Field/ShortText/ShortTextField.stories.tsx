@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, TextSelectedValidation } from '~shared/types/field'
 
@@ -48,7 +48,7 @@ interface StoryShortTextFieldProps extends ShortTextFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryShortTextFieldProps> = ({
+const Template: StoryFn<StoryShortTextFieldProps> = ({
   defaultValue,
   ...args
 }) => {
@@ -88,48 +88,64 @@ const Template: Story<StoryShortTextFieldProps> = ({
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  defaultValue: '',
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '',
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const ValidationExact3Length = Template.bind({})
-ValidationExact3Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customVal: 3,
-      selectedValidation: TextSelectedValidation.Exact,
+export const ValidationExact3Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customVal: 3,
+        selectedValidation: TextSelectedValidation.Exact,
+      },
     },
+    defaultValue: 'abcdefg',
   },
-  defaultValue: 'abcdefg',
-}
-export const ValidationMin6Length = Template.bind({})
-ValidationMin6Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customVal: 6,
-      selectedValidation: TextSelectedValidation.Minimum,
-    },
-  },
-  defaultValue: 'hmm',
 }
 
-export const ValidationMax1Length = Template.bind({})
-ValidationMax1Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customVal: 1,
-      selectedValidation: TextSelectedValidation.Maximum,
+export const ValidationMin6Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customVal: 6,
+        selectedValidation: TextSelectedValidation.Minimum,
+      },
     },
+    defaultValue: 'hmm',
   },
-  defaultValue: 'too long',
+}
+
+export const ValidationMax1Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customVal: 1,
+        selectedValidation: TextSelectedValidation.Maximum,
+      },
+    },
+    defaultValue: 'too long',
+  },
 }

@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormLogoState } from '~shared/types/form/form_logo'
 
@@ -37,49 +37,58 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <PublicFormLogo />
+const Template: StoryFn = () => <PublicFormLogo />
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: [
-    getPublicFormResponse({
-      delay: 'infinite',
-    }),
-  ],
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        delay: 'infinite',
+      }),
+    ],
+  },
 }
 
-export const NoLogo = Template.bind({})
-NoLogo.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test title',
+export const NoLogo = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test title',
+          },
         },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
 
-export const CustomLogo = Template.bind({})
-CustomLogo.parameters = {
-  msw: [
-    ...envHandlers,
-    getCustomLogoResponse(),
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test title',
-          startPage: {
-            logo: {
-              state: FormLogoState.Custom,
-              fileId: 'mockFormLogo',
+export const CustomLogo = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...envHandlers,
+      getCustomLogoResponse(),
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test title',
+            startPage: {
+              logo: {
+                state: FormLogoState.Custom,
+                fileId: 'mockFormLogo',
+              },
             },
           },
         },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
