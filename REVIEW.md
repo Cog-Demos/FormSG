@@ -65,6 +65,7 @@ FormSG focus:
 - New admin routes must be mounted behind `withUserAuthentication` / `authenticateApiKeyAndPlatform`; frontend-only gating is a violation (AUTHZ-V2).
 - Read vs write vs delete must use the least permission level needed; destructive/ownership-transfer/collaborator/billing/payment/webhook actions warrant `Delete`/owner checks (AUTHZ-2, AUTHZ-3).
 - Public form endpoints must not expose private/admin fields or other respondents' data; MRF/pending-submission flows must bind the submission to the intended respondent (AUTHZ-1).
+- Frontend tooling (once the frontend builds with Vite): the dev server must not listen on all interfaces (`server.host: true` / `0.0.0.0`) so a developer machine does not expose the app to the network (AUTHZ-2, Low).
 
 ## 3. Business Logic & Design (BIZ)
 
@@ -81,6 +82,7 @@ FormSG focus:
 - Payments (`src/app/modules/payments/`, Stripe): amounts, quantities and product selections must be validated server-side against the form definition; never trust client-sent price (BIZ-2, BIZ-V1).
 - Submission validation (`src/app/utils/field-validation/`): field constraints (min/max, length, options, attachments size/type, table rows) and logic (hidden/required fields, form logic) must be enforced server-side (BIZ-2, BIZ-V1).
 - Form state (closed/private forms, submission limits, auth type, MRF step order, workflow approvals) must not be bypassable by crafted requests (BIZ-V2).
+- Frontend controls that enforce a business rule (submit disabled until validation passes, closed-form banners, step gating) must actually be inert, using the prop names of the Chakra version in `frontend/package.json`: on Chakra v2 that means `isDisabled`/`isInvalid`/`isRequired`, not native `disabled`; a control that renders enabled lets the user act against the rule (BIZ-1, BIZ-V2, Medium).
 
 ## 4. Data Management (DATA)
 
@@ -118,6 +120,9 @@ FormSG focus:
 - `neverthrow` `Result`/`ResultAsync` chains must handle every error branch; unhandled promise rejections or ignored `.isErr()` paths are violations (EXC-2).
 - A failed step (e.g. payment, verification, encryption, S3 upload, webhook) must not lead to a submission being accepted or state being left partially written (EXC-V2).
 - Remove `console.log`, debug endpoints, and verbose debug logging (EXC-1).
+- Production builds must not ship debugging artefacts: `build.sourcemap` enabled for the production bundle, `console.*`/`debugger` statements, or dev-only branches. Source maps reveal application internals and library versions (EXC-1, EXC-V1, Low).
+- Environment checks must use the mechanism of the bundler in `frontend/package.json` (`process.env.*` under CRA/CRACO, `import.meta.env.MODE`/`PROD` under Vite). After a switch to Vite, a leftover `process.env.NODE_ENV` read is `undefined` at runtime, so dev-mode logging levels and configuration silently reach production (EXC-1, Medium).
+- Client-side decryption must fail gracefully: the decryption worker must be created with syntax the production bundler supports (`worker-loader` under CRA/CRACO; `new Worker(new URL(..., import.meta.url), { type: 'module' })` under Vite); a worker that loads in dev but throws in the production bundle leaves the responses view in an insecure, half-processed state (EXC-3, EXC-V2, Medium).
 
 ## 6. Injection Attack (INJ)
 
@@ -152,6 +157,7 @@ FormSG focus:
 - Use `createLoggerWithLabel` (`src/app/config/logger.ts`) with structured `meta` objects, not string concatenation of user input (LOG-V3).
 - Never log NRIC/UIN/FIN, MyInfo attributes, OTPs, session IDs, API keys, JWTs, passwords, decrypted submission content, or full request bodies/headers; mask where identifiers are needed (LOG-2, LOG-V1).
 - Public, unauthenticated endpoints must not log per-request at high volume or log unbounded payloads (LOG-3, LOG-V2).
+- Frontend telemetry (Datadog RUM/Logs) is a log sink: it must not record respondent input. `defaultPrivacyLevel` must stay `mask`/`mask-user-input`, and `trackUserInteractions`/session replay must not capture form field values (LOG-2, LOG-V1, Medium).
 
 ## 8. Session Management (SESS)
 
