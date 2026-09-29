@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -46,7 +46,7 @@ interface StoryCountryRegionFieldProps extends CountryRegionFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryCountryRegionFieldProps> = ({
+const Template: StoryFn<StoryCountryRegionFieldProps> = ({
   defaultValue,
   ...args
 }) => {
@@ -88,14 +88,22 @@ const Template: Story<StoryCountryRegionFieldProps> = ({
   )
 }
 
-export const ValidationRequired = Template.bind({})
-
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationRequired = {
+  render: Template,
 }
 
-export const ValidationInvalidValue = Template.bind({})
-ValidationInvalidValue.args = {
-  defaultValue: 'This is not a valid option',
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
+}
+
+export const ValidationInvalidValue = {
+  render: Template,
+
+  args: {
+    defaultValue: 'This is not a valid option',
+  },
 }

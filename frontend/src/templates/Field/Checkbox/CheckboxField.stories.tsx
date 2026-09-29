@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { merge } from 'lodash'
 
 import { BasicField } from '~shared/types/field'
@@ -52,7 +52,7 @@ interface StoryCheckboxFieldProps extends CheckboxFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryCheckboxFieldProps> = ({
+const Template: StoryFn<StoryCheckboxFieldProps> = ({
   defaultValue,
   triggerValidation,
   ...args
@@ -95,18 +95,27 @@ const Template: Story<StoryCheckboxFieldProps> = ({
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  triggerValidation: true,
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    triggerValidation: true,
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const WithoutOthersOption = Template.bind({})
-WithoutOthersOption.args = {
-  schema: merge({}, baseSchema, { othersRadioButton: false }),
+export const WithoutOthersOption = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, { othersRadioButton: false }),
+  },
 }

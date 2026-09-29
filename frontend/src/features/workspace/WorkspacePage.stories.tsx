@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { times } from 'lodash'
 import { rest } from 'msw'
 
@@ -93,80 +93,106 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <WorkspacePage />
-export const Desktop = Template.bind({})
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  ...getMobileViewParameters(),
-  a11y: {
-    config: {
-      // Seems to be a false positive, since a loading screen should have nothing focusable.
-      // And only occurs during mobile loading.
-      rules: [{ id: 'scrollable-region-focusable', enabled: false }],
+const Template: StoryFn = () => <WorkspacePage />
+
+export const Desktop = {
+  render: Template,
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+    a11y: {
+      config: {
+        // Seems to be a false positive, since a loading screen should have nothing focusable.
+        // And only occurs during mobile loading.
+        rules: [{ id: 'scrollable-region-focusable', enabled: false }],
+      },
     },
   },
 }
 
-export const LoadingDesktop = Template.bind({})
-LoadingDesktop.parameters = {
-  msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(ctx.delay('infinite'), ctx.json({}))
-      },
-    ),
-  ],
+export const LoadingDesktop = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      rest.get<AdminDashboardFormMetaDto[]>(
+        '/api/v3/admin/forms',
+        (req, res, ctx) => {
+          return res(ctx.delay('infinite'), ctx.json({}))
+        },
+      ),
+    ],
+  },
 }
 
-export const LoadingMobile = Template.bind({})
-LoadingMobile.parameters = {
-  ...Mobile.parameters,
-  ...LoadingDesktop.parameters,
+export const LoadingMobile = {
+  render: Template,
+
+  parameters: {
+    ...Mobile.parameters,
+    ...LoadingDesktop.parameters,
+  },
 }
 
-export const Empty = Template.bind({})
-Empty.parameters = {
-  msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(ctx.json([]))
-      },
-    ),
-  ],
+export const Empty = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      rest.get<AdminDashboardFormMetaDto[]>(
+        '/api/v3/admin/forms',
+        (req, res, ctx) => {
+          return res(ctx.json([]))
+        },
+      ),
+    ],
+  },
 }
 
-export const EmptyMobile = Template.bind({})
-EmptyMobile.parameters = {
-  ...Empty.parameters,
-  ...Mobile.parameters,
+export const EmptyMobile = {
+  render: Template,
+
+  parameters: {
+    ...Empty.parameters,
+    ...Mobile.parameters,
+  },
 }
 
-export const AllOpenDesktop = Template.bind({})
-AllOpenDesktop.parameters = {
-  msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(
-          ctx.json(
-            THIRTY_FORMS.filter((form) => form.status === FormStatus.Public),
-          ),
-        )
-      },
-    ),
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        email: 'user@example.com',
-      },
-    }),
-  ],
+export const AllOpenDesktop = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      rest.get<AdminDashboardFormMetaDto[]>(
+        '/api/v3/admin/forms',
+        (req, res, ctx) => {
+          return res(
+            ctx.json(
+              THIRTY_FORMS.filter((form) => form.status === FormStatus.Public),
+            ),
+          )
+        },
+      ),
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          email: 'user@example.com',
+        },
+      }),
+    ],
+  },
 }
-export const AllOpenMobile = Template.bind({})
-AllOpenMobile.parameters = {
-  ...Mobile.parameters,
-  ...AllOpenDesktop.parameters,
+
+export const AllOpenMobile = {
+  render: Template,
+
+  parameters: {
+    ...Mobile.parameters,
+    ...AllOpenDesktop.parameters,
+  },
 }
