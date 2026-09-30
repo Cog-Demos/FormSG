@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import {
   Menu as ChakraMenu,
   MenuButton as ChakraMenuButton,
   MenuDivider as ChakraMenuDivider,
   MenuItem as ChakraMenuItem,
   MenuList as ChakraMenuList,
+  MenuListProps,
   MenuProps,
   useMultiStyleConfig,
 } from '@chakra-ui/react'
@@ -75,7 +76,16 @@ const MenuButton = ({
  *
  * Used to wrap MenuItem component
  */
-const MenuList = ChakraMenuList
+const MenuList = forwardRef<HTMLDivElement, MenuListProps>(
+  ({ rootProps, ...props }, ref): JSX.Element => (
+    // matchWidth only sets a minimum width; the list still grows to fit its items.
+    <ChakraMenuList
+      ref={ref}
+      rootProps={{ minW: 'max-content', ...rootProps }}
+      {...props}
+    />
+  ),
+)
 
 /**
  * Item in MenuList
