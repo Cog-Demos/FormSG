@@ -149,6 +149,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^14.4.3",
+    "@types/babel__traverse": "7.20.4",
     "@types/dedent": "^0.7.0",
     "@types/file-saver": "^2.0.3",
     "@types/gtag.js": "0.0.10",
