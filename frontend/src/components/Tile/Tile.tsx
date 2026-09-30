@@ -48,6 +48,8 @@ export interface TileProps
    * Defaults to simple.
    */
   variant: 'complex' | 'simple'
+
+  isFullWidth?: boolean
 }
 
 type TileWithParts = ComponentWithAs<'button', TileProps> & {
@@ -58,12 +60,17 @@ type TileWithParts = ComponentWithAs<'button', TileProps> & {
 }
 
 export const Tile = forwardRef<TileProps, 'button'>(
-  ({ badge, icon, children, ...props }, ref) => {
+  ({ badge, icon, children, isFullWidth, ...props }, ref) => {
     const styles = useMultiStyleConfig('Tile', props)
     return (
       // Ref passed into the component as a whole so that it can be focused
       <StylesProvider value={styles}>
-        <Button sx={styles.container} ref={ref} {...props}>
+        <Button
+          sx={styles.container}
+          ref={ref}
+          width={isFullWidth ? '100%' : undefined}
+          {...props}
+        >
           <HStack spacing="1rem">
             <Icon __css={styles.icon} as={icon} />
             {badge}

@@ -1,8 +1,7 @@
 import { MemoryRouter, Route } from 'react-router'
 import { Routes } from 'react-router-dom'
-import { expect } from '@storybook/jest'
-import { Meta, Story } from '@storybook/react'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { Meta, StoryFn } from '@storybook/react'
+import { expect, userEvent, waitFor, within } from '@storybook/test'
 
 import { FormResponseMode } from '~shared/types/form'
 
@@ -50,7 +49,7 @@ const MOCK_KEYPAIR = {
   secretKey: 'xdXNlI2HyZzsVXcvCR/LT4350oW/yRZNx2lMi+555Yk=',
 }
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <MemoryRouter
       initialEntries={[
@@ -79,119 +78,162 @@ const Template: Story = () => {
     </MemoryRouter>
   )
 }
-export const EmailForm = Template.bind({})
 
-export const EmailFormLoading = Template.bind({})
-EmailFormLoading.parameters = {
-  msw: [
-    ...createFormBuilderMocks({}, 0),
-    getAdminFormSubmissions({ delay: 'infinite' }),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
+export const EmailForm = {
+  render: Template,
 }
 
-export const EmptyEmailForm = Template.bind({})
-EmptyEmailForm.parameters = {
-  msw: [
-    ...createFormBuilderMocks({}, 0),
-    getAdminFormSubmissions({
-      override: 0,
-    }),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
-}
+export const EmailFormLoading = {
+  render: Template,
 
-export const EmailFormTablet = Template.bind({})
-EmailFormTablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({}, 0),
+      getAdminFormSubmissions({ delay: 'infinite' }),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
   },
-  chromatic: { viewports: [viewports.md] },
 }
 
-export const EmailFormMobile = Template.bind({})
-EmailFormMobile.parameters = getMobileViewParameters()
+export const EmptyEmailForm = {
+  render: Template,
 
-export const StorageForm = Template.bind({})
-StorageForm.parameters = {
-  msw: [
-    ...createFormBuilderMocks(
-      {
-        responseMode: FormResponseMode.Encrypt,
-        publicKey: MOCK_KEYPAIR.publicKey,
-      },
-      0,
-    ),
-    getAdminFormSubmissions(),
-    getStorageSubmissionMetadataResponse(),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({}, 0),
+      getAdminFormSubmissions({
+        override: 0,
+      }),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
+  },
 }
 
-export const StorageFormUnlocked = Template.bind({})
-StorageFormUnlocked.parameters = StorageForm.parameters
-StorageFormUnlocked.play = async ({ canvasElement }) => {
-  const canvas = within(canvasElement)
+export const EmailFormTablet = {
+  render: Template,
 
-  await waitFor(
-    async () => {
-      expect(canvas.getByTestId('secretKey')).not.toBeDisabled()
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
     },
-    { timeout: 5000 },
-  )
-  await userEvent.type(canvas.getByTestId('secretKey'), MOCK_KEYPAIR.secretKey)
-
-  await userEvent.click(
-    canvas.getByRole('button', { name: /unlock responses/i }),
-  )
+    chromatic: { viewports: [viewports.md] },
+  },
 }
 
-export const StorageFormUnlockedTablet = Template.bind({})
-StorageFormUnlockedTablet.parameters = {
-  ...EmailFormTablet.parameters,
-  ...StorageFormUnlocked.parameters,
-}
-StorageFormUnlockedTablet.play = StorageFormUnlocked.play
-
-export const StorageFormUnlockedMobile = Template.bind({})
-StorageFormUnlockedMobile.parameters = {
-  ...EmailFormMobile.parameters,
-  ...StorageFormUnlocked.parameters,
-}
-StorageFormUnlockedMobile.play = StorageFormUnlocked.play
-
-export const StorageFormTablet = Template.bind({})
-StorageFormTablet.parameters = {
-  ...EmailFormTablet.parameters,
-  ...StorageForm.parameters,
+export const EmailFormMobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
 }
 
-export const StorageFormMobile = Template.bind({})
-StorageFormMobile.parameters = {
-  ...EmailFormMobile.parameters,
-  ...StorageForm.parameters,
+export const StorageForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks(
+        {
+          responseMode: FormResponseMode.Encrypt,
+          publicKey: MOCK_KEYPAIR.publicKey,
+        },
+        0,
+      ),
+      getAdminFormSubmissions(),
+      getStorageSubmissionMetadataResponse(),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
+  },
 }
 
-export const StorageFormLoading = Template.bind({})
-StorageFormLoading.parameters = {
-  msw: [
-    ...createFormBuilderMocks({ responseMode: FormResponseMode.Encrypt }, 0),
-    getAdminFormSubmissions({ delay: 'infinite' }),
-    getStorageSubmissionMetadataResponse({}, 'infinite'),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
+export const StorageFormUnlocked = {
+  render: Template,
+  parameters: StorageForm.parameters,
+
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement)
+
+    await waitFor(
+      async () => {
+        expect(canvas.getByTestId('secretKey')).not.toBeDisabled()
+      },
+      { timeout: 5000 },
+    )
+    await userEvent.type(
+      canvas.getByTestId('secretKey'),
+      MOCK_KEYPAIR.secretKey,
+    )
+
+    await userEvent.click(
+      canvas.getByRole('button', { name: /unlock responses/i }),
+    )
+  },
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: [
-    ...createFormBuilderMocks({ responseMode: undefined }, 'infinite'),
-    getAdminFormSubmissions({ delay: 'infinite' }),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
+export const StorageFormUnlockedTablet = {
+  render: Template,
+
+  parameters: {
+    ...EmailFormTablet.parameters,
+    ...StorageFormUnlocked.parameters,
+  },
+
+  play: StorageFormUnlocked.play,
+}
+
+export const StorageFormUnlockedMobile = {
+  render: Template,
+
+  parameters: {
+    ...EmailFormMobile.parameters,
+    ...StorageFormUnlocked.parameters,
+  },
+
+  play: StorageFormUnlocked.play,
+}
+
+export const StorageFormTablet = {
+  render: Template,
+
+  parameters: {
+    ...EmailFormTablet.parameters,
+    ...StorageForm.parameters,
+  },
+}
+
+export const StorageFormMobile = {
+  render: Template,
+
+  parameters: {
+    ...EmailFormMobile.parameters,
+    ...StorageForm.parameters,
+  },
+}
+
+export const StorageFormLoading = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({ responseMode: FormResponseMode.Encrypt }, 0),
+      getAdminFormSubmissions({ delay: 'infinite' }),
+      getStorageSubmissionMetadataResponse({}, 'infinite'),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
+  },
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({ responseMode: undefined }, 'infinite'),
+      getAdminFormSubmissions({ delay: 'infinite' }),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
+  },
 }

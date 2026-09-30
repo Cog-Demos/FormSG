@@ -1,4 +1,6 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta } from '@storybook/react'
+
+import { SeenFlags } from '~shared/types'
 
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 
@@ -12,7 +14,7 @@ import {
 
 import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
-import { AdminNavBar, AdminNavBarProps } from './AdminNavBar'
+import { AdminNavBar } from './AdminNavBar'
 
 export default {
   title: 'App/AdminNavBar',
@@ -28,70 +30,81 @@ export default {
   ],
 } as Meta
 
-const Template: Story<AdminNavBarProps> = (args) => <AdminNavBar {...args} />
+export const Default = {}
 
-export const Default = Template.bind({})
-
-export const Expanded = Template.bind({})
-Expanded.args = { isMenuOpen: true }
-
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
-
-export const MobileExpanded = Template.bind({})
-MobileExpanded.parameters = {
-  ...Mobile.parameters,
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        email: 'super_super_super_super_super_long_name@example.com',
-      },
-    }),
-  ],
-}
-MobileExpanded.args = Expanded.args
-
-export const Tablet = Template.bind({})
-Tablet.parameters = getTabletViewParameters()
-
-export const WhatsNewFeatureNotificationShown = Template.bind({})
-WhatsNewFeatureNotificationShown.parameters = {
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: {},
-      },
-    }),
-  ],
+export const Expanded = {
+  args: { isMenuOpen: true },
 }
 
-export const WhatsNewFeatureNotificationNotShown = Template.bind({})
-WhatsNewFeatureNotificationNotShown.parameters = {
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: { lastSeenFeatureUpdateVersion: FEATURE_UPDATE_LIST.version },
-      },
-    }),
-  ],
+export const Mobile = {
+  parameters: getMobileViewParameters(),
 }
 
-export const WhatsNewFeatureMobileNotificationShown = Template.bind({})
-WhatsNewFeatureMobileNotificationShown.parameters = {
-  ...Mobile.parameters,
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: {},
-      },
-    }),
-  ],
+export const MobileExpanded = {
+  parameters: {
+    ...Mobile.parameters,
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          email: 'super_super_super_super_super_long_name@example.com',
+        },
+      }),
+    ],
+  },
+
+  args: Expanded.args,
+}
+
+export const Tablet = {
+  parameters: getTabletViewParameters(),
+}
+
+export const WhatsNewFeatureNotificationShown = {
+  parameters: {
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          flags: new Map(),
+        },
+      }),
+    ],
+  },
+}
+
+export const WhatsNewFeatureNotificationNotShown = {
+  parameters: {
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          flags: new Map([
+            [
+              SeenFlags.LastSeenFeatureUpdateVersion,
+              FEATURE_UPDATE_LIST.version,
+            ],
+          ]),
+        },
+      }),
+    ],
+  },
+}
+
+export const WhatsNewFeatureMobileNotificationShown = {
+  parameters: {
+    ...Mobile.parameters,
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          flags: new Map(),
+        },
+      }),
+    ],
+  },
 }

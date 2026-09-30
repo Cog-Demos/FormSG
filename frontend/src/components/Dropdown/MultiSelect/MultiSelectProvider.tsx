@@ -329,6 +329,7 @@ export const MultiSelectProvider = ({
         inputAria,
         virtualListRef,
         virtualListHeight,
+        fullWidth: false,
       }}
     >
       <MultiSelectContext.Provider

@@ -1,6 +1,6 @@
 import { MemoryRouter, Route } from 'react-router'
 import { Routes } from 'react-router-dom'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   createFormBuilderMocks,
@@ -43,7 +43,7 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   return (
     <MemoryRouter
       initialEntries={[
@@ -70,45 +70,70 @@ const Template: Story = () => {
     </MemoryRouter>
   )
 }
-export const Default = Template.bind({})
 
-export const EmptyReviewAndIssue = Template.bind({})
-EmptyReviewAndIssue.parameters = {
-  msw: [
-    getEmptyAdminFormIssue(),
-    getEmptyAdminFormFeedback(),
-    ...DEFAULT_MSW_ROUTES,
-  ],
+export const Default = {
+  render: Template,
 }
 
-export const EmptyReview = Template.bind({})
-EmptyReview.parameters = {
-  msw: [getEmptyAdminFormFeedback(), ...DEFAULT_MSW_ROUTES],
-}
-export const EmptyIssue = Template.bind({})
-EmptyIssue.parameters = {
-  msw: [getEmptyAdminFormIssue(), ...DEFAULT_MSW_ROUTES],
-}
+export const EmptyReviewAndIssue = {
+  render: Template,
 
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+  parameters: {
+    msw: [
+      getEmptyAdminFormIssue(),
+      getEmptyAdminFormFeedback(),
+      ...DEFAULT_MSW_ROUTES,
+    ],
   },
-  chromatic: { viewports: [viewports.md] },
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const EmptyReview = {
+  render: Template,
 
-export const LoadingDesktop = Template.bind({})
-LoadingDesktop.storyName = 'Loading/Desktop'
-LoadingDesktop.parameters = {
-  msw: [getAdminFormIssue({ delay: 'infinite' }), ...DEFAULT_MSW_ROUTES],
+  parameters: {
+    msw: [getEmptyAdminFormFeedback(), ...DEFAULT_MSW_ROUTES],
+  },
 }
-export const LoadingMobile = Template.bind({})
-LoadingMobile.storyName = 'Loading/Mobile'
-LoadingMobile.parameters = {
-  ...getMobileViewParameters(),
-  ...LoadingDesktop.parameters,
+
+export const EmptyIssue = {
+  render: Template,
+
+  parameters: {
+    msw: [getEmptyAdminFormIssue(), ...DEFAULT_MSW_ROUTES],
+  },
+}
+
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
+}
+
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
+
+export const LoadingDesktop = {
+  render: Template,
+  name: 'Loading/Desktop',
+
+  parameters: {
+    msw: [getAdminFormIssue({ delay: 'infinite' }), ...DEFAULT_MSW_ROUTES],
+  },
+}
+
+export const LoadingMobile = {
+  render: Template,
+  name: 'Loading/Mobile',
+
+  parameters: {
+    ...getMobileViewParameters(),
+    ...LoadingDesktop.parameters,
+  },
 }

@@ -25,6 +25,7 @@ const baseStyleBody: SystemStyleObject = {
 
 const baseStyle: PartsStyleFunction<typeof parts> = (props) => ({
   overlay: baseStyleOverlay(props),
+  dialog: { bg: 'white' },
   header: baseStyleHeader,
   body: baseStyleBody,
 })
