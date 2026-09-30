@@ -25,9 +25,21 @@
     {
       "files": [
         "**/__tests__/**/*.[jt]s?(x)",
-        "**/?(*.)+(spec|test).[jt]s?(x)"
+        "**/?(*.)+(spec|test).[jt]s?(x)",
+        "src/vitest.setup.ts"
       ],
       "extends": ["plugin:testing-library/react"],
+      "globals": {
+        "vi": "readonly",
+        "describe": "readonly",
+        "it": "readonly",
+        "test": "readonly",
+        "expect": "readonly",
+        "beforeAll": "readonly",
+        "afterAll": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly"
+      },
       "rules": {
         "@typescript-eslint/no-non-null-assertion": "off",
         "testing-library/no-unnecessary-act": "off",
