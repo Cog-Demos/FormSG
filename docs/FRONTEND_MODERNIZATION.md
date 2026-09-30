@@ -53,7 +53,9 @@ sudo dpkg -i /tmp/libssl1.1.deb
 # serverless/virus-scanner: aws-lambda-ric builds native code with cmake + node-gyp 9,
 # and node-gyp 9 needs a Python that still ships distutils (≤ 3.11)
 sudo apt-get install -y cmake autoconf automake libtool build-essential
-npm_config_python="$(pyenv which python3.11 || command -v python3.11)" npm ci --prefix serverless/virus-scanner
+# pyenv shims resolve to the global Python (3.12, no distutils); point node-gyp at the real 3.11 binary
+PY311="$(pyenv prefix 3.11 2>/dev/null)/bin/python3.11"; [ -x "$PY311" ] || PY311="$(command -v python3.11)"
+PYTHON="$PY311" npm_config_python="$PY311" npm ci --prefix serverless/virus-scanner
 ```
 
 ## Dependency foundation (TICKET-0)
