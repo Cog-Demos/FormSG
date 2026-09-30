@@ -299,6 +299,7 @@ export const MultiSelectProvider = ({
       value={{
         inputRef,
         isClearable: false,
+        fullWidth: false,
         selectedItem: null,
         isOpen,
         isItemSelected,

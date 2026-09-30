@@ -64,6 +64,16 @@ import {
 } from './date'
 import { formatNumberToLocaleString } from './stringFormat'
 
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown
+  ? Omit<T, K>
+  : never
+
+/**
+ * Validation rules that can be reused across forms with different field
+ * values. `deps` is omitted as it can only be typed against a specific form.
+ */
+export type ValidationRules = DistributiveOmit<RegisterOptions, 'deps'>
+
 // Omit unused props
 type MinimumFieldValidationProps<T extends FieldBase> = Omit<
   T,
@@ -79,12 +89,12 @@ type MinimumFieldValidationPropsEmailAndMobile<T extends FieldBase> = Omit<
 type ValidationRuleFn<T extends FieldBase = FieldBase> = (
   schema: MinimumFieldValidationProps<T>,
   disableRequiredValidation?: boolean,
-) => RegisterOptions
+) => ValidationRules
 
 type ValidationRuleFnEmailAndMobile<T extends FieldBase = FieldBase> = (
   schema: MinimumFieldValidationPropsEmailAndMobile<T>,
   disableRequiredValidation?: boolean,
-) => RegisterOptions
+) => ValidationRules
 
 const requiredSingleAnswerValidationFn =
   (schema: Pick<FieldBase, 'required'>, disableRequiredValidation?: boolean) =>
@@ -100,7 +110,7 @@ const requiredSingleAnswerValidationFn =
  */
 const createBaseVfnFieldValidationRules: ValidationRuleFnEmailAndMobile<
   VerifiableFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       required: (value?: VerifiableFieldValues) => {
@@ -129,7 +139,7 @@ const createBaseVfnFieldValidationRules: ValidationRuleFnEmailAndMobile<
 export const createBaseValidationRules = (
   schema: Pick<FieldBase, 'required'>,
   disableRequiredValidation?: boolean,
-): RegisterOptions => {
+): ValidationRules => {
   return {
     validate: requiredSingleAnswerValidationFn(
       schema,
@@ -140,7 +150,7 @@ export const createBaseValidationRules = (
 
 export const createDropdownValidationRules: ValidationRuleFn<
   DropdownFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return createDropdownValidationRulesWithCustomErrorMessage(
     INVALID_DROPDOWN_OPTION_ERROR,
   )(schema, disableRequiredValidation)
@@ -148,7 +158,7 @@ export const createDropdownValidationRules: ValidationRuleFn<
 
 export const createCountryRegionValidationRules: ValidationRuleFn<
   DropdownFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return createDropdownValidationRulesWithCustomErrorMessage(
     INVALID_COUNTRY_REGION_OPTION_ERROR,
   )(schema, disableRequiredValidation)
@@ -158,7 +168,7 @@ export const createDropdownValidationRulesWithCustomErrorMessage: (
   errorMessage: string,
 ) => ValidationRuleFn<DropdownFieldBase> =
   (errorMessage) =>
-  (schema, disableRequiredValidation): RegisterOptions => {
+  (schema, disableRequiredValidation): ValidationRules => {
     return {
       validate: {
         required: requiredSingleAnswerValidationFn(
@@ -176,13 +186,13 @@ export const createDropdownValidationRulesWithCustomErrorMessage: (
 export const createRatingValidationRules: ValidationRuleFn<RatingFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return createBaseValidationRules(schema, disableRequiredValidation)
 }
 
 export const createAttachmentValidationRules: ValidationRuleFn<
   AttachmentFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: (value?: File) => {
       if (disableRequiredValidation || !schema.required) return true
@@ -194,7 +204,7 @@ export const createAttachmentValidationRules: ValidationRuleFn<
 export const createHomeNoValidationRules: ValidationRuleFn<HomenoFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return {
     validate: {
       required: requiredSingleAnswerValidationFn(
@@ -211,7 +221,7 @@ export const createHomeNoValidationRules: ValidationRuleFn<HomenoFieldBase> = (
 
 export const createMobileValidationRules: ValidationRuleFnEmailAndMobile<
   MobileFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       baseValidations: (val?: VerifiableFieldValues) => {
@@ -226,7 +236,7 @@ export const createMobileValidationRules: ValidationRuleFnEmailAndMobile<
 export const createNumberValidationRules: ValidationRuleFn<NumberFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   const { selectedValidation } = schema.ValidationOptions
   const { selectedLengthValidation, customVal } =
     schema.ValidationOptions.LengthValidationOptions
@@ -298,7 +308,7 @@ export const createNumberValidationRules: ValidationRuleFn<NumberFieldBase> = (
 
 export const createDecimalValidationRules: ValidationRuleFn<
   DecimalFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       required: requiredSingleAnswerValidationFn(
@@ -352,7 +362,7 @@ export const createDecimalValidationRules: ValidationRuleFn<
 
 export const createTextValidationRules: ValidationRuleFn<
   ShortTextFieldBase | LongTextFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   const { selectedValidation, customVal } = schema.ValidationOptions
   return {
     validate: {
@@ -390,7 +400,7 @@ export const createTextValidationRules: ValidationRuleFn<
 export const createUenValidationRules: ValidationRuleFn<UenFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return {
     validate: {
       required: requiredSingleAnswerValidationFn(
@@ -408,7 +418,7 @@ export const createUenValidationRules: ValidationRuleFn<UenFieldBase> = (
 export const createNricValidationRules: ValidationRuleFn<NricFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return {
     validate: {
       required: requiredSingleAnswerValidationFn(
@@ -429,7 +439,7 @@ export const createNricValidationRules: ValidationRuleFn<NricFieldBase> = (
 
 export const createCheckboxValidationRules: ValidationRuleFn<
   CheckboxFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       required: (val?: CheckboxFieldValues['value']) => {
@@ -475,7 +485,7 @@ const parseDate = (val: string) => {
 export const createDateValidationRules: ValidationRuleFn<DateFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return {
     validate: {
       required: requiredSingleAnswerValidationFn(
@@ -546,13 +556,13 @@ export const createDateValidationRules: ValidationRuleFn<DateFieldBase> = (
 export const createRadioValidationRules: ValidationRuleFn<RadioFieldBase> = (
   schema,
   disableRequiredValidation,
-): RegisterOptions => {
+): ValidationRules => {
   return createBaseValidationRules(schema, disableRequiredValidation)
 }
 
 export const createEmailValidationRules: ValidationRuleFnEmailAndMobile<
   EmailFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       baseValidations: (val?: VerifiableFieldValues) => {
@@ -604,7 +614,7 @@ export const baseMobileValidationFn =
 
 export const createChildrenValidationRules: ValidationRuleFn<
   ChildrenCompoundFieldBase
-> = (schema, disableRequiredValidation): RegisterOptions => {
+> = (schema, disableRequiredValidation): ValidationRules => {
   return {
     validate: {
       required: (value: string) => {

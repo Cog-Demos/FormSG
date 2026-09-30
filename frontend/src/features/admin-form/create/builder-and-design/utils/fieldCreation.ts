@@ -216,10 +216,7 @@ export const getFieldCreationMeta = (fieldType: BasicField): FieldCreateDto => {
 }
 
 export const getMyInfoFieldCreationMeta = (
-  myInfoAttribute: Exclude<
-    MyInfoAttribute,
-    MyInfoChildAttributes[keyof MyInfoChildAttributes]
-  >,
+  myInfoAttribute: Exclude<MyInfoAttribute, `${MyInfoChildAttributes}`>,
 ): MyInfoField => {
   const baseMeta: Pick<
     MyInfoField,

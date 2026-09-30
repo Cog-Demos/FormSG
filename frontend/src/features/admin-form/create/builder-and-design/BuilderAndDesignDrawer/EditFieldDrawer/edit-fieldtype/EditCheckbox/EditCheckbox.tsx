@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Controller, RegisterOptions } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { Box, FormControl, SimpleGrid } from '@chakra-ui/react'
 import { extend, isEmpty, pick } from 'lodash'
 
 import { CheckboxFieldBase } from '~shared/types/field'
 
-import { createBaseValidationRules } from '~utils/fieldValidation'
+import {
+  createBaseValidationRules,
+  ValidationRules,
+} from '~utils/fieldValidation'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
 import FormLabel from '~components/FormControl/FormLabel'
 import Input from '~components/Input'
@@ -116,7 +119,7 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
     [watchedInputs.othersRadioButton],
   )
 
-  const customMinValidationOptions: RegisterOptions = useMemo(
+  const customMinValidationOptions: ValidationRules = useMemo(
     () => ({
       required: {
         value:
@@ -158,7 +161,7 @@ export const EditCheckbox = ({ field }: EditCheckboxProps): JSX.Element => {
     [watchedInputs],
   )
 
-  const customMaxValidationOptions: RegisterOptions = useMemo(
+  const customMaxValidationOptions: ValidationRules = useMemo(
     () => ({
       required: {
         value:
