@@ -240,7 +240,7 @@ describe('attachment validation', () => {
 
     // Assert
     // Should show success message.
-    const success = screen.getByText(/you have submitted[\s\S]*lyrics/i)
+    const success = await screen.findByText(/you have submitted[\s\S]*lyrics/i)
     expect(success).not.toBeNull()
     const error = screen.queryByText(REQUIRED_ERROR)
     expect(error).toBeNull()
