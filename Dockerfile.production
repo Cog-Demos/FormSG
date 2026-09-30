@@ -47,7 +47,8 @@ RUN --mount=type=secret,id=dd_api_key \
     --service=formsg-react \
     --release-version=$APP_VERSION \
     --minified-path-prefix=$APP_URL \
-    --repository-url=$REPO_URL
+    --repository-url=$REPO_URL && \
+    find ./dist/frontend -name '*.map' -delete
 
 RUN npm prune --production --legacy-peer-deps
 

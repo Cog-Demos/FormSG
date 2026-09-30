@@ -54,8 +54,9 @@ const vendorChunk = (): Rollup.ManualChunksOption => {
 export const buildOptions: BuildOptions = {
   outDir: '../dist/frontend',
   emptyOutDir: true,
-  // Sourcemaps are uploaded to Datadog by Dockerfile.production.
-  sourcemap: true,
+  // Sourcemaps are uploaded to Datadog and then deleted by Dockerfile.production;
+  // 'hidden' omits the sourceMappingURL comment from the served bundles.
+  sourcemap: 'hidden',
   // Everything lives under /static so the backend can fall back to the S3
   // static bucket for assets of previous deployments.
   assetsDir: 'static',
