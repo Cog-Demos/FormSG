@@ -6,6 +6,7 @@ import {
   FormLabel,
 } from '@chakra-ui/form-control'
 import { Meta, StoryFn, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 import { isValidPhoneNumber } from 'libphonenumber-js/mobile'
 
 import Button from '../Button'
@@ -15,7 +16,7 @@ import { PhoneNumberInput, PhoneNumberInputProps } from './PhoneNumberInput'
 export default {
   title: 'Components/PhoneNumberInput/International',
   component: PhoneNumberInput,
-  parameters: { actions: { argTypesRegex: '^on.*' } },
+  args: { onChange: fn() },
   decorators: [],
 } as Meta
 

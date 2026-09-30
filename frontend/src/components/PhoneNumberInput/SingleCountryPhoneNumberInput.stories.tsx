@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
 
 import * as stories from './IntlPhoneNumberInput.stories'
 import { PhoneNumberInput, PhoneNumberInputProps } from './PhoneNumberInput'
@@ -6,7 +7,7 @@ import { PhoneNumberInput, PhoneNumberInputProps } from './PhoneNumberInput'
 export default {
   title: 'Components/PhoneNumberInput/SingleCountry',
   component: PhoneNumberInput,
-  parameters: { actions: { argTypesRegex: '^on.*' } },
+  args: { onChange: fn() },
   decorators: [],
 } as Meta
 
