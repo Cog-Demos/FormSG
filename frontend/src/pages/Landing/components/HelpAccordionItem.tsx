@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, ReactNode } from 'react'
 import {
   AccordionButton,
   AccordionIcon,
@@ -9,6 +9,7 @@ import {
 
 interface HelpAccordionItemProps {
   title: string
+  children?: ReactNode
 }
 
 export const HelpAccordionItem: FC<HelpAccordionItemProps> = ({

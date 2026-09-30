@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react'
 import {
-  RenderProps,
   useToast as useChakraToast,
   UseToastOptions as ChakraUseToastOptions,
 } from '@chakra-ui/react'
 
 import { Toast, ToastProps, ToastStatus } from '~/components/Toast/Toast'
+
+type ToastRenderProps = Parameters<
+  NonNullable<ChakraUseToastOptions['render']>
+>[0]
 
 type ToastBehaviourProps = Pick<
   ChakraUseToastOptions,
@@ -54,17 +57,18 @@ export const useToast = ({
         duration,
         position,
         ...rest,
-        render: (props: RenderProps) =>
+        render: (props: ToastRenderProps) =>
           // NOTE: Because chakra expects this to be JSX, this has to be called with createElement.
           // Omitting the createElement causes a visual bug, where our own theme providers are not used.
           // Using createElement also allows the file to be pure ts rather than tsx.
-          render ??
+          render?.(props) ??
           React.createElement(() =>
             Toast({
               status: status ?? initialStatus,
               isClosable: initialProps.isClosable,
               ...rest,
-              ...props,
+              id: props.id,
+              onClose: props.onClose,
             }),
           ),
       })

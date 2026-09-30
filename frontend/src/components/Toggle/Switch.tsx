@@ -6,19 +6,22 @@
 
 import { useMemo } from 'react'
 import { BiLoader } from 'react-icons/bi'
-import { useCheckbox, UseCheckboxProps } from '@chakra-ui/checkbox'
-import { Icon, keyframes, usePrefersReducedMotion } from '@chakra-ui/react'
 import {
   chakra,
   forwardRef,
   HTMLChakraProps,
+  Icon,
   omitThemingProps,
   SystemProps,
   SystemStyleObject,
   ThemingProps,
+  useCheckbox,
+  UseCheckboxProps,
   useMultiStyleConfig,
-} from '@chakra-ui/system'
+  usePrefersReducedMotion,
+} from '@chakra-ui/react'
 import { cx, dataAttr } from '@chakra-ui/utils'
+import { keyframes } from '@emotion/react'
 
 import { BxCheck, BxLockAlt, BxX } from '~/assets/icons'
 import { TOGGLE_THEME_KEY } from '~/theme/components/Toggle'
