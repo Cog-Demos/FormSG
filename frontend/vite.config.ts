@@ -51,6 +51,6 @@ export default defineConfig({
     outDir: '../dist/frontend',
     emptyOutDir: true,
     assetsDir: 'static',
-    sourcemap: true,
+    sourcemap: 'hidden',
   },
 })
