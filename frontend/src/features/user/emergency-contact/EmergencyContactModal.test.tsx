@@ -14,6 +14,7 @@ describe('User has no verified contact number', () => {
   it('should render with empty contact number details', async () => {
     // Arrange
     await act(async () => {
+      await NoContact.load()
       render(<NoContact />)
     })
     // Wait until all async stuff has rendered
@@ -36,6 +37,7 @@ describe('User has no verified contact number', () => {
     // Arrange
     const user = userEvent.setup()
     await act(async () => {
+      await NoContact.load()
       render(<NoContact />)
     })
     // Wait until all async stuff has rendered
@@ -86,6 +88,7 @@ describe('User has verified contact number', () => {
   it('should render with verified contact number details', async () => {
     // Arrange
     await act(async () => {
+      await WithContact.load()
       render(<WithContact />)
     })
     // Wait until all async stuff has rendered
@@ -112,6 +115,7 @@ describe('User has verified contact number', () => {
     // Arrange
     const user = userEvent.setup()
     await act(async () => {
+      await WithContact.load()
       render(<WithContact />)
     })
     // Wait until all async stuff has rendered

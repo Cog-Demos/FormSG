@@ -10,6 +10,7 @@ describe('User transfers ownership of all owned forms', () => {
   it('should render modal with validation triggered', async () => {
     // Arrange
     await act(async () => {
+      await Default.load()
       render(<Default />)
     })
     // Wait until all async stuff has rendered
@@ -34,6 +35,7 @@ describe('User transfers ownership of all owned forms', () => {
     // Arrange
     const user = userEvent.setup()
     await act(async () => {
+      await Default.load()
       render(<Default />)
     })
     // Wait until all async stuff has rendered
@@ -73,6 +75,7 @@ describe('User transfers ownership of all owned forms', () => {
     // Arrange
     const user = userEvent.setup()
     await act(async () => {
+      await Default.load()
       render(<Default />)
     })
     // Wait until all async stuff has rendered
