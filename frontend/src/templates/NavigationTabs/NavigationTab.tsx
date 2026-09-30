@@ -1,13 +1,14 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 import { Link as ReactLink } from 'react-router-dom'
 import { chakra, useStyles } from '@chakra-ui/react'
 
 const Link = chakra(ReactLink)
 
-interface NavigationTabProps extends ComponentProps<typeof Link> {
+type NavigationTabProps = ComponentProps<typeof Link> & {
   isActive?: boolean
   isDisabled?: boolean
   showReddot?: boolean
+  children?: ReactNode
 }
 
 /** Must be nested inside NavigationTabList component, uses styles provided by that component. */
@@ -24,7 +25,7 @@ export const NavigationTab = ({
       <chakra.a
         __css={styles.tab}
         aria-disabled
-        d="inline-flex"
+        display="inline-flex"
         alignItems="center"
       >
         {children}

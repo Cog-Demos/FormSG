@@ -15,7 +15,7 @@ import {
   useBreakpointValue,
 } from '@chakra-ui/react'
 
-import { Product, StorageFormSettings } from '~shared/types'
+import { Product, ProductId, StorageFormSettings } from '~shared/types'
 import {
   centsToDollars,
   dollarsToCents,
@@ -130,7 +130,11 @@ export const ProductModal = ({
   const watchMultiQtyEnabled = watch(MULTI_QTY_KEY, product?.multi_qty ?? false)
   const handleSaveProduct = handleSubmit((product) => {
     const { display_amount, ...rest } = product
-    onSaveProduct({ ...rest, amount_cents: dollarsToCents(display_amount) })
+    onSaveProduct({
+      ...rest,
+      _id: rest._id as ProductId,
+      amount_cents: dollarsToCents(display_amount),
+    })
     onClose()
   })
 

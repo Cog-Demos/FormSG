@@ -107,7 +107,7 @@ export const EndPageInput = ({
   }, [dirtyFields, setIsDirty])
 
   const handleEndPageBuilderChanges = useCallback(
-    (endPageInputs) => {
+    (endPageInputs: FieldValues) => {
       setData({ ...(endPageInputs as FormEndPage) })
     },
     [setData],
