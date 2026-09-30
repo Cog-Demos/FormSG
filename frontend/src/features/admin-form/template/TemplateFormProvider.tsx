@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 import get from 'lodash/get'
+import noop from 'lodash/noop'
 import simplur from 'simplur'
 
 import { FormAuthType } from '~shared/types/form'
@@ -84,6 +85,9 @@ export const TemplateFormProvider = ({
     <PublicFormContext.Provider
       value={{
         handleSubmitForm: undefined,
+        hasSingleSubmissionValidationError: false,
+        setHasSingleSubmissionValidationError: noop,
+        hasRespondentNotWhitelistedError: false,
         formId,
         error,
         isAuthRequired,

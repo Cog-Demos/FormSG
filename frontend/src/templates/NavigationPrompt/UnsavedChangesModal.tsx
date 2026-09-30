@@ -73,7 +73,7 @@ export const UnsavedChangesModal = ({
             direction={{ base: 'column', md: 'row-reverse' }}
           >
             <Button
-              isFullWidth={isMobile}
+              width={isMobile ? '100%' : undefined}
               colorScheme="danger"
               onClick={onConfirm}
               autoFocus
@@ -83,7 +83,7 @@ export const UnsavedChangesModal = ({
             <Button
               colorScheme="secondary"
               variant="clear"
-              isFullWidth={isMobile}
+              width={isMobile ? '100%' : undefined}
               onClick={onCancel}
             >
               {cancelButtonText}
