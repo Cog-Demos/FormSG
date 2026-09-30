@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { addDays, lightFormat, parse } from 'date-fns'
 
 import { DATE_DISPLAY_FORMAT } from '~shared/constants/dates'
@@ -66,7 +66,7 @@ interface StoryDateFieldProps extends DateFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryDateFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryDateFieldProps> = ({ defaultValue, ...args }) => {
   const formMethods = useForm({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -103,76 +103,94 @@ const Template: Story<StoryDateFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  defaultValue: '',
-}
+export const ValidationRequired = {
+  render: Template,
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: {
-    ...baseSchema,
-    required: false,
-    description: 'Date field is optional',
+  args: {
+    schema: baseSchema,
+    defaultValue: '',
   },
-  defaultValue: '',
 }
 
-export const ValidationNoFuture = Template.bind({})
-ValidationNoFuture.args = {
-  schema: {
-    ...baseSchema,
-    description: 'Future dates are disallowed',
-    dateValidation: {
-      customMaxDate: null,
-      customMinDate: null,
-      selectedDateValidation: DateSelectedValidation.NoFuture,
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      required: false,
+      description: 'Date field is optional',
     },
+    defaultValue: '',
   },
-  defaultValue: lightFormat(
-    addDays(MOCKED_TODAY_DATE, 10),
-    DATE_DISPLAY_FORMAT,
-  ),
 }
 
-export const ValidationNoPast = Template.bind({})
-ValidationNoPast.args = {
-  schema: {
-    ...baseSchema,
-    description: 'Past dates are disallowed',
-    dateValidation: {
-      customMaxDate: null,
-      customMinDate: null,
-      selectedDateValidation: DateSelectedValidation.NoPast,
+export const ValidationNoFuture = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      description: 'Future dates are disallowed',
+      dateValidation: {
+        customMaxDate: null,
+        customMinDate: null,
+        selectedDateValidation: DateSelectedValidation.NoFuture,
+      },
     },
+    defaultValue: lightFormat(
+      addDays(MOCKED_TODAY_DATE, 10),
+      DATE_DISPLAY_FORMAT,
+    ),
   },
-  defaultValue: lightFormat(
-    addDays(MOCKED_TODAY_DATE, -10),
-    DATE_DISPLAY_FORMAT,
-  ),
 }
 
-export const ValidationCustomRange = Template.bind({})
-ValidationCustomRange.args = {
-  schema: {
-    ...baseSchema,
-    description: 'Only 12 December to 25 December 2021 is allowed',
-    dateValidation: {
-      customMaxDate: new Date('2021-12-25'),
-      customMinDate: new Date('2021-12-12'),
-      selectedDateValidation: DateSelectedValidation.Custom,
+export const ValidationNoPast = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      description: 'Past dates are disallowed',
+      dateValidation: {
+        customMaxDate: null,
+        customMinDate: null,
+        selectedDateValidation: DateSelectedValidation.NoPast,
+      },
     },
+    defaultValue: lightFormat(
+      addDays(MOCKED_TODAY_DATE, -10),
+      DATE_DISPLAY_FORMAT,
+    ),
   },
-  defaultValue: '26/12/2021',
 }
 
-export const ValidationInvalidDaysOfTheWeek = Template.bind({})
-ValidationInvalidDaysOfTheWeek.args = {
-  schema: {
-    ...baseSchema,
-    description: 'Wednesdays and Thursdays are invalid days',
-    invalidDays: [InvalidDaysOptions.Wednesday, InvalidDaysOptions.Thursday],
+export const ValidationCustomRange = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      description: 'Only 12 December to 25 December 2021 is allowed',
+      dateValidation: {
+        customMaxDate: new Date('2021-12-25'),
+        customMinDate: new Date('2021-12-12'),
+        selectedDateValidation: DateSelectedValidation.Custom,
+      },
+    },
+    defaultValue: '26/12/2021',
   },
-  defaultValue: '27/07/2022',
+}
+
+export const ValidationInvalidDaysOfTheWeek = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      description: 'Wednesdays and Thursdays are invalid days',
+      invalidDays: [InvalidDaysOptions.Wednesday, InvalidDaysOptions.Thursday],
+    },
+    defaultValue: '27/07/2022',
+  },
 }
