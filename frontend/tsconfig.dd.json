@@ -1,15 +1,16 @@
-// Config file for ts-loader in webpack.dd.config.js
+// Type-checks the Datadog chunk and its Vite build helper: tsc -p tsconfig.dd.json
 {
-    "compilerOptions": {
-      "outDir": "../../dist/frontend/static/js/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "target": "es2015",
-      "jsx": "react",
-      "allowJs": true,
-      "moduleResolution": "node"
-    },
-    "include": [
-      "datadog-chunk.ts"
-    ]
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["dom", "es2020"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["datadog-chunk.ts", "vite/datadogChunk.ts"]
 }
