@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { Controller, RegisterOptions, useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { FormControl, Skeleton, Stack } from '@chakra-ui/react'
 import { isEmpty } from 'lodash'
 import isEmail from 'validator/lib/isEmail'
@@ -7,6 +7,7 @@ import isEmail from 'validator/lib/isEmail'
 import { FormPermission } from '~shared/types'
 
 import { useIsMobile } from '~hooks/useIsMobile'
+import { ValidationRules } from '~utils/fieldValidation'
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
 import FormLabel from '~components/FormControl/FormLabel'
@@ -73,7 +74,7 @@ const useAddCollaboratorInput = () => {
     return handleAddCollaborator(inputs)
   })
 
-  const validationRules: RegisterOptions = useMemo(() => {
+  const validationRules: ValidationRules = useMemo(() => {
     return {
       required: 'Collaborator email is required',
       validate: {

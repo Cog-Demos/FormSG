@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useFieldArray, useFormContext, useFormState } from 'react-hook-form'
+import {
+  FieldError,
+  useFieldArray,
+  useFormContext,
+  useFormState,
+} from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import { useTable } from 'react-table'
+import { CellProps, Renderer, useTable } from 'react-table'
 import {
   Box,
   Table,
@@ -55,7 +60,10 @@ export const TableField = ({
         <ColumnHeader title={c.title} isRequired={c.required} id={c._id} />
       ),
       accessor: c._id,
-      Cell: ColumnCell,
+      // Remaining ColumnCellProps are provided via `cell.render('Cell', ...)`.
+      Cell: ColumnCell as unknown as Renderer<
+        CellProps<(typeof fields)[number]>
+      >,
     }))
   }, [schema.columns])
 
@@ -65,7 +73,9 @@ export const TableField = ({
     name: schema._id,
   })
 
-  const tableErrors = get(errors, schema._id)
+  const tableErrors = get(errors, schema._id) as
+    | (Record<string, FieldError> | undefined)[]
+    | undefined
   const uniqTableError = useMemo(() => {
     // On mobile, errors are shown directly in the individual table cells and
     // would not need to be shown in the table field itself.
@@ -88,13 +98,13 @@ export const TableField = ({
     // Update field array when min rows changes.
     if (hasMinRowsChanged) {
       const prevRowLength = fields.length
-      if (schema.minimumRows > prevRowLength) {
-        for (let i = prevRowLength; i < schema.minimumRows; i++) {
+      if (Number(schema.minimumRows) > prevRowLength) {
+        for (let i = prevRowLength; i < Number(schema.minimumRows); i++) {
           appendTableRow()
         }
       } else {
         // Remove rows from field array
-        for (let i = prevRowLength; i > schema.minimumRows; i--) {
+        for (let i = prevRowLength; i > Number(schema.minimumRows); i--) {
           remove(i - 1)
         }
       }
@@ -115,7 +125,10 @@ export const TableField = ({
 
   const handleRemoveRow = useCallback(
     (rowIndex: number) => {
-      if (fields.length <= schema.minimumRows || rowIndex >= fields.length) {
+      if (
+        fields.length <= Number(schema.minimumRows) ||
+        rowIndex >= fields.length
+      ) {
         return
       }
       return remove(rowIndex)
@@ -148,7 +161,7 @@ export const TableField = ({
   return (
     <TableFieldContainer schema={schema}>
       <Box
-        d="block"
+        display="block"
         w="100%"
         overflowX="auto"
         sx={{
@@ -228,7 +241,8 @@ export const TableField = ({
                     >
                       <IconButton
                         isDisabled={
-                          schema.disabled || fields.length <= schema.minimumRows
+                          schema.disabled ||
+                          fields.length <= Number(schema.minimumRows)
                         }
                         variant="clear"
                         colorScheme="danger"

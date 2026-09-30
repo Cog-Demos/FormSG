@@ -51,7 +51,7 @@ export interface YesNoProps {
 export const YesNo = forwardRef<YesNoProps, 'input'>(
   ({ colorScheme, ...props }, ref) => {
     const formControlProps = useFormControlProps(props)
-    const { getRootProps, getRadioProps } = useRadioGroup(props)
+    const { getRootProps, getRadioProps, onChange } = useRadioGroup(props)
 
     const groupProps = getRootProps()
     const [noProps, yesProps] = useMemo(() => {
@@ -66,16 +66,22 @@ export const YesNo = forwardRef<YesNoProps, 'input'>(
       }
 
       return [
-        getRadioProps({
-          value: 'No',
-          ...baseProps,
-        }),
-        getRadioProps({
-          value: 'Yes',
-          ...baseProps,
-        }),
+        {
+          ...getRadioProps({
+            value: 'No',
+            ...baseProps,
+          }),
+          onChange,
+        },
+        {
+          ...getRadioProps({
+            value: 'Yes',
+            ...baseProps,
+          }),
+          onChange,
+        },
       ]
-    }, [formControlProps, getRadioProps, props.name])
+    }, [formControlProps, getRadioProps, onChange, props.name])
 
     return (
       // -1px so borders collapse.

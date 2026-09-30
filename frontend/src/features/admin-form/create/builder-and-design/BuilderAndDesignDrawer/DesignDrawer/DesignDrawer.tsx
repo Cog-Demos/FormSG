@@ -1,10 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo } from 'react'
-import {
-  Controller,
-  UnpackNestedValue,
-  useForm,
-  useWatch,
-} from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useMutation } from 'react-query'
 import { useParams } from 'react-router-dom'
 import { useDebounce } from 'react-use'
@@ -124,7 +119,7 @@ export const DesignInput = (): JSX.Element | null => {
 
   const watchedInputs = useWatch({
     control: control,
-  }) as UnpackNestedValue<FormStartPageInput>
+  }) as FormStartPageInput
 
   const clonedWatchedInputs = useMemo(
     () => cloneDeep(watchedInputs),

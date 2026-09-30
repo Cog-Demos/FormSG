@@ -1,10 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import {
-  RegisterOptions,
-  useForm,
-  UseFormSetError,
-  UseFormSetValue,
-} from 'react-hook-form'
+import { useForm, UseFormSetError, UseFormSetValue } from 'react-hook-form'
 import { BiUpload } from 'react-icons/bi'
 import {
   FormControl,
@@ -17,6 +12,7 @@ import {
 
 import { GUIDE_SECRET_KEY_LOSS } from '~constants/links'
 import { useIsMobile } from '~hooks/useIsMobile'
+import { ValidationRules } from '~utils/fieldValidation'
 import { isKeypairValid, SECRET_KEY_REGEX } from '~utils/secretKeyValidation'
 
 import Button from '../Button'
@@ -66,7 +62,7 @@ export const SecretKeyVerificationInput = ({
 
   const fileUploadRef = useRef<HTMLInputElement | null>(null)
 
-  const secretKeyValidationRules: RegisterOptions = useMemo(() => {
+  const secretKeyValidationRules: ValidationRules = useMemo(() => {
     return {
       required: "Please enter the form's secret key",
       validate: (secretKey: string) => {

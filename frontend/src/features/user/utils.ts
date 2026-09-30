@@ -14,7 +14,10 @@ export const getShowFeatureFlagLastSeen = (
   flag: SeenFlags,
 ): boolean => {
   const since = SeenFlagsMapVersion[flag]
-  const flagValue = user?.flags?.[flag]
+  // flags is deserialised from JSON as a plain object rather than a Map.
+  const flagValue = (
+    user?.flags as Partial<Record<SeenFlags, number>> | undefined
+  )?.[flag]
   if (flagValue == null) {
     // If the flag is not set, failover as user has seen the flag.
     return true
