@@ -14,6 +14,8 @@ import { getStoryContext } from '@storybook/test-runner'
 import type { ElementContext, Result, RunOptions, Spec } from 'axe-core'
 import { configureAxe, getViolations, injectAxe } from 'axe-playwright'
 
+type Page = Parameters<typeof injectAxe>[0]
+
 interface A11yParameters {
   disable?: boolean
   element?: string
@@ -26,6 +28,7 @@ interface A11yParameters {
 const STORYBOOK_ROOT = '#storybook-root'
 const AXE_BUSY_RETRIES = 5
 const AXE_BUSY_DELAY_MS = 200
+const SETTLE_TIMEOUT_MS = 5000
 
 const toAxeContext = ({
   element = STORYBOOK_ROOT,
@@ -53,7 +56,11 @@ const formatViolations = (violations: Result[]): string =>
         `[${impact ?? 'unknown'}] ${id}: ${help} (${nodes.length} node${nodes.length === 1 ? '' : 's'})`,
         `  ${helpUrl}`,
         ...nodes.map(
-          ({ target, html }) => `  - ${target.join(' ')}\n      ${html}`,
+          ({ target, html, failureSummary }) =>
+            `  - ${target.join(' ')}\n      ${html}` +
+            (failureSummary
+              ? `\n      ${failureSummary.replace(/\n/g, '\n      ')}`
+              : ''),
         ),
       ].join('\n'),
     )
@@ -75,6 +82,28 @@ const getViolationsWhenIdle = async (
   }
 }
 
+// Axe samples computed colours, so finite CSS transitions/animations (e.g.
+// Chakra background-color transitions) must finish before it runs.
+const waitForStoryToSettle = (page: Page): Promise<void> =>
+  page.evaluate(async (timeoutMs) => {
+    const settled = (async () => {
+      await document.fonts.ready
+      await Promise.all(
+        document
+          .getAnimations()
+          .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+          .map((a) => a.finished.catch(() => undefined)),
+      )
+    })()
+    await Promise.race([
+      settled,
+      new Promise((resolve) => setTimeout(resolve, timeoutMs)),
+    ])
+    await new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    )
+  }, SETTLE_TIMEOUT_MS)
+
 const config: TestRunnerConfig = {
   async preVisit(page) {
     await injectAxe(page)
@@ -88,6 +117,7 @@ const config: TestRunnerConfig = {
       await configureAxe(page, a11y.config)
     }
 
+    await waitForStoryToSettle(page)
     const violations = await getViolationsWhenIdle(
       page,
       toAxeContext(a11y),
