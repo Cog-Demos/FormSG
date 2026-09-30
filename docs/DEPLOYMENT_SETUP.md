@@ -78,20 +78,20 @@ If no `msgSrvcName` is found in the form document, SMSes associated with that fo
 ### Github Actions Secrets
 
 The following repository secrets are set in Github Actions:
-| Secret                  | Description                                          |
+| Secret | Description |
 | :---------------------- | ---------------------------------------------------- |
-| `AWS_ACCESS_KEY_ID`     | AWS IAM access key ID used to deploy.                |
-| `AWS_SECRET_ACCESS_KEY` | AWS IAM access secret used to deploy.                |
-| `AWS_DEFAULT_REGION`    | AWS region to use.                                   |
-| `ECR_REPO`              | ECR Repository which stores the docker images.       |
-| `BUCKET_NAME`           | S3 Bucket used to store zipped `Dockerrun.aws.json`. |
+| `AWS_ACCESS_KEY_ID` | AWS IAM access key ID used to deploy. |
+| `AWS_SECRET_ACCESS_KEY` | AWS IAM access secret used to deploy. |
+| `AWS_DEFAULT_REGION` | AWS region to use. |
+| `ECR_REPO` | ECR Repository which stores the docker images. |
+| `BUCKET_NAME` | S3 Bucket used to store zipped `Dockerrun.aws.json`. |
 
 There are also environment secrets for each environment (`staging`, `staging-alt`, `release`, `uat`):
-| Secret                      | Description                                                                       |
+| Secret | Description |
 | :-------------------------- | --------------------------------------------------------------------------------- |
-| `APP_NAME`                  | Application name for the environment.                                             |
-| `DEPLOY_ENV`                | Deployment environment on elastic beanstalk.                                      |
-| `VITE_APP_FORMSG_SDK_MODE`  | Determines the keys used in the formsg SDK. Set either `production` or `staging`. |
+| `APP_NAME` | Application name for the environment. |
+| `DEPLOY_ENV` | Deployment environment on elastic beanstalk. |
+| `VITE_APP_FORMSG_SDK_MODE` | Determines the keys used in the formsg SDK. Set either `production` or `staging`. |
 
 ## Environment Variables
 
@@ -243,9 +243,9 @@ SITE_BANNER_CONTENT=hello:This is an invalid banner type, and the full text will
 #### Rate limits at specific endpoints
 
 The app applies per-minute, per-IP rate limits at specific API endpoints as a security measure. The limits can be specified with the following environment variables.
-| Variable                   | Description                                                                                                                                      |
+| Variable | Description |
 | :------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SUBMISSIONS_RATE_LIMIT`   | Per-minute, per-IP request limit for each submissions endpoint. The limit is applied separately for the email mode and encrypt mode endpoints.   |
+| `SUBMISSIONS_RATE_LIMIT` | Per-minute, per-IP request limit for each submissions endpoint. The limit is applied separately for the email mode and encrypt mode endpoints. |
 | `SEND_AUTH_OTP_RATE_LIMIT` | Per-minute, per-IP request limit for the endpoint which requests for new login OTPs for the admin console or mobile / email field verifications. |
 
 ### Additional Features
