@@ -8,7 +8,7 @@ export const createGrowthbookInstance = (clientKey: string) => {
 
   return new GrowthBook({
     apiHost: `${
-      isDev ? GROWTHBOOK_DEV_PROXY : process.env.REACT_APP_URL
+      isDev ? GROWTHBOOK_DEV_PROXY : import.meta.env.VITE_APP_URL
     }${GROWTHBOOK_API_HOST_PATH}`,
     clientKey: clientKey,
     // Enable easier debugging during development
