@@ -20,7 +20,14 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "types": [
+      "node",
+      "gtag.js",
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "@testing-library/jest-dom/vitest"
+    ]
   },
   "include": [
     "src/**/*",
