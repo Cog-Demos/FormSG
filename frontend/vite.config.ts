@@ -28,7 +28,6 @@ export default defineConfig(({ mode }) => ({
     ? {}
     : { 'import.meta.env.VITE_APP_VERSION': JSON.stringify(version) },
   server: {
-    host: true,
     port: 3000,
     proxy: {
       '/api': {
