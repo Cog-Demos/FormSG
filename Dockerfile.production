@@ -29,8 +29,9 @@ RUN npm ci --legacy-peer-deps
 
 COPY . ./
 
+# The Vite build with sourcemaps needs more than 4 GB of heap.
 # These options are only used in the build stage, not the start stage.
-ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NODE_OPTIONS="--max-old-space-size=8192"
 
 RUN npm run build
 
