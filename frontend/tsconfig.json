@@ -1,11 +1,17 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "target": "es2015",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
+    ],
+    "types": [
+      "vite/client",
+      "vite-plugin-svgr/client",
+      "node",
+      "gtag.js",
+      "vitest/globals"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -14,16 +20,34 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": ".",
+    "paths": {
+      "~shared/*": ["../shared/*"],
+      "~assets/*": ["./src/assets/*"],
+      "~contexts/*": ["./src/contexts/*"],
+      "~constants/*": ["./src/constants/*"],
+      "~components/*": ["./src/components/*"],
+      "~templates/*": ["./src/templates/*"],
+      "~features/*": ["./src/features/*"],
+      "~hooks/*": ["./src/hooks/*"],
+      "~utils/*": ["./src/utils/*"],
+      "~pages/*": ["./src/pages/*"],
+      "~services/*": ["./src/services/*"],
+      "~theme/*": ["./src/theme/*"],
+      "~typings/*": ["./src/typings/*"],
+      "~/*": ["./src/*"]
+    }
   },
   "include": [
     "src/**/*",
-    ".storybook/**/*"
+    ".storybook/**/*",
+    "vite.config.ts"
   ]
 }

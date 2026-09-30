@@ -6,9 +6,20 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 import { datadogChunk } from './vite/datadog'
 
+// csv-string extends `stream.Transform`.
+const polyfills = () => nodePolyfills({ include: ['stream'] })
+
 export default defineConfig({
   base: './',
-  plugins: [react(), tsconfigPaths(), svgr(), nodePolyfills(), datadogChunk()],
+  plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogChunk()],
+  resolve: {
+    // Resolve polyfill shims injected into ../shared/node_modules from here.
+    dedupe: ['vite-plugin-node-polyfills'],
+  },
+  worker: {
+    format: 'es',
+    plugins: () => [tsconfigPaths(), polyfills()],
+  },
   server: {
     host: true,
     port: 3000,
