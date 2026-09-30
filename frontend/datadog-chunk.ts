@@ -27,18 +27,18 @@ const ddBeforeSend: RumInitConfiguration['beforeSend'] = (event) => {
 }
 
 // Init Datadog RUM
-// Values for REACT_APP_DD_RUM_APP_ID, REACT_APP_DD_RUM_CLIENT_TOKEN, REACT_APP_DD_RUM_ENV, REACT_APP_VERSION, REACT_APP_DD_SAMPLE_RATE will be injected at build time
+// Values for VITE_DD_RUM_APP_ID, VITE_DD_RUM_CLIENT_TOKEN, VITE_DD_RUM_ENV, VITE_VERSION, VITE_DD_SAMPLE_RATE will be injected at build time
 datadogRum.init({
-  applicationId: '@REACT_APP_DD_RUM_APP_ID',
-  clientToken: '@REACT_APP_DD_RUM_CLIENT_TOKEN',
-  env: '@REACT_APP_DD_RUM_ENV',
+  applicationId: '@VITE_DD_RUM_APP_ID',
+  clientToken: '@VITE_DD_RUM_CLIENT_TOKEN',
+  env: '@VITE_DD_RUM_ENV',
   site: 'datadoghq.com',
   service: 'formsg-react',
-  allowedTracingUrls: ['@REACT_APP_URL'],
+  allowedTracingUrls: ['@VITE_URL'],
 
   // Specify a version number to identify the deployed version of your application in Datadog
-  version: '@REACT_APP_VERSION',
-  sessionSampleRate: Number('@REACT_APP_DD_SAMPLE_RATE') || 5,
+  version: '@VITE_VERSION',
+  sessionSampleRate: Number('@VITE_DD_SAMPLE_RATE') || 5,
   sessionReplaySampleRate: 100,
   trackUserInteractions: true,
   defaultPrivacyLevel: 'mask-user-input',
