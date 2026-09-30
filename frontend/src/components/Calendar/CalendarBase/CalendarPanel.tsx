@@ -2,7 +2,6 @@ import {
   chakra,
   forwardRef,
   Stack,
-  Td,
   Text,
   useStyles,
   VisuallyHidden,
@@ -59,7 +58,7 @@ export const CalendarPanel = forwardRef<{}, 'button'>(
                       {week.map((dateObj, index) => {
                         if (!dateObj) {
                           return (
-                            <Td
+                            <chakra.td
                               key={`${calendar.month}${calendar.year}${windex}${index}`}
                             />
                           )
