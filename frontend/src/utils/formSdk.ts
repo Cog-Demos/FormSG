@@ -19,10 +19,9 @@ const formsgSdk = formsgPackage({
   // Either the sdk mode is set in VITE_APP_FORMSG_SDK_MODE env var, or fall back to Vite's MODE
   // MODE is development (when using npm start), test (when using npm test)
   // or production (when using npm build)
-  mode: [
-    import.meta.env.VITE_APP_FORMSG_SDK_MODE,
-    import.meta.env.MODE,
-  ].find(isPackageMode),
+  mode: [import.meta.env.VITE_APP_FORMSG_SDK_MODE, import.meta.env.MODE].find(
+    isPackageMode,
+  ),
   verificationOptions: {
     transactionExpiry: TRANSACTION_EXPIRE_AFTER_SECONDS,
   },
