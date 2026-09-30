@@ -18,6 +18,11 @@ const config: StorybookConfig = {
     options: {},
   },
   staticDirs: ['../public'],
+  // @chakra-ui/react's package.json advertises a remote Storybook that SB
+  // auto-composes; it fails CORS and is not wanted in the sidebar.
+  refs: {
+    '@chakra-ui/react': { disable: true },
+  },
   stories: [
     // Introduction stories set first so stories are ordered correctly.
     './introduction/Welcome/Welcome.stories.tsx',
