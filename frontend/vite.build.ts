@@ -3,12 +3,53 @@ import {
   build,
   type BuildOptions,
   type HtmlTagDescriptor,
+  isCSSRequest,
   type Plugin,
   type PluginOption,
   type ResolvedConfig,
+  type Rollup,
 } from 'vite'
 
 const DATADOG_CHUNK_ENTRY = 'datadog-chunk.ts'
+
+const isStaticallyImportedByEntry = (
+  id: string,
+  getModuleInfo: Rollup.GetModuleInfo,
+  cache: Map<string, boolean>,
+  visiting = new Set<string>(),
+): boolean => {
+  const cached = cache.get(id)
+  if (cached !== undefined) return cached
+  const mod = getModuleInfo(id)
+  if (!mod || visiting.has(id)) return false
+  if (mod.isEntry) {
+    cache.set(id, true)
+    return true
+  }
+  visiting.add(id)
+  const result = mod.importers.some((importer) =>
+    isStaticallyImportedByEntry(importer, getModuleInfo, cache, visiting),
+  )
+  visiting.delete(id)
+  cache.set(id, result)
+  return result
+}
+
+/**
+ * Moves node_modules that the entry imports statically into a `vendor` chunk,
+ * leaving dependencies of lazy routes in their own chunks. Rendering the
+ * sourcemap of a single multi-megabyte entry chunk otherwise exhausts a 4 GB
+ * heap.
+ */
+const vendorChunk = (): Rollup.ManualChunksOption => {
+  const cache = new Map<string, boolean>()
+  return (id, { getModuleInfo }) =>
+    id.includes('/node_modules/') &&
+    !isCSSRequest(id) &&
+    isStaticallyImportedByEntry(id, getModuleInfo, cache)
+      ? 'vendor'
+      : undefined
+}
 
 export const buildOptions: BuildOptions = {
   outDir: '../dist/frontend',
@@ -20,6 +61,7 @@ export const buildOptions: BuildOptions = {
   assetsDir: 'static',
   rollupOptions: {
     output: {
+      manualChunks: vendorChunk(),
       entryFileNames: 'static/js/[name].[hash].js',
       chunkFileNames: 'static/js/[name].[hash].chunk.js',
       assetFileNames: ({ name }) =>
