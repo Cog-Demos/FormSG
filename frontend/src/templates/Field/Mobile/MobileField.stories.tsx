@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -49,7 +49,10 @@ interface StoryMobileFieldProps extends MobileFieldProps {
   defaultValue?: Partial<VerifiableFieldValues>
 }
 
-const Template: Story<StoryMobileFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryMobileFieldProps> = ({
+  defaultValue,
+  ...args
+}) => {
   const formMethods = useForm<VerifiableFieldInput>({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -88,39 +91,54 @@ const Template: Story<StoryMobileFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  defaultValue: {
-    value: '',
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: {
+      value: '',
+    },
   },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
-}
+export const ValidationOptional = {
+  render: Template,
 
-export const ValidationAllowIntl = Template.bind({})
-ValidationAllowIntl.args = {
-  schema: { ...baseSchema, allowIntlNumbers: true },
-  defaultValue: {
-    value: '+447777777777',
+  args: {
+    schema: { ...baseSchema, required: false },
   },
 }
 
-export const ValidationInvalidMobile = Template.bind({})
-ValidationInvalidMobile.args = {
-  schema: baseSchema,
-  defaultValue: {
-    value: '64321098',
+export const ValidationAllowIntl = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, allowIntlNumbers: true },
+    defaultValue: {
+      value: '+447777777777',
+    },
   },
 }
 
-export const ValidationValidMobile = Template.bind({})
-ValidationValidMobile.args = {
-  schema: baseSchema,
-  defaultValue: {
-    value: '98765432',
+export const ValidationInvalidMobile = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: {
+      value: '64321098',
+    },
+  },
+}
+
+export const ValidationValidMobile = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: {
+      value: '98765432',
+    },
   },
 }

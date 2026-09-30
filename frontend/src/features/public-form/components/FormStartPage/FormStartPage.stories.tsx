@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormColorTheme } from '~shared/types/form/form'
 import { FormLogoState } from '~shared/types/form/form_logo'
@@ -45,188 +45,229 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <FormStartPage />
+const Template: StoryFn = () => <FormStartPage />
 
-export const NoEstimatedTime = Template.bind({})
-NoEstimatedTime.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook no estimated time',
-          startPage: {
-            estTimeTaken: 0,
-          },
-        },
-      },
-      delay: 0,
-    }),
-  ],
-}
+export const NoEstimatedTime = {
+  render: Template,
 
-export const OverflowTitle = Template.bind({})
-OverflowTitle.parameters = {
-  msw: [
-    ...envHandlers,
-    getCustomLogoResponse(),
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title:
-            'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          startPage: {
-            logo: {
-              state: FormLogoState.Custom,
-              fileId: 'mockFormLogo',
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook no estimated time',
+            startPage: {
+              estTimeTaken: 0,
             },
           },
         },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
 
-export const OverflowTitleMobile = Template.bind({})
-OverflowTitleMobile.parameters = {
-  ...getMobileViewParameters(),
-  ...OverflowTitle.parameters,
-}
+export const OverflowTitle = {
+  render: Template,
 
-export const ColorThemeBrown = Template.bind({})
-ColorThemeBrown.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test brown theme',
-          startPage: {
-            colorTheme: FormColorTheme.Brown,
+  parameters: {
+    msw: [
+      ...envHandlers,
+      getCustomLogoResponse(),
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title:
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            startPage: {
+              logo: {
+                state: FormLogoState.Custom,
+                fileId: 'mockFormLogo',
+              },
+            },
           },
         },
-      },
-      delay: 0,
-    }),
-  ],
-}
-export const ColorThemeGreen = Template.bind({})
-ColorThemeGreen.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test green theme',
-          startPage: {
-            colorTheme: FormColorTheme.Green,
-          },
-        },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
 
-export const ColorThemeGrey = Template.bind({})
-ColorThemeGrey.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test grey theme',
-          startPage: {
-            colorTheme: FormColorTheme.Grey,
-          },
-        },
-      },
-      delay: 0,
-    }),
-  ],
+export const OverflowTitleMobile = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+    ...OverflowTitle.parameters,
+  },
 }
 
-export const ColorThemeOrange = Template.bind({})
-ColorThemeOrange.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test orange theme',
-          startPage: {
-            colorTheme: FormColorTheme.Orange,
+export const ColorThemeBrown = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test brown theme',
+            startPage: {
+              colorTheme: FormColorTheme.Brown,
+            },
           },
         },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
 
-export const ColorThemeRed = Template.bind({})
-ColorThemeRed.parameters = {
-  msw: [
-    getPublicFormResponse({
-      overrides: {
-        form: {
-          title: 'storybook test red theme',
-          startPage: {
-            colorTheme: FormColorTheme.Red,
+export const ColorThemeGreen = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test green theme',
+            startPage: {
+              colorTheme: FormColorTheme.Green,
+            },
           },
         },
-      },
-      delay: 0,
-    }),
-  ],
+        delay: 0,
+      }),
+    ],
+  },
 }
 
-const MiniHeaderTemplate: Story<MiniHeaderProps> = (args) => (
+export const ColorThemeGrey = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test grey theme',
+            startPage: {
+              colorTheme: FormColorTheme.Grey,
+            },
+          },
+        },
+        delay: 0,
+      }),
+    ],
+  },
+}
+
+export const ColorThemeOrange = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test orange theme',
+            startPage: {
+              colorTheme: FormColorTheme.Orange,
+            },
+          },
+        },
+        delay: 0,
+      }),
+    ],
+  },
+}
+
+export const ColorThemeRed = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPublicFormResponse({
+        overrides: {
+          form: {
+            title: 'storybook test red theme',
+            startPage: {
+              colorTheme: FormColorTheme.Red,
+            },
+          },
+        },
+        delay: 0,
+      }),
+    ],
+  },
+}
+
+const MiniHeaderTemplate: StoryFn<MiniHeaderProps> = (args) => (
   <MiniHeaderComponent {...args} />
 )
 
-export const MiniHeader = MiniHeaderTemplate.bind({})
-MiniHeader.args = {
-  title: 'storybook test title',
-  titleBg: 'theme-blue.500',
-  titleColor: 'white',
-  activeSectionId: '1',
-  isOpen: true,
-}
-MiniHeader.parameters = {
-  msw: [getPublicFormResponse()],
+export const MiniHeader = {
+  render: MiniHeaderTemplate,
+
+  args: {
+    title: 'storybook test title',
+    titleBg: 'theme-blue.500',
+    titleColor: 'white',
+    activeSectionId: '1',
+    isOpen: true,
+  },
+
+  parameters: {
+    msw: [getPublicFormResponse()],
+  },
 }
 
-export const OverflowMiniHeader = MiniHeaderTemplate.bind({})
-OverflowMiniHeader.args = {
-  ...MiniHeader.args,
-  title:
-    'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-}
-OverflowMiniHeader.parameters = MiniHeader.parameters
+export const OverflowMiniHeader = {
+  render: MiniHeaderTemplate,
 
-export const MiniHeaderMobileWithSections = MiniHeaderTemplate.bind({})
-MiniHeaderMobileWithSections.args = {
-  ...MiniHeader.args,
-  title:
-    'the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog',
-}
-MiniHeaderMobileWithSections.parameters = {
-  ...MiniHeader.parameters,
-  ...getMobileViewParameters(),
+  args: {
+    ...MiniHeader.args,
+    title:
+      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+  },
+
+  parameters: MiniHeader.parameters,
 }
 
-export const MiniHeaderMobileWithoutSections = MiniHeaderTemplate.bind({})
-MiniHeaderMobileWithoutSections.args = {
-  ...MiniHeader.args,
-  activeSectionId: undefined,
+export const MiniHeaderMobileWithSections = {
+  render: MiniHeaderTemplate,
+
+  args: {
+    ...MiniHeader.args,
+    title:
+      'the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog the quick brown fox jumps over the lazy dog',
+  },
+
+  parameters: {
+    ...MiniHeader.parameters,
+    ...getMobileViewParameters(),
+  },
 }
-MiniHeaderMobileWithoutSections.parameters = {
-  msw: [
-    getPublicFormWithoutSectionsResponse({
-      overrides: {
-        form: {
-          title: 'storybook test title',
+
+export const MiniHeaderMobileWithoutSections = {
+  render: MiniHeaderTemplate,
+
+  args: {
+    ...MiniHeader.args,
+    activeSectionId: undefined,
+  },
+
+  parameters: {
+    msw: [
+      getPublicFormWithoutSectionsResponse({
+        overrides: {
+          form: {
+            title: 'storybook test title',
+          },
         },
-      },
-      delay: 0,
-    }),
-  ],
-  ...getMobileViewParameters(),
+        delay: 0,
+      }),
+    ],
+    ...getMobileViewParameters(),
+  },
 }
