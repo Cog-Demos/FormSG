@@ -43,7 +43,6 @@ export default defineConfig(({ mode }) => {
       plugins: () => [tsconfigPaths(), nodePolyfills()],
     },
     server: {
-      host: true,
       port: 3000,
       proxy: {
         '/api': { target: 'http://localhost:5001', changeOrigin: true },
