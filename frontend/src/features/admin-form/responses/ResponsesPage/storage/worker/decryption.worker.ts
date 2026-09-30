@@ -1,9 +1,6 @@
 import { expose } from 'comlink'
 import { formatInTimeZone } from 'date-fns-tz'
-// Some webpack pipelines (Chromatic for ours) fails with the default export, but works with /dist export.
-// Due to not recognizing export from the package's package.json.
-// See https://github.com/sindresorhus/p-queue/issues/145
-import PQueue from 'p-queue/dist'
+import PQueue from 'p-queue'
 
 import formsgSdk from '~utils/formSdk'
 
@@ -227,5 +224,4 @@ const exports = {
 
 expose(exports)
 
-export default {} as typeof Worker & { new (): Worker }
 export type DecryptionWorkerApi = typeof exports
