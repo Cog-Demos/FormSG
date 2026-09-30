@@ -1,5 +1,6 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
 
 import { REQUIRED_ERROR } from '~constants/validation'
 

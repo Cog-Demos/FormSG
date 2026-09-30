@@ -1,6 +1,7 @@
-import { composeStories } from '@storybook/testing-react'
-import { act, render, screen } from '@testing-library/react'
+import { composeStories } from '@storybook/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it } from 'vitest'
 
 import { REQUIRED_ERROR } from '~constants/validation'
 
@@ -61,7 +62,7 @@ describe('required field', () => {
       'Select an option',
     ) as HTMLInputElement
     // Act
-    user.click(input)
+    await user.click(input)
     // Act required due to react-hook-form usage.
     // Arrow down twice and select input
     await user.type(input, '{arrowdown}{arrowdown}{enter}')
@@ -103,7 +104,7 @@ describe('optional field', () => {
       'Select an option',
     ) as HTMLInputElement
     // Act
-    user.click(input)
+    await user.click(input)
     // Type the middle few characters of the option; dropdown should match properly,
     // then select the option.
     await user.type(input, `${expectedOption.slice(5, 16)}{arrowdown}{enter}`)
@@ -135,11 +136,9 @@ describe('dropdown validation', () => {
     expect(dropdownOptions.includes(inputToType)).toEqual(false)
 
     // Act
-    user.click(input)
-    await act(() => {
-      user.type(input, inputToType)
-      return user.tab()
-    })
+    await user.click(input)
+    await user.type(input, inputToType)
+    await user.tab()
     // Input should blur and input value should be cleared (since nothing was selected).
     expect(input.value).toEqual('')
     await userEvent.click(submitButton)
