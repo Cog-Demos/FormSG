@@ -7,10 +7,7 @@ import { viewports } from '~utils/storybook'
 
 import { ParagraphFieldSchema } from '../types'
 
-import {
-  ParagraphField as ParagraphFieldComponent,
-  ParagraphFieldProps,
-} from './ParagraphField'
+import { ParagraphField as ParagraphFieldComponent } from './ParagraphField'
 
 export default {
   title: 'Templates/Field/ParagraphField',
