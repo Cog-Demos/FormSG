@@ -153,3 +153,333 @@ may add test-only shims in its setup file but not in app code.
 | [E MBA-2936](https://cog-gtm.atlassian.net/browse/MBA-2936)    | `feature/vite-20260929-2325-E-react18-chakra2`     |
 | [F MBA-2937](https://cog-gtm.atlassian.net/browse/MBA-2937)    | `feature/vite-20260929-2325-F-shared-ts5`          |
 | [G MBA-2938](https://cog-gtm.atlassian.net/browse/MBA-2938)    | `feature/vite-20260929-2325-base` (PR → `develop`) |
+
+## 6. Local verification setup
+
+Off-camera setup for the full-stack end-to-end run (MongoDB replica set, MailDev, LocalStack S3/SQS, ClamAV virus scanner, backend on `:5001`, Vite on `:3000`, Storybook on `:6006`). Synthetic data only. Paths assume the checkout at `/home/ubuntu/repos/FormSG` and scratch state in `/home/ubuntu/formsg-local`.
+
+Use separate persistent shells for foreground processes. Keep these running
+for the recorded take. Node 24 is otherwise first on PATH: select Node in
+**every** new shell.
+
+```bash
+source ~/.nvm/nvm.sh
+nvm use 18.20.2
+```
+
+### Dependencies and external working directory
+
+Root dependencies were already installed at handoff. Frontend dependencies
+must also be present (`npm ci --prefix frontend` on a fresh checkout).
+The scanner requires its own dependencies:
+
+```bash
+cd /home/ubuntu/repos/FormSG
+# Native Lambda runtime build prerequisites:
+sudo apt-get update
+sudo apt-get install -y cmake autoconf automake libtool build-essential \
+  libcurl4-openssl-dev clamav clamav-daemon
+npm_config_python=/usr/bin/python3 npm ci --prefix serverless/virus-scanner
+mkdir -p /home/ubuntu/formsg-local/{mongo,mongo-secondary,scanner,evidence}
+```
+
+This machine has `libssl1.1 1.1.1f-1ubuntu2.24` installed for MongoDB 4.0,
+and cached binary
+`/home/ubuntu/.cache/mongodb-binaries/mongod-x64-ubuntu-4.0.22`.
+Use the libssl1.1 installation instructions in FRONTEND_MODERNIZATION.md
+on a fresh Ubuntu 22.04 machine. Docker Hub pulls for Mongo and MailDev
+returned HTTP 429 during setup, so neither is containerized here.
+ClamAV installed version: `1.5.4+dfsg-0ubuntu0.22.04.1`.
+
+### Mongo: a primary AND secondary are required
+
+Submission reads use `read: 'secondary'`. A single-member replica set permits
+submission but times out on admin response-count queries.
+
+```bash
+MONGOD=/home/ubuntu/.cache/mongodb-binaries/mongod-x64-ubuntu-4.0.22
+$MONGOD --dbpath /home/ubuntu/formsg-local/mongo --replSet rs0 \
+  --bind_ip 127.0.0.1 --port 27017 \
+  --logpath /home/ubuntu/formsg-local/mongo.log --fork
+$MONGOD --dbpath /home/ubuntu/formsg-local/mongo-secondary --replSet rs0 \
+  --bind_ip 127.0.0.1 --port 27018 \
+  --logpath /home/ubuntu/formsg-local/mongo-secondary.log --fork
+```
+
+The external helper `/home/ubuntu/formsg-local/setup.cjs` initializes rs0,
+seeds the agency, writes backend.env, and creates S3/SQS resources.
+Its complete reproduction is below. Save as that filename:
+
+```js
+const root = '/home/ubuntu/repos/FormSG'
+const fs = require('fs')
+const yaml = require(root + '/node_modules/js-yaml')
+const env = Object.fromEntries(
+  yaml.load(fs.readFileSync(root + '/docker-compose.yml', 'utf8'))
+    .services.backend.environment.filter(x => x.includes('='))
+    .map(x => [x.slice(0, x.indexOf('=')), x.slice(x.indexOf('=') + 1)])
+)
+Object.assign(env, {
+  PORT: '5001',
+  DB_HOST: 'mongodb://127.0.0.1:27017/formsg?replicaSet=rs0',
+  SES_HOST: '127.0.0.1',
+  AWS_REGION: 'ap-southeast-1',
+  VIRUS_SCANNER_LAMBDA_ENDPOINT: 'http://localhost:9999',
+  GROWTHBOOK_CLIENT_KEY: 'sdk-local',
+  GOOGLE_CAPTCHA: '',
+  GOOGLE_CAPTCHA_PUBLIC: '',
+  WEBHOOK_SQS_URL: 'http://localhost:4566/000000000000/local-webhooks-sqs-main',
+})
+fs.writeFileSync('/home/ubuntu/formsg-local/backend.env',
+  Object.entries(env).map(([k,v]) => `${k}=${JSON.stringify(v)}`).join('\n') + '\n')
+async function main() {
+  const {MongoClient} = require(root + '/node_modules/mongodb')
+  const client = await MongoClient.connect(
+    'mongodb://127.0.0.1:27017/?directConnection=true',
+    {useUnifiedTopology: true})
+  try {
+    await client.db('admin').command({replSetInitiate: {
+      _id: 'rs0', members: [{_id: 0, host: '127.0.0.1:27017'}]
+    }})
+  } catch (e) { if (e.codeName !== 'AlreadyInitialized') throw e }
+  for (let i = 0; i < 30; i++) {
+    if ((await client.db('admin').command({isMaster: 1})).ismaster) break
+    await new Promise(r => setTimeout(r, 1000))
+  }
+  await client.db('formsg').collection('agencies').updateOne(
+    {shortName: 'govtech'},
+    {$setOnInsert: {
+      shortName: 'govtech', fullName: 'Government Technology Agency',
+      logo: 'https://s3-ap-southeast-1.amazonaws.com/agency-logo.form.sg/govtech.jpg',
+      emailDomain: ['tech.gov.sg', 'data.gov.sg', 'form.sg', 'open.gov.sg']
+    }}, {upsert: true})
+  await client.close()
+  const AWS = require(root + '/node_modules/aws-sdk')
+  const config = {endpoint: 'http://localhost:4566', region: 'ap-southeast-1',
+    accessKeyId: 'fakeKey', secretAccessKey: 'fakeSecret'}
+  await new AWS.SQS(config).createQueue({QueueName: 'local-webhooks-sqs-main'}).promise()
+  const s3 = new AWS.S3({...config, s3ForcePathStyle: true})
+  for (const Bucket of Object.entries(env).filter(([k]) =>
+    k.endsWith('_S3_BUCKET')).map(([,v]) => v)) {
+    try { await s3.createBucket({Bucket}).promise() }
+    catch (e) {
+      if (!['BucketAlreadyOwnedByYou','BucketAlreadyExists'].includes(e.code)) throw e
+    }
+    await s3.putBucketCors({Bucket, CORSConfiguration: {CORSRules: [{
+      AllowedHeaders: ['*'], AllowedMethods: ['GET','PUT','POST','HEAD'],
+      AllowedOrigins: ['http://localhost:3000'],
+      ExposeHeaders: ['ETag','x-amz-version-id']
+    }]}}).promise()
+    if (Bucket.includes('virus-scanner')) await s3.putBucketVersioning({
+      Bucket, VersioningConfiguration: {Status: 'Enabled'}
+    }).promise()
+  }
+}
+main().catch(e => {console.error(e); process.exitCode = 1})
+```
+
+After running the helper (see LocalStack below), add the secondary once:
+
+```bash
+cd /home/ubuntu/repos/FormSG
+node <<'JS'
+const {MongoClient} = require('mongodb')
+;(async () => {
+  const c = await MongoClient.connect(
+    'mongodb://127.0.0.1:27017/?directConnection=true', {useUnifiedTopology: true})
+  const a = c.db('admin')
+  const {config} = await a.command({replSetGetConfig: 1})
+  if (!config.members.some(m => m.host === '127.0.0.1:27018')) {
+    config.version++
+    config.members.push({_id: 1, host: '127.0.0.1:27018', priority: 0})
+    await a.command({replSetReconfig: config})
+  }
+  console.log((await a.command({replSetGetStatus: 1})).members.map(
+    m => ({name: m.name, state: m.stateStr})))
+  await c.close()
+})().catch(e => {console.error(e); process.exitCode = 1})
+JS
+```
+
+Wait for PRIMARY and SECONDARY before the take. Database files persist across
+process restarts; do not recreate the replica set on each restart.
+
+### LocalStack S3/SQS
+
+```bash
+docker run -d --name formsg-s3 -p 4566:4566 -e SERVICES=s3,sqs \
+  localstack/localstack:3.3
+# On subsequent restarts:
+docker start formsg-s3
+cd /home/ubuntu/repos/FormSG
+node /home/ubuntu/formsg-local/setup.cjs
+```
+
+Buckets generated from compose:
+`local-attachment-bucket`, `local-payment-proof-bucket`, `local-image-bucket`,
+`local-logo-bucket`, `local-static-assets-bucket`,
+`local-virus-scanner-quarantine-bucket`, `local-virus-scanner-clean-bucket`.
+Quarantine and clean **both require versioning**: scanner rejects missing
+VersionId. CORS allows localhost:3000 and exposes ETag/x-amz-version-id.
+No persistent LocalStack volume was mounted; rerun helper if S3 state is lost.
+
+### MailDev and Mockpass (separate shells)
+
+```bash
+cd /home/ubuntu/repos/FormSG
+./node_modules/.bin/maildev --ip 127.0.0.1 \
+  > /home/ubuntu/formsg-local/mail.log 2>&1
+```
+
+UI is http://localhost:1080; SMTP is 127.0.0.1:1025.
+
+```bash
+cd /home/ubuntu/repos/FormSG
+MOCKPASS_PORT=5156 ./node_modules/.bin/mockpass \
+  > /home/ubuntu/formsg-local/mockpass.log 2>&1
+```
+
+Mockpass prevents background discovery retries to port 5156. OTP does not
+require using Singpass or SGID.
+
+### Real ClamAV and unmodified scanner through Lambda RIE
+
+Ensure daily/main/bytecode databases are downloaded. The installed freshclam
+service was already downloading them; running another freshclam concurrently
+returned a lock error. Check `/var/log/clamav/freshclam.log`; wait for completion
+instead of starting competing updaters. On a host without an updater, run
+`sudo freshclam` once.
+
+Save `/home/ubuntu/formsg-local/clamd.conf`:
+
+```conf
+LocalSocket /tmp/clamd.ctl
+LocalSocketMode 666
+DatabaseDirectory /var/lib/clamav
+LogFile /tmp/formsg-clamd.log
+PidFile /tmp/formsg-clamd.pid
+User clamav
+Foreground yes
+```
+
+Start in a persistent shell:
+
+```bash
+sudo /usr/sbin/clamd --config-file=/home/ubuntu/formsg-local/clamd.conf
+```
+
+Compile scanner out of tree and install the Lambda runtime emulator:
+
+```bash
+cd /home/ubuntu/repos/FormSG/serverless/virus-scanner
+./node_modules/.bin/tsc --outDir /home/ubuntu/formsg-local/scanner
+curl -L https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
+  -o /home/ubuntu/formsg-local/aws-lambda-rie
+chmod +x /home/ubuntu/formsg-local/aws-lambda-rie
+# Native scanner dev S3 endpoint is hardcoded to host.docker.internal:
+grep -q host.docker.internal /etc/hosts || \
+  echo '127.0.0.1 host.docker.internal' | sudo tee -a /etc/hosts
+```
+
+Start in its own persistent Node 18 shell:
+
+```bash
+cd /home/ubuntu/formsg-local/scanner
+NODE_PATH=/home/ubuntu/repos/FormSG/serverless/virus-scanner/node_modules \
+NODE_ENV=development \
+VIRUS_SCANNER_QUARANTINE_S3_BUCKET=local-virus-scanner-quarantine-bucket \
+VIRUS_SCANNER_CLEAN_S3_BUCKET=local-virus-scanner-clean-bucket \
+/home/ubuntu/formsg-local/aws-lambda-rie \
+  --runtime-interface-emulator-address 127.0.0.1:9999 \
+  /home/ubuntu/repos/FormSG/serverless/virus-scanner/node_modules/.bin/aws-lambda-ric \
+  index.handler > /home/ubuntu/formsg-local/scanner.log 2>&1
+```
+
+This is not a fake scanner handler. The real submission invokes the unchanged
+handler, streams quarantine data to clamd, and moves clean data to the
+versioned clean bucket. scanner.log shows each step.
+
+### Backend and Vite (separate shells)
+
+```bash
+cd /home/ubuntu/repos/FormSG
+DOTENV_CONFIG_PATH=/home/ubuntu/formsg-local/backend.env npm run dev:backend \
+  > /home/ubuntu/formsg-local/backend.log 2>&1
+```
+
+The env file inherits all compose backend entries (including checked-in
+development-only keys/cert paths) and overrides those listed in setup.cjs.
+Important values: PORT=5001, DB_HOST with replicaSet=rs0, SES_HOST=127.0.0.1,
+SES_PORT=1025, AWS_ENDPOINT=http://127.0.0.1:4566,
+VIRUS_SCANNER_LAMBDA_ENDPOINT=http://localhost:9999,
+GROWTHBOOK_CLIENT_KEY=sdk-local. Empty GrowthBook key throws `Missing clientKey`.
+`sdk-local` is a synthetic nonempty local key, not a production credential or
+proof of remote GrowthBook feature delivery. No flag data was seeded; the
+default local path allowed storage attachments. CAPTCHA values are empty.
+
+```bash
+cd /home/ubuntu/repos/FormSG/frontend
+VITE_APP_FORMSG_SDK_MODE=development VITE_APP_URL=http://localhost:3000 \
+  npx vite > /home/ubuntu/formsg-local/vite.log 2>&1
+```
+
+Vite proxies /api to :5001. Do not use `.buildtime-env` or `REACT_APP_*`.
+
+### Storybook and requested supplementary command
+
+```bash
+cd /home/ubuntu/repos/FormSG/frontend
+npx storybook dev -p 6006 --no-open \
+  > /home/ubuntu/formsg-local/storybook.log 2>&1
+# Separate shell, Node 18:
+npx vitest run > /home/ubuntu/formsg-local/vitest.log 2>&1
+```
+
+If a previously used browser profile shows a Storybook story stuck on the
+loading spinner, unregister the `localhost:6006` service worker and clear site
+data (DevTools → Application); a fresh profile renders stories directly.
+
+### Synthetic data and UI workflow
+
+Login at http://localhost:3000/admin with `vite-tester@open.gov.sg`.
+Read the current OTP in MailDev at http://localhost:1080; never hardcode an OTP.
+The govtech agency is seeded above; the user itself was created by real OTP
+login. No response or form was inserted directly into Mongo.
+
+Create a storage form, download its secret key, acknowledge safe storage,
+add Short Text (`Synthetic reference`) and Attachment (`Synthetic evidence`).
+Activate in Settings, uploading its secret-key file as prompted. Submit on
+the actual public link (not preview). Admin Responses requires the downloaded
+secret-key file to decrypt. Open the response and click Download file.
+
+Upload a locally generated synthetic file (see below) and keep its path;
+the browser download lands in `~/Downloads`.
+
+Compare with:
+```bash
+sha256sum /home/ubuntu/formsg-local/synthetic-evidence.png \
+  ~/Downloads/synthetic-evidence.png
+```
+
+For a fresh synthetic image without PIL:
+```bash
+python3 - <<'PY'
+import struct,zlib,os
+def chunk(t,d):
+    return struct.pack('!I',len(d))+t+d+struct.pack('!I',zlib.crc32(t+d)&0xffffffff)
+data=b''.join(b'\0'+os.urandom(64*3) for _ in range(64))
+png=b'\x89PNG\r\n\x1a\n'+chunk(b'IHDR',struct.pack('!2I5B',64,64,8,2,0,0,0))
+png+=chunk(b'IDAT',zlib.compress(data))+chunk(b'IEND',b'')
+open('/home/ubuntu/formsg-local/synthetic-evidence-new.png','wb').write(png)
+PY
+```
+Its hash will differ: record the fresh file hash and compare the corresponding
+download, avoiding browser duplicate-filename suffixes.
+
+### Restart checklist
+
+Keep two Mongo members, formsg-s3, MailDev, Mockpass, clamd, scanner RIE, backend,
+Vite and Storybook running. Use the same commands in their respective sections
+to restart terminated processes; stop the existing service before binding its
+port again. Do not clear Mongo/LocalStack while reusing a previously created
+form. Services are local development only, not production-safe defaults.
