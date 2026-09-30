@@ -448,7 +448,9 @@ login. No response or form was inserted directly into Mongo.
 
 Create a storage form, download its secret key, acknowledge safe storage,
 add Short Text (`Synthetic reference`) and Attachment (`Synthetic evidence`).
-Activate in Settings, uploading its secret-key file as prompted. Submit on
+In Settings, turn off "Enable reCAPTCHA" (new forms default it on, and the
+local `GOOGLE_CAPTCHA*` keys are empty, so the public form would never finish
+loading). Then activate the form, uploading its secret-key file as prompted. Submit on
 the actual public link (not preview). Admin Responses requires the downloaded
 secret-key file to decrypt. Open the response and click Download file.
 
