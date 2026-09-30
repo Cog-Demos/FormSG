@@ -40,7 +40,9 @@ sudo dpkg -i /tmp/libssl1.1.deb
 
 # Dependencies
 npm ci                                   # root (runs frontend + shared installs via postinstall)
-(cd serverless/virus-scanner && npm ci)
+# aws-lambda-ric's node-gyp needs distutils; point it at a Python that has it (e.g. system 3.10 +
+# python3-setuptools) when the default python3 is ≥ 3.12
+(cd serverless/virus-scanner && npm_config_python=/usr/bin/python3 npm ci)
 ```
 
 ## Dependency foundation (TICKET-0)
@@ -89,4 +91,45 @@ Only TICKET-0 and TICKET-G change `package.json` / lockfiles.
 
 ## Local verification setup
 
-To be filled in by TICKET-G.
+All data below is synthetic. Services run as containers on the host network ports FormSG expects; backend and Vite run natively on Node from `.nvmrc`.
+
+```bash
+# 1. Containers
+docker run -d --name fsg-mongo -p 27017:27017 mongo:4.4 --replSet rs0 --bind_ip_all
+docker exec fsg-mongo mongo --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+docker exec -i fsg-mongo mongo --quiet < init-mongo.js          # seeds agencies (open.gov.sg etc.)
+docker run -d --name fsg-maildev -p 1080:1080 -p 1025:1025 maildev/maildev
+docker run -d --name fsg-localstack -p 4566:4566 -e SERVICES=s3,sqs,secretsmanager \
+  -e EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5001 localstack/localstack:3.3
+for b in local-image-bucket local-logo-bucket local-attachment-bucket local-static-assets-bucket \
+         local-payment-proof-bucket local-virus-scanner-quarantine-bucket local-virus-scanner-clean-bucket; do
+  docker exec fsg-localstack awslocal s3 mb s3://$b; done
+for b in local-virus-scanner-quarantine-bucket local-virus-scanner-clean-bucket; do
+  docker exec fsg-localstack awslocal s3api put-bucket-versioning --bucket $b --versioning-configuration Status=Enabled; done
+docker exec fsg-localstack awslocal sqs create-queue --queue-name local-webhooks-sqs-main
+
+# 2. Virus scanner (lambda RIE on :9999)
+#    bitnami/mongodb:4.4 is no longer on Docker Hub (hence mongo:4.4 above).
+#    Debian bullseye-security now 404s and ClamAV's CDN blocks the EOL freshclam in node:16-bullseye,
+#    so build from an out-of-repo copy of the Dockerfile that drops bullseye-security and copies
+#    signatures from clamav/clamav:stable instead of running freshclam:
+sed -e '0,/^RUN apt-get update/s##RUN sed -i "/debian-security/d" /etc/apt/sources.list \&\& apt-get update#' \
+    -e 's#^RUN freshclam#COPY --from=clamav/clamav:stable /var/lib/clamav/ /var/lib/clamav/#' \
+    serverless/virus-scanner/Dockerfile > /tmp/vs.Dockerfile
+docker build --build-arg IS_LAMBDA=false -f /tmp/vs.Dockerfile -t formsg-virus-scanner:dev serverless/virus-scanner
+sed "s/'//g" serverless/virus-scanner/.env.development > /tmp/virus-scanner.env   # docker --env-file keeps quotes
+docker run -d --name fsg-virus-scanner -p 9999:8080 --add-host host.docker.internal:host-gateway \
+  --env-file /tmp/virus-scanner.env formsg-virus-scanner:dev
+
+# 3. Backend on :5001 — env = docker-compose.yml `backend.environment` with these overrides
+#    DB_HOST=mongodb://localhost:27017/formsg?replicaSet=rs0  SES_HOST=localhost  PORT=5001
+#    AWS_ENDPOINT=http://localhost:4566  AWS_REGION=us-east-1  VIRUS_SCANNER_LAMBDA_ENDPOINT=http://localhost:9999
+#    WEBHOOK_SQS_URL=http://localhost:4566/000000000000/local-webhooks-sqs-main
+#    GROWTHBOOK_CLIENT_KEY=sdk-localdev-synthetic   (any non-empty value; backend throws "Missing clientKey" otherwise)
+DOTENV_CONFIG_PATH=/path/to/backend.env npx tsnd --respawn --transpile-only --exit-child -r dotenv/config -- src/app/server.ts
+
+# 4. Frontend on :3000
+npm run dev:frontend        # vite
+
+# Admin login: any address on a seeded agency domain, e.g. e2e.admin@open.gov.sg; OTP at http://localhost:1080 (JSON: GET http://localhost:1080/api/email)
+```
