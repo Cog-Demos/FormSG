@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
@@ -32,6 +32,7 @@ describe('User transfers ownership of all owned forms', () => {
 
   it('should transfer ownership successfully', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       render(<Default />)
     })
@@ -48,11 +49,11 @@ describe('User transfers ownership of all owned forms', () => {
     const newOwnerEmail = 'admin2@example.com'
 
     // Act
-    await act(async () => userEvent.type(input, newOwnerEmail))
-    await act(async () => userEvent.tab())
+    await user.type(input, newOwnerEmail)
+    await user.tab()
     expect(transferButton).toHaveTextContent('Transfer ownership')
     expect(input).toHaveDisplayValue(newOwnerEmail)
-    await act(async () => userEvent.click(transferButton))
+    await user.click(transferButton)
 
     // Assert
     const confirmButton = screen.getByRole('button', {
@@ -61,7 +62,7 @@ describe('User transfers ownership of all owned forms', () => {
     expect(confirmButton).toBeInTheDocument()
 
     // Act
-    await act(async () => userEvent.click(confirmButton))
+    await user.click(confirmButton)
 
     // Assert
     // Wait for toast. Toast should appear.
@@ -70,6 +71,7 @@ describe('User transfers ownership of all owned forms', () => {
 
   it('should disable ownership transfer to self', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       render(<Default />)
     })
@@ -86,8 +88,8 @@ describe('User transfers ownership of all owned forms', () => {
     const newOwnerEmail = 'admin@example.com'
 
     // Act
-    await act(async () => userEvent.type(input, newOwnerEmail))
-    await act(async () => userEvent.tab())
+    await user.type(input, newOwnerEmail)
+    await user.tab()
 
     // Assert
     expect(transferButton).toBeDisabled()
