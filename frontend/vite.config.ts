@@ -5,6 +5,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
+import { datadogChunk } from './vite-plugins/datadog'
 import { version } from './package.json'
 
 export default defineConfig(({ mode }) => {
@@ -18,7 +19,13 @@ export default defineConfig(({ mode }) => {
     define: {
       'import.meta.env.VITE_APP_VERSION': JSON.stringify(appVersion),
     },
-    plugins: [react(), tsconfigPaths(), svgr(), nodePolyfills()],
+    plugins: [
+      react(),
+      tsconfigPaths(),
+      svgr(),
+      nodePolyfills(),
+      datadogChunk(),
+    ],
     resolve: {
       alias: [
         {
@@ -47,6 +54,18 @@ export default defineConfig(({ mode }) => {
       outDir: '../dist/frontend',
       emptyOutDir: true,
       sourcemap: true,
+      assetsDir: 'static',
+      chunkSizeWarningLimit: 2048,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'static/js/[name].[hash].js',
+          chunkFileNames: 'static/js/[name].[hash].chunk.js',
+          assetFileNames: ({ name }) =>
+            name?.endsWith('.css')
+              ? 'static/css/[name].[hash][extname]'
+              : 'static/media/[name].[hash][extname]',
+        },
+      },
     },
   }
 })
