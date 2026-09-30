@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ElementType } from 'react'
 import {
   BiAlignLeft,
   BiCaretDownSquare,
@@ -9,14 +9,14 @@ import {
   BiStar,
   BiToggleLeft,
 } from 'react-icons/bi'
-import { As, Box, Flex, Grid, GridItem, Icon, Text } from '@chakra-ui/react'
+import { Box, Flex, Grid, GridItem, Icon, Text } from '@chakra-ui/react'
 
 const ListWithIcon = ({
   children,
   icon,
 }: {
   children: React.ReactNode
-  icon: As
+  icon: ElementType
 }) => (
   <GridItem>
     <Flex align="center">

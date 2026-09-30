@@ -29,7 +29,6 @@ import {
   Box,
   chakra,
   ComponentWithAs,
-  CSSObject,
   forwardRef,
   HTMLChakraProps,
   layoutPropNames,
@@ -86,7 +85,7 @@ export interface RadioProps
    * Additional overriding styles. This is a change from the Chakra UI
    * implementation, which previously did not allow overriding styles.
    */
-  __css?: CSSObject
+  __css?: SystemStyleObject
 
   /**
    * Function called when checked state of the input changes
@@ -141,19 +140,20 @@ export const Radio = forwardRef<RadioProps, 'input'>(
 
     const name = props?.name ?? group?.name
 
-    const { getInputProps, getCheckboxProps, getLabelProps, htmlProps } =
-      useRadio({
+    const { getInputProps, getRadioProps, getLabelProps, htmlProps } = useRadio(
+      {
         ...rest,
         isDisabled: props.isDisabled,
         isChecked,
         onChange,
         name,
-      })
+      },
+    )
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [layoutProps, otherProps] = split(htmlProps, layoutPropNames as any)
 
-    const checkboxProps = getCheckboxProps(otherProps)
+    const checkboxProps = getRadioProps(otherProps)
     const inputProps = getInputProps({}, ref)
 
     const handleSelect = useCallback(

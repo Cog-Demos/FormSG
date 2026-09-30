@@ -40,6 +40,13 @@ export const theme = extendTheme({
     },
   },
   colors: colours,
+  // `colors.white` is a colour scheme object, so Chakra's built-in component
+  // styles that reference the `colors.white` token need a flat token too.
+  semanticTokens: {
+    colors: {
+      white: '#FFFFFF',
+    },
+  },
   textStyles,
   breakpoints,
   shadows,

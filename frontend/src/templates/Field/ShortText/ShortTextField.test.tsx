@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { merge } from 'lodash'
@@ -95,7 +95,6 @@ describe('text validation', () => {
   describe('TextSelectedValidation.Minimum', () => {
     it('renders error when field input length is < minimum length when submitted', async () => {
       // Arrange
-
       const user = userEvent.setup()
       // Using ValidationRequired base story to render the field without any value
       // and make validation options explicit.

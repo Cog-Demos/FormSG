@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { FieldError, useForm } from 'react-hook-form'
 import { FormControl, VStack } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { get, isEmpty } from 'lodash'
 
 import { viewports } from '~utils/storybook'
@@ -17,38 +17,49 @@ export default {
   component: Radio,
 } as Meta
 
-const Template: Story<RadioProps> = (args) => (
+const Template: StoryFn<RadioProps> = (args) => (
   <Radio {...args}>{args.name}</Radio>
 )
 
-export const Default = Template.bind({})
-Default.args = {
-  name: 'Default',
-}
+export const Default = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  name: 'Mobile',
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    name: 'Default',
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Tablet = Template.bind({})
-Tablet.args = {
-  name: 'Tablet',
-}
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Mobile = {
+  render: Template,
+
+  args: {
+    name: 'Mobile',
   },
-  chromatic: { viewports: [viewports.md] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-const AllStates: Story<RadioProps> = (args) => {
+export const Tablet = {
+  render: Template,
+
+  args: {
+    name: 'Tablet',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
+}
+
+const AllStates: StoryFn<RadioProps> = (args) => {
   return (
     <VStack>
       <Radio {...args}>Unselected</Radio>
@@ -70,9 +81,11 @@ const AllStates: Story<RadioProps> = (args) => {
   )
 }
 
-export const RadioStates = AllStates.bind({})
+export const RadioStates = {
+  render: AllStates,
+}
 
-const PlaygroundTemplate: Story = ({
+const PlaygroundTemplate: StoryFn = ({
   name = 'radio',
   othersInputName = 'others-input',
   label,
@@ -87,7 +100,9 @@ const PlaygroundTemplate: Story = ({
     register,
     getValues,
   } = useForm()
-  const othersInputError: FieldError | undefined = get(errors, othersInputName)
+  const othersInputError = get(errors, othersInputName) as
+    | FieldError
+    | undefined
 
   const othersInputValue = '!!FORMSG_INTERNAL_CHECKBOX_OTHERS_VALUE!!'
 
@@ -148,7 +163,11 @@ const PlaygroundTemplate: Story = ({
           )}
         </Radio.RadioGroup>
         <FormErrorMessage>
-          {errors[name]?.message ?? errors[othersInputName]?.message}
+          {
+            (errors[name]?.message ?? errors[othersInputName]?.message) as
+              | string
+              | undefined
+          }
         </FormErrorMessage>
       </FormControl>
       <Button type="submit">Submit</Button>
@@ -156,16 +175,22 @@ const PlaygroundTemplate: Story = ({
   )
 }
 
-export const Playground = PlaygroundTemplate.bind({})
-Playground.args = {
-  label: 'Radio without others',
-  hasOthers: false,
-  isRequired: false,
+export const Playground = {
+  render: PlaygroundTemplate,
+
+  args: {
+    label: 'Radio without others',
+    hasOthers: false,
+    isRequired: false,
+  },
 }
 
-export const PlaygroundWithOthers = PlaygroundTemplate.bind({})
-PlaygroundWithOthers.args = {
-  label: 'Radio with others',
-  hasOthers: true,
-  isRequired: true,
+export const PlaygroundWithOthers = {
+  render: PlaygroundTemplate,
+
+  args: {
+    label: 'Radio with others',
+    hasOthers: true,
+    isRequired: true,
+  },
 }

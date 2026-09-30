@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { ElementType, useCallback, useEffect, useMemo } from 'react'
 import { BiCommentDetail } from 'react-icons/bi'
 import { GoPrimitiveDot } from 'react-icons/go'
 import { Link as ReactLink } from 'react-router-dom'
 import {
-  As,
   Box,
   chakra,
   Flex,
@@ -17,7 +16,7 @@ import { SeenFlags } from '~shared/types'
 
 import { BxsHelpCircle } from '~assets/icons/BxsHelpCircle'
 import { BxsRocket } from '~assets/icons/BxsRocket'
-import { ReactComponent as BrandMarkSvg } from '~assets/svgs/brand/brand-mark-colour.svg'
+import BrandMarkSvg from '~assets/svgs/brand/brand-mark-colour.svg?react'
 import { FEATURE_REQUEST, FORM_GUIDE } from '~constants/links'
 import {
   EMERGENCY_CONTACT_KEY_PREFIX,
@@ -48,7 +47,7 @@ const BrandSmallLogo = chakra(BrandMarkSvg)
 type AdminNavBarLinkProps = {
   label: string
   href: string
-  MobileIcon?: As
+  MobileIcon?: ElementType
 }
 
 const NAV_LINKS: AdminNavBarLinkProps[] = [

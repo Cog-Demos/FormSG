@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   BasicField,
@@ -42,19 +42,24 @@ export default {
   },
 } as Meta<EditLongTextProps>
 
-const Template: Story<EditLongTextProps> = ({ field }) => {
+const Template: StoryFn<EditLongTextProps> = ({ field }) => {
   return <EditLongText field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithCustomVal = Template.bind({})
-WithCustomVal.args = {
-  field: {
-    ...DEFAULT_LONGTEXT_FIELD,
-    ValidationOptions: {
-      customVal: 3,
-      selectedValidation: TextSelectedValidation.Maximum,
+export const WithCustomVal = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_LONGTEXT_FIELD,
+      ValidationOptions: {
+        customVal: 3,
+        selectedValidation: TextSelectedValidation.Maximum,
+      },
     },
   },
 }

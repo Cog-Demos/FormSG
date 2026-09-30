@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { PaymentChannel, PaymentType, UserId } from '~shared/types'
 import {
@@ -80,101 +80,146 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <CreatePage />
-export const DesktopEmpty = Template.bind({})
-export const DesktopAllFields = Template.bind({})
-DesktopAllFields.parameters = {
-  msw: buildMswRoutes({
-    form_fields: MOCK_FORM_FIELDS_WITH_MYINFO,
-    authType: FormAuthType.MyInfo,
-    responseMode: FormResponseMode.Email,
-  }),
+const Template: StoryFn = () => <CreatePage />
+
+export const DesktopEmpty = {
+  render: Template,
 }
 
-export const DesktopLoading = Template.bind({})
-DesktopLoading.parameters = {
-  msw: buildMswRoutes({}, 'infinite'),
+export const DesktopAllFields = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      form_fields: MOCK_FORM_FIELDS_WITH_MYINFO,
+      authType: FormAuthType.MyInfo,
+      responseMode: FormResponseMode.Email,
+    }),
+  },
 }
 
-export const TabletEmpty = Template.bind({})
-TabletEmpty.parameters = getTabletViewParameters()
-export const TabletAllFields = Template.bind({})
-TabletAllFields.parameters = {
-  ...getTabletViewParameters(),
-  msw: buildMswRoutes({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-}
-export const TabletLoading = Template.bind({})
-TabletLoading.parameters = {
-  ...getTabletViewParameters(),
-  mockdate: new Date('2024-09-11T13:00:00.000Z'),
-  msw: buildMswRoutes({}, 'infinite'),
+export const DesktopLoading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({}, 'infinite'),
+  },
 }
 
-export const MobileEmpty = Template.bind({})
-MobileEmpty.parameters = getMobileViewParameters()
-export const MobileAllFields = Template.bind({})
-MobileAllFields.parameters = {
-  ...getMobileViewParameters(),
-  msw: buildMswRoutes({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
-}
-export const MobileLoading = Template.bind({})
-MobileLoading.parameters = {
-  ...getMobileViewParameters(),
-  msw: buildMswRoutes({}, 'infinite'),
+export const TabletEmpty = {
+  render: Template,
+  parameters: getTabletViewParameters(),
 }
 
-export const AllFieldsFieldsHiddenByLogic = Template.bind({})
-AllFieldsFieldsHiddenByLogic.parameters = {
-  msw: buildMswRoutes({
-    form_fields: MOCK_FORM_FIELDS_WITH_MYINFO,
-    form_logics: MOCK_FORM_LOGICS,
-    authType: FormAuthType.MyInfo,
-    responseMode: FormResponseMode.Email,
-  }),
+export const TabletAllFields = {
+  render: Template,
+
+  parameters: {
+    ...getTabletViewParameters(),
+    msw: buildMswRoutes({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+  },
 }
 
-export const FormWithWebhook = Template.bind({})
-FormWithWebhook.parameters = {
-  msw: [
-    getAdminFormSettings({
-      overrides: {
-        webhook: {
-          url: 'some-webhook-url',
-          isRetryEnabled: false,
+export const TabletLoading = {
+  render: Template,
+
+  parameters: {
+    ...getTabletViewParameters(),
+    mockdate: new Date('2024-09-11T13:00:00.000Z'),
+    msw: buildMswRoutes({}, 'infinite'),
+  },
+}
+
+export const MobileEmpty = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
+
+export const MobileAllFields = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+    msw: buildMswRoutes({ form_fields: MOCK_FORM_FIELDS_WITH_MYINFO }),
+  },
+}
+
+export const MobileLoading = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+    msw: buildMswRoutes({}, 'infinite'),
+  },
+}
+
+export const AllFieldsFieldsHiddenByLogic = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      form_fields: MOCK_FORM_FIELDS_WITH_MYINFO,
+      form_logics: MOCK_FORM_LOGICS,
+      authType: FormAuthType.MyInfo,
+      responseMode: FormResponseMode.Email,
+    }),
+  },
+}
+
+export const FormWithWebhook = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getAdminFormSettings({
+        overrides: {
+          webhook: {
+            url: 'some-webhook-url',
+            isRetryEnabled: false,
+          },
         },
+      }),
+      ...buildMswRoutes(),
+    ],
+  },
+}
+
+export const FormWithWebhookMobile = {
+  render: Template,
+
+  parameters: {
+    ...FormWithWebhook.parameters,
+    ...getMobileViewParameters(),
+  },
+}
+
+export const FormWithPayment = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      responseMode: FormResponseMode.Encrypt,
+      payments_channel: {
+        channel: PaymentChannel.Stripe,
+        target_account_id: 'acct_sampleid',
+        publishable_key: 'pk_samplekey',
+      },
+      payments_field: {
+        enabled: true,
+        description: 'Test event registration fee',
+        payment_type: PaymentType.Variable,
+        min_amount: 1000,
+        max_amount: 5000,
       },
     }),
-    ...buildMswRoutes(),
-  ],
+  },
 }
 
-export const FormWithWebhookMobile = Template.bind({})
-FormWithWebhookMobile.parameters = {
-  ...FormWithWebhook.parameters,
-  ...getMobileViewParameters(),
-}
+export const FormWithPaymentMobile = {
+  render: Template,
 
-export const FormWithPayment = Template.bind({})
-FormWithPayment.parameters = {
-  msw: buildMswRoutes({
-    responseMode: FormResponseMode.Encrypt,
-    payments_channel: {
-      channel: PaymentChannel.Stripe,
-      target_account_id: 'acct_sampleid',
-      publishable_key: 'pk_samplekey',
-    },
-    payments_field: {
-      enabled: true,
-      description: 'Test event registration fee',
-      payment_type: PaymentType.Variable,
-      min_amount: 1000,
-      max_amount: 5000,
-    },
-  }),
-}
-
-export const FormWithPaymentMobile = Template.bind({})
-FormWithPaymentMobile.parameters = {
-  ...FormWithPayment.parameters,
-  ...getMobileViewParameters(),
+  parameters: {
+    ...FormWithPayment.parameters,
+    ...getMobileViewParameters(),
+  },
 }

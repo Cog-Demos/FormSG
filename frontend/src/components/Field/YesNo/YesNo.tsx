@@ -51,7 +51,7 @@ export interface YesNoProps {
 export const YesNo = forwardRef<YesNoProps, 'input'>(
   ({ colorScheme, ...props }, ref) => {
     const formControlProps = useFormControlProps(props)
-    const { getRootProps, getRadioProps } = useRadioGroup(props)
+    const { getRootProps, getRadioProps, onChange } = useRadioGroup(props)
 
     const groupProps = getRootProps()
     const [noProps, yesProps] = useMemo(() => {
@@ -84,6 +84,7 @@ export const YesNo = forwardRef<YesNoProps, 'input'>(
           side="left"
           colorScheme={colorScheme}
           {...noProps}
+          onChange={onChange}
           leftIcon={BiX}
           label="No"
           // Ref is set here for tracking current value, and also so any errors
@@ -95,6 +96,7 @@ export const YesNo = forwardRef<YesNoProps, 'input'>(
           side="right"
           colorScheme={colorScheme}
           {...yesProps}
+          onChange={onChange}
           leftIcon={BiCheck}
           label="Yes"
           title={props.title}

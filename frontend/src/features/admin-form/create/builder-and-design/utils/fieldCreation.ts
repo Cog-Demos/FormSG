@@ -216,10 +216,7 @@ export const getFieldCreationMeta = (fieldType: BasicField): FieldCreateDto => {
 }
 
 export const getMyInfoFieldCreationMeta = (
-  myInfoAttribute: Exclude<
-    MyInfoAttribute,
-    MyInfoChildAttributes[keyof MyInfoChildAttributes]
-  >,
+  myInfoAttribute: MyInfoAttribute,
 ): MyInfoField => {
   const baseMeta: Pick<
     MyInfoField,
@@ -297,7 +294,7 @@ export const getMyInfoFieldCreationMeta = (
     }
 
     default: {
-      const exception: never = myInfoAttribute
+      const exception: `${MyInfoChildAttributes}` = myInfoAttribute
       throw new Error(`MyInfo type is not implemented: ${exception}`)
     }
   }

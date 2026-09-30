@@ -3,7 +3,6 @@ import {
   Controller,
   DeepPartial,
   FormProvider,
-  UnpackNestedValue,
   useFormState,
 } from 'react-hook-form'
 import { FormControl, Stack } from '@chakra-ui/react'
@@ -54,7 +53,7 @@ export type EditTableProps = EditFieldProps<TableFieldBase>
 
 const transformTableFieldToEditForm = (
   field: TableFieldBase,
-): UnpackNestedValue<DeepPartial<EditTableInputs>> => {
+): DeepPartial<EditTableInputs> => {
   const nextMaxRows = field.maximumRows || ''
   const nextMinRows = field.minimumRows || ''
 
@@ -181,7 +180,7 @@ export const EditTable = ({ field }: EditTableProps): JSX.Element => {
                 // Must be greater than minimum rows
                 validate: (value) =>
                   !value ||
-                  value > getValues('minimumRows') ||
+                  value > Number(getValues('minimumRows')) ||
                   'Maximum rows must be greater than minimum rows',
               }}
               control={control}
