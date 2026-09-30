@@ -5,7 +5,7 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 export default {
   title: 'Components/Avatar',
@@ -17,11 +17,11 @@ export default {
   },
 } as Meta<AvatarProps>
 
-const Template: Story<AvatarProps> = (args) => {
+const Template: StoryFn<AvatarProps> = (args) => {
   return <Avatar {...args} />
 }
 
-const GroupTemplate: Story = () => {
+const GroupTemplate: StoryFn = () => {
   return (
     <SimpleGrid
       columns={3}
@@ -58,16 +58,26 @@ const GroupTemplate: Story = () => {
   )
 }
 
-export const Default = Template.bind({})
-
-export const WithNotification = Template.bind({})
-WithNotification.args = {
-  children: <AvatarBadge />,
+export const Default = {
+  render: Template,
 }
 
-export const WithBorder = Template.bind({})
-WithBorder.args = {
-  boxShadow: `0 0 0 4px var(--chakra-colors-primary-300)`,
+export const WithNotification = {
+  render: Template,
+
+  args: {
+    children: <AvatarBadge />,
+  },
 }
 
-export const Group = GroupTemplate.bind({})
+export const WithBorder = {
+  render: Template,
+
+  args: {
+    boxShadow: `0 0 0 4px var(--chakra-colors-primary-300)`,
+  },
+}
+
+export const Group = {
+  render: GroupTemplate,
+}

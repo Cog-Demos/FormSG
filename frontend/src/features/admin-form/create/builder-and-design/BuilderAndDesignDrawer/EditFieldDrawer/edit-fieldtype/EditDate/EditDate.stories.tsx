@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   BasicField,
@@ -49,40 +49,51 @@ interface StoryArgs {
   field: DateFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditDate field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithNoFutureDates = Template.bind({})
-WithNoFutureDates.args = {
-  field: {
-    ...DEFAULT_DATE_FIELD,
-    dateValidation: {
-      selectedDateValidation: DateSelectedValidation.NoFuture,
-      customMaxDate: null,
-      customMinDate: null,
+export const WithNoFutureDates = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_DATE_FIELD,
+      dateValidation: {
+        selectedDateValidation: DateSelectedValidation.NoFuture,
+        customMaxDate: null,
+        customMinDate: null,
+      },
     },
   },
 }
 
-export const WithCustomDateRange = Template.bind({})
-WithCustomDateRange.args = {
-  field: {
-    ...DEFAULT_DATE_FIELD,
-    dateValidation: {
-      selectedDateValidation: DateSelectedValidation.Custom,
-      customMinDate: new Date('2020-01-01T00:00:00Z'),
-      customMaxDate: new Date('2020-01-12T00:00:00Z'),
+export const WithCustomDateRange = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_DATE_FIELD,
+      dateValidation: {
+        selectedDateValidation: DateSelectedValidation.Custom,
+        customMinDate: new Date('2020-01-01T00:00:00Z'),
+        customMaxDate: new Date('2020-01-12T00:00:00Z'),
+      },
     },
   },
 }
 
-export const WithParticularDaysRestricted = Template.bind({})
-WithParticularDaysRestricted.args = {
-  field: {
-    ...DEFAULT_DATE_FIELD,
-    invalidDays: [InvalidDaysOptions.Monday, InvalidDaysOptions.Saturday],
+export const WithParticularDaysRestricted = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_DATE_FIELD,
+      invalidDays: [InvalidDaysOptions.Monday, InvalidDaysOptions.Saturday],
+    },
   },
 }

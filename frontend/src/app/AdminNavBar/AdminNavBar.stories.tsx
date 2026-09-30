@@ -1,4 +1,6 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react'
+
+import { SeenFlags, UserDto } from '~shared/types/user'
 
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 
@@ -14,6 +16,10 @@ import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
 import { AdminNavBar, AdminNavBarProps } from './AdminNavBar'
 
+// The API serialises user flags as a plain JSON object.
+const mockFlags = (flags: Partial<Record<SeenFlags, number>>) =>
+  flags as unknown as UserDto['flags']
+
 export default {
   title: 'App/AdminNavBar',
   component: AdminNavBar,
@@ -28,70 +34,80 @@ export default {
   ],
 } as Meta
 
-const Template: Story<AdminNavBarProps> = (args) => <AdminNavBar {...args} />
+export const Default = {}
 
-export const Default = Template.bind({})
-
-export const Expanded = Template.bind({})
-Expanded.args = { isMenuOpen: true }
-
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
-
-export const MobileExpanded = Template.bind({})
-MobileExpanded.parameters = {
-  ...Mobile.parameters,
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        email: 'super_super_super_super_super_long_name@example.com',
-      },
-    }),
-  ],
-}
-MobileExpanded.args = Expanded.args
-
-export const Tablet = Template.bind({})
-Tablet.parameters = getTabletViewParameters()
-
-export const WhatsNewFeatureNotificationShown = Template.bind({})
-WhatsNewFeatureNotificationShown.parameters = {
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: {},
-      },
-    }),
-  ],
+export const Expanded: StoryObj<AdminNavBarProps> = {
+  args: { isMenuOpen: true },
 }
 
-export const WhatsNewFeatureNotificationNotShown = Template.bind({})
-WhatsNewFeatureNotificationNotShown.parameters = {
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: { lastSeenFeatureUpdateVersion: FEATURE_UPDATE_LIST.version },
-      },
-    }),
-  ],
+export const Mobile: StoryObj<AdminNavBarProps> = {
+  parameters: getMobileViewParameters(),
 }
 
-export const WhatsNewFeatureMobileNotificationShown = Template.bind({})
-WhatsNewFeatureMobileNotificationShown.parameters = {
-  ...Mobile.parameters,
-  msw: [
-    getUser({
-      delay: 0,
-      mockUser: {
-        ...MOCK_USER,
-        flags: {},
-      },
-    }),
-  ],
+export const MobileExpanded: StoryObj<AdminNavBarProps> = {
+  parameters: {
+    ...Mobile.parameters,
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          email: 'super_super_super_super_super_long_name@example.com',
+        },
+      }),
+    ],
+  },
+
+  args: Expanded.args,
 }
+
+export const Tablet: StoryObj<AdminNavBarProps> = {
+  parameters: getTabletViewParameters(),
+}
+
+export const WhatsNewFeatureNotificationShown: StoryObj<AdminNavBarProps> = {
+  parameters: {
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          flags: mockFlags({}),
+        },
+      }),
+    ],
+  },
+}
+
+export const WhatsNewFeatureNotificationNotShown: StoryObj<AdminNavBarProps> = {
+  parameters: {
+    msw: [
+      getUser({
+        delay: 0,
+        mockUser: {
+          ...MOCK_USER,
+          flags: mockFlags({
+            [SeenFlags.LastSeenFeatureUpdateVersion]:
+              FEATURE_UPDATE_LIST.version,
+          }),
+        },
+      }),
+    ],
+  },
+}
+
+export const WhatsNewFeatureMobileNotificationShown: StoryObj<AdminNavBarProps> =
+  {
+    parameters: {
+      ...Mobile.parameters,
+      msw: [
+        getUser({
+          delay: 0,
+          mockUser: {
+            ...MOCK_USER,
+            flags: mockFlags({}),
+          },
+        }),
+      ],
+    },
+  }
