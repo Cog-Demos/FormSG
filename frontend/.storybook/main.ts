@@ -2,7 +2,7 @@ import type { StorybookConfig } from '@storybook/react-vite'
 import { promises as fs } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { pathToFileURL } from 'node:url'
 import type { Plugin, PluginOption } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
@@ -17,22 +17,6 @@ const polyfillShimPath = (name: string): string =>
     .resolve(`vite-plugin-node-polyfills/shims/${name}`)
     .replace(/index\.cjs$/, 'index.js')
 
-// Legacy/renamed imports that webpack-era resolution used to accept but the
-// new exports maps no longer expose. Kept here so Storybook resolves them to
-// the same modules they used to mean; drop each once app code stops using it.
-const legacyDeepImportAliases: Record<string, string> = {
-  // 'p-queue/dist' is a webpack-era deep import (see
-  // github.com/sindresorhus/p-queue/issues/145) that p-queue v7's exports map
-  // no longer exposes; resolve it to the same dist entry it used to mean.
-  'p-queue/dist': require.resolve('p-queue'),
-  // react-beautiful-dnd is replaced by the API-compatible @hello-pangea/dnd
-  // fork on this branch; app files still import the old name until TICKET-E
-  // migrates them, so alias it for Storybook in the meantime.
-  'react-beautiful-dnd': require
-    .resolve('@hello-pangea/dnd')
-    .replace(/\.cjs\.js$/, '.esm.js'),
-}
-
 // vite-plugin-node-polyfills injects `shims/*` specifiers into modules that
 // reference the corresponding globals; they only resolve when the plugin is
 // reachable from the importer (not the case under shared/node_modules).
@@ -41,14 +25,6 @@ const polyfillShimAliases: Record<string, string> = {
   'vite-plugin-node-polyfills/shims/buffer': polyfillShimPath('buffer'),
   'vite-plugin-node-polyfills/shims/global': polyfillShimPath('global'),
   'vite-plugin-node-polyfills/shims/process': polyfillShimPath('process'),
-}
-
-// Specifiers whose package now lacks a default export that app code still
-// uses. Aliased to a shim that re-exports the named exports plus a default.
-const missingDefaultExportAliases: Record<string, string> = {
-  '@chakra-ui/visually-hidden': fileURLToPath(
-    new URL('./shims/visually-hidden.ts', import.meta.url),
-  ),
 }
 
 interface SvgrTransform {
@@ -188,14 +164,10 @@ const config: StorybookConfig = {
               ...existingAlias,
               ...Object.entries({
                 ...polyfillShimAliases,
-                ...legacyDeepImportAliases,
-                ...missingDefaultExportAliases,
               }).map(([find, replacement]) => ({ find, replacement })),
             ]
           : {
               ...polyfillShimAliases,
-              ...legacyDeepImportAliases,
-              ...missingDefaultExportAliases,
               ...(existingAlias ?? {}),
             },
       },
