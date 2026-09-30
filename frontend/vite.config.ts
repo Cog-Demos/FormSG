@@ -14,7 +14,7 @@ const polyfills = () =>
   })
 
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogChunk()],
   worker: {
     format: 'es',
