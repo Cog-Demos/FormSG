@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { assign, merge, times } from 'lodash'
 
 import { BasicField } from '~shared/types/field'
@@ -104,7 +104,7 @@ interface StoryTableFieldProps extends TableFieldProps {
   triggerValidation?: boolean
 }
 
-const Template: Story<StoryTableFieldProps> = ({
+const Template: StoryFn<StoryTableFieldProps> = ({
   defaultValue,
   triggerValidation,
   ...args
@@ -164,48 +164,70 @@ const Template: Story<StoryTableFieldProps> = ({
   )
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  schema: baseSchema,
-}
+export const Default = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  schema: baseSchema,
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    schema: baseSchema,
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const NoAddableRows = Template.bind({})
-NoAddableRows.args = {
-  schema: merge({}, baseSchema, { addMoreRows: false }),
+export const Mobile = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-export const ThreeColumnTable = Template.bind({})
-ThreeColumnTable.args = {
-  schema: assign({}, baseSchema, { columns: baseSchema.columns.slice(0, 3) }),
+export const NoAddableRows = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, { addMoreRows: false }),
+  },
 }
 
-export const ValidationEmpty = Template.bind({})
-ValidationEmpty.args = {
-  schema: baseSchema,
-  triggerValidation: true,
+export const ThreeColumnTable = {
+  render: Template,
+
+  args: {
+    schema: assign({}, baseSchema, { columns: baseSchema.columns.slice(0, 3) }),
+  },
 }
 
-export const ValidationValid = Template.bind({})
-ValidationValid.args = {
-  schema: baseSchema,
-  triggerValidation: true,
-  defaultValue: baseSchema.columns.reduce<Record<string, string>>((acc, c) => {
-    if (c.columnType === BasicField.ShortText) {
-      acc[c._id] = 'This is a valid value'
-    } else if (c.columnType === BasicField.Dropdown) {
-      acc[c._id] = STORYBOOK_DROPDOWN_OPTIONS[1]
-    }
-    return acc
-  }, {}),
+export const ValidationEmpty = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    triggerValidation: true,
+  },
+}
+
+export const ValidationValid = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    triggerValidation: true,
+    defaultValue: baseSchema.columns.reduce<Record<string, string>>(
+      (acc, c) => {
+        if (c.columnType === BasicField.ShortText) {
+          acc[c._id] = 'This is a valid value'
+        } else if (c.columnType === BasicField.Dropdown) {
+          acc[c._id] = STORYBOOK_DROPDOWN_OPTIONS[1]
+        }
+        return acc
+      },
+      {},
+    ),
+  },
 }

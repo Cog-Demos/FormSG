@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, HomenoFieldBase } from '~shared/types'
 
@@ -42,19 +42,25 @@ interface StoryArgs {
   field: HomenoFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditHomeno field={field} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  field: DEFAULT_HOMENO_FIELD,
+export const Default = {
+  render: Template,
+
+  args: {
+    field: DEFAULT_HOMENO_FIELD,
+  },
 }
 
-export const WithAllowIntlNums = Template.bind({})
-WithAllowIntlNums.args = {
-  field: {
-    ...DEFAULT_HOMENO_FIELD,
-    allowIntlNumbers: true,
+export const WithAllowIntlNums = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_HOMENO_FIELD,
+      allowIntlNumbers: true,
+    },
   },
 }
