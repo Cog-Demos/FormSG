@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   BasicField,
@@ -54,28 +54,34 @@ interface StoryArgs {
   field: NumberFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditNumber field={field} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  field: DEFAULT_NUMBER_FIELD,
+export const Default = {
+  render: Template,
+
+  args: {
+    field: DEFAULT_NUMBER_FIELD,
+  },
 }
 
-export const WithCustomVal = Template.bind({})
-WithCustomVal.args = {
-  field: {
-    ...DEFAULT_NUMBER_FIELD,
-    ValidationOptions: {
-      selectedValidation: NumberSelectedValidation.Length,
-      LengthValidationOptions: {
-        selectedLengthValidation: NumberSelectedLengthValidation.Exact,
-        customVal: 3,
-      },
-      RangeValidationOptions: {
-        customMin: null,
-        customMax: null,
+export const WithCustomVal = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_NUMBER_FIELD,
+      ValidationOptions: {
+        selectedValidation: NumberSelectedValidation.Length,
+        LengthValidationOptions: {
+          selectedLengthValidation: NumberSelectedLengthValidation.Exact,
+          customVal: 3,
+        },
+        RangeValidationOptions: {
+          customMin: null,
+          customMax: null,
+        },
       },
     },
   },

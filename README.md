@@ -85,12 +85,6 @@ To install the relevant npm packages (frontend, backend and virus-scanner), run 
 npm install && npm --prefix serverless/virus-scanner install
 ```
 
-To prevent breaking changes to webpack4 introduced in node 17 and above, enable the `--openssl-legacy-provider` flag:
-
-```bash
-export NODE_OPTIONS=--openssl-legacy-provider
-```
-
 If you are on Mac OS X, you may want to allow Docker to use more RAM (minimum of 4GB) by clicking on the Docker icon on the toolbar, clicking on the "Preferences" menu item, then clicking on the "Resources" link on the left.
 
 ### Running Locally
@@ -112,6 +106,18 @@ After the Docker image has finished building, the following local applications c
 - React application can be accessed at [localhost:3000](localhost:3000)
 - The backend API server can be accessed at [localhost:5001](localhost:5001)
 - The development mail server can be accessed at [localhost:1080](localhost:1080)
+
+### Frontend (Vite)
+
+The React frontend is built with [Vite](https://vitejs.dev). To run only the frontend dev server against a backend already listening on port 5001:
+
+```bash
+npm --prefix frontend start
+```
+
+The dev server listens on [localhost:3000](localhost:3000) (loopback only) and proxies `/api` to `http://localhost:5001`. `npm run build:frontend` writes the production bundle to `dist/frontend`.
+
+Frontend build-time variables are read from `frontend/.env` and must be prefixed with `VITE_APP_` (they replace the old `REACT_APP_*` names): `VITE_APP_URL`, `VITE_APP_VERSION`, `VITE_APP_GA_TRACKING_ID`, `VITE_APP_FORMSG_SDK_MODE`, `VITE_APP_DD_RUM_APP_ID`, `VITE_APP_DD_RUM_CLIENT_TOKEN`, `VITE_APP_DD_RUM_ENV` and `VITE_APP_DD_SAMPLE_RATE`. See [FRONTEND_MODERNIZATION.md](/docs/FRONTEND_MODERNIZATION.md) for the full mapping.
 
 ### Adding dependencies
 
@@ -204,7 +210,7 @@ If the backend is already built, you can run
 npm run test-ci
 ```
 
-Frontend tests are located at [`frontend/__tests__`](./frontend/__tests__). They can be run with
+Frontend tests use [Vitest](https://vitest.dev) and live next to the code they test as `*.test.ts(x)` files under [`frontend/src`](./frontend/src). They can be run with
 
 ```bash
 npm run test:frontend

@@ -300,6 +300,7 @@ export const MultiSelectProvider = ({
         inputRef,
         isClearable: false,
         selectedItem: null,
+        fullWidth: false,
         isOpen,
         isItemSelected,
         toggleMenu,

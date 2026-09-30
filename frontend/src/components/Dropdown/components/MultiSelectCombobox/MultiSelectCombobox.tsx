@@ -1,4 +1,4 @@
-import { FC, forwardRef, useCallback } from 'react'
+import { FC, forwardRef, PropsWithChildren, useCallback } from 'react'
 import { Box, chakra, Flex, Icon, useMergeRefs } from '@chakra-ui/react'
 
 import { BxsChevronDown } from '~assets/icons/BxsChevronDown'
@@ -9,7 +9,7 @@ import { useSelectContext } from '../../SelectContext'
 
 import { SelectedItems } from './SelectedItems'
 
-const MultiItemsContainer: FC = ({ children }) => {
+const MultiItemsContainer: FC<PropsWithChildren> = ({ children }) => {
   return (
     <Box
       display="inline-flex"

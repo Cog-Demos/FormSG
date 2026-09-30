@@ -1,3 +1,4 @@
+import { RefCallback } from 'react'
 import {
   Box,
   chakra,
@@ -65,7 +66,10 @@ export const MoneyInput = forwardRef<MoneyInputProps, 'input'>(
 
     const inputProps = getInputProps({ placeholder: props.placeholder })
 
-    const inputRef = useMergeRefs(inputProps.ref, ref)
+    const inputRef = useMergeRefs(
+      inputProps.ref as RefCallback<HTMLInputElement>,
+      ref,
+    )
 
     return (
       <Box {...htmlProps} __css={styles.root}>

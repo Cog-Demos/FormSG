@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { RefCallback, useRef } from 'react'
 import { BiMinus, BiPlus } from 'react-icons/bi'
 import {
   Box,
@@ -82,7 +82,10 @@ export const NumberInput = forwardRef<NumberInputProps, 'input'>(
     const incProps = getIncrementButtonProps()
     const decProps = getDecrementButtonProps()
 
-    const inputRef = useMergeRefs(inputProps.ref, ref)
+    const inputRef = useMergeRefs(
+      inputProps.ref as RefCallback<HTMLInputElement>,
+      ref,
+    )
 
     const inputEndPadding = showSteppers
       ? stepperWrapperRef.current?.offsetWidth

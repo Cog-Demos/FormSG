@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { merge } from 'lodash'
 
 import { BasicField } from '~shared/types/field'
@@ -58,7 +58,7 @@ interface StoryEmailFieldProps extends EmailFieldProps {
   defaultValue?: Partial<VerifiableFieldValues>
 }
 
-const Template: Story<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
   const formMethods = useForm<VerifiableFieldInput>({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -94,29 +94,41 @@ const Template: Story<StoryEmailFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const ValidationAllowedDomain = Template.bind({})
-ValidationAllowedDomain.args = {
-  schema: merge({}, baseSchema, {
-    title: 'Only allows .gov.sg domains',
-    hasAllowedEmailDomains: true,
-    allowedEmailDomains: ['@gov.sg'],
-    isVerifiable: true,
-  }),
-  defaultValue: { value: 'test@example.com' },
+export const ValidationAllowedDomain = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, {
+      title: 'Only allows .gov.sg domains',
+      hasAllowedEmailDomains: true,
+      allowedEmailDomains: ['@gov.sg'],
+      isVerifiable: true,
+    }),
+    defaultValue: { value: 'test@example.com' },
+  },
 }
 
-export const ValidationInvalidEmail = Template.bind({})
-ValidationInvalidEmail.args = {
-  schema: baseSchema,
-  defaultValue: { value: 'not an email' },
+export const ValidationInvalidEmail = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: { value: 'not an email' },
+  },
 }

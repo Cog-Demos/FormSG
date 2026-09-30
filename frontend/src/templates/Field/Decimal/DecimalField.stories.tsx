@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -48,7 +48,10 @@ interface StoryDecimalFieldProps extends DecimalFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryDecimalFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryDecimalFieldProps> = ({
+  defaultValue,
+  ...args
+}) => {
   const formMethods = useForm({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -87,56 +90,75 @@ const Template: Story<StoryDecimalFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-}
+export const ValidationRequired = {
+  render: Template,
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
-}
-
-export const ValidationRange = Template.bind({})
-ValidationRange.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customMin: 1.142,
-      customMax: 3.142,
-    },
-    validateByValue: true,
+  args: {
+    schema: baseSchema,
   },
-  defaultValue: '1234',
-}
-export const ValidationMinValue = Template.bind({})
-ValidationMinValue.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customMin: 6,
-      customMax: null,
-    },
-    validateByValue: true,
-  },
-  defaultValue: '5',
 }
 
-export const ValidationMaxValue = Template.bind({})
-ValidationMaxValue.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      customMin: 1,
-      customMax: 1.2345,
-    },
-    validateByValue: true,
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
   },
-  defaultValue: '1.3345',
 }
 
-export const ValidationInvalidDecimal = Template.bind({})
-ValidationInvalidDecimal.args = {
-  schema: baseSchema,
-  defaultValue: '-e',
+export const ValidationRange = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customMin: 1.142,
+        customMax: 3.142,
+      },
+      validateByValue: true,
+    },
+    defaultValue: '1234',
+  },
+}
+
+export const ValidationMinValue = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customMin: 6,
+        customMax: null,
+      },
+      validateByValue: true,
+    },
+    defaultValue: '5',
+  },
+}
+
+export const ValidationMaxValue = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        customMin: 1,
+        customMax: 1.2345,
+      },
+      validateByValue: true,
+    },
+    defaultValue: '1.3345',
+  },
+}
+
+export const ValidationInvalidDecimal = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '-e',
+  },
 }

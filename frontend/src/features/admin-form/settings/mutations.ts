@@ -65,10 +65,10 @@ export const useMutateFormSettings = () => {
         adminFormKeys.id(formId),
         (oldData) =>
           oldData
-            ? {
+            ? ({
                 ...oldData,
                 ...newData,
-              }
+              } as AdminFormDto)
             : undefined,
       )
     },
@@ -76,7 +76,7 @@ export const useMutateFormSettings = () => {
   )
 
   const generateErrorToast = useCallback(
-    (message) => {
+    (message: string) => {
       toast.closeAll()
       toast({
         description: message,
@@ -87,7 +87,7 @@ export const useMutateFormSettings = () => {
   )
 
   const generateSuccessToast = useCallback(
-    (message) => {
+    (message: string) => {
       toast.closeAll()
       toast({
         description: message,
