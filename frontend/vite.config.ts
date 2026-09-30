@@ -5,8 +5,8 @@ import { defineConfig } from 'vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 
-import { version } from './package.json'
 import { datadogChunk } from './vite/datadogChunk'
+import { version } from './package.json'
 
 process.env.VITE_APP_VERSION ??= version
 
