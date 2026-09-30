@@ -6,6 +6,7 @@
  * that import. The relative path to the built entry avoids re-triggering the
  * alias.
  */
-export * from '../../node_modules/@chakra-ui/visually-hidden/dist/index.mjs'
 import { VisuallyHidden } from '../../node_modules/@chakra-ui/visually-hidden/dist/index.mjs'
+
+export * from '../../node_modules/@chakra-ui/visually-hidden/dist/index.mjs'
 export default VisuallyHidden

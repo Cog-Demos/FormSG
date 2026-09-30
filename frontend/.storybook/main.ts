@@ -82,9 +82,7 @@ const svgReactComponent = (): Plugin => ({
     // Skip when an upstream plugin already produced the component export
     // (e.g. TICKET-A's vite.config.ts covering plain .svg imports).
     if (code.includes('ReactComponent')) return null
-    const { transform } = await svgrImport<{ transform: SvgrTransform }>(
-      'core',
-    )
+    const { transform } = await svgrImport<{ transform: SvgrTransform }>('core')
     const { default: jsx } = await svgrImport<{ default: unknown }>(
       'plugin-jsx',
     )
