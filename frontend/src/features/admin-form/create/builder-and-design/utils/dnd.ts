@@ -9,9 +9,9 @@ import { FIELD_LIST_DROP_ID } from '~features/admin-form/create/builder-and-desi
  * for original code.
  */
 
-const dragHandleQueryAttr = 'data-rbd-drag-handle-draggable-id'
-const dragContainerQueryAttr = 'data-rbd-draggable-id'
-const destinationQuertAttr = 'data-rbd-droppable-id'
+const dragHandleQueryAttr = 'data-rfd-drag-handle-draggable-id'
+const dragContainerQueryAttr = 'data-rfd-draggable-id'
+const destinationQuertAttr = 'data-rfd-droppable-id'
 
 const getDragHandleDom = (draggableId: unknown) => {
   const domQuery = `[${dragHandleQueryAttr}='${draggableId}']`
