@@ -93,3 +93,117 @@ Each Phase 1 ticket runs on its own branch off the base branch and only edits th
 | F — Shared types TS5 ([MBA-2972](https://cog-gtm.atlassian.net/browse/MBA-2972))     | `feature/vite-20260930-0127-d4130-f-shared-ts5`      | `shared/**`, backend `src/**` and `__tests__/**` consumers/fixtures, root `tsconfig*.json`                                                                                                                                                                                                                                                                                                                                                                                       |
 
 Overlaps (A's env/SVG edits vs. E in the same app files; A vs. B in `vite.config.ts` / `index.html`) are expected to be small, line-disjoint and resolved in TICKET-G.
+
+## Local verification setup
+
+Full stack used for the end-to-end run (synthetic data only). Run from the repo root with Node from `.nvmrc` selected and the machine setup above done. Each long-running process gets its own shell.
+
+```bash
+source ~/.nvm/nvm.sh && nvm use && export npm_config_python=/usr/bin/python3
+(cd serverless/virus-scanner && npm ci)
+sudo apt-get install -y clamav clamav-daemon   # native ClamAV + definitions in /var/lib/clamav
+```
+
+### MongoDB replica set (primary + secondary)
+
+Submission reads use `readPreference: secondary`, so a single-node replica set leaves the Results page loading forever. Docker Hub rate limits blocked `bitnami/mongodb:4.4`, so the `mongod` binary cached by `mongodb-memory-server` (installed by backend Jest) was used:
+
+```bash
+MONGOD=$(ls ~/.cache/mongodb-binaries/mongod-* | head -1)
+mkdir -p /tmp/formsg-mongo/{p,s}
+$MONGOD --replSet rs0 --bind_ip 127.0.0.1 --port 27017 --dbpath /tmp/formsg-mongo/p --logpath /tmp/formsg-mongo/p.log --fork
+$MONGOD --replSet rs0 --bind_ip 127.0.0.1 --port 27018 --dbpath /tmp/formsg-mongo/s --logpath /tmp/formsg-mongo/s.log --fork
+node -e "
+const { MongoClient } = require('mongodb')
+;(async () => {
+  const c = await MongoClient.connect('mongodb://127.0.0.1:27017/?directConnection=true')
+  const admin = c.db('admin')
+  await admin.command({ replSetInitiate: { _id: 'rs0', members: [
+    { _id: 0, host: '127.0.0.1:27017' },
+    { _id: 1, host: '127.0.0.1:27018', priority: 0, votes: 0 } ] } })
+  await c.close()
+})()"
+```
+
+Wait until `rs.status()` shows one PRIMARY and one SECONDARY.
+
+### MailDev, LocalStack, seed data
+
+```bash
+node ./node_modules/.bin/maildev --web 1080 --smtp 1025          # OTP mails at http://localhost:1080
+docker run -d --name formsg-localstack -p 4566:4566 \
+  -e SERVICES=s3,sqs,secretsmanager -e DNS_ADDRESS=0 \
+  -e EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3000 localstack/localstack:3.3
+```
+
+Then create the buckets (versioned, CORS for `http://localhost:3000` and `:5001`), the webhooks queue and the synthetic `govtech` agency whose email domains admins log in with:
+
+```bash
+node -e "
+const AWS = require('aws-sdk'), { MongoClient } = require('mongodb')
+;(async () => {
+  const opts = { endpoint: 'http://localhost:4566', region: 'ap-southeast-1', accessKeyId: 'fakeKey', secretAccessKey: 'fakeSecret' }
+  const s3 = new AWS.S3({ ...opts, s3ForcePathStyle: true })
+  for (const n of ['attachment','payment-proof','image','logo','static-assets','virus-scanner-quarantine','virus-scanner-clean']) {
+    const Bucket = 'local-' + n + '-bucket'
+    await s3.createBucket({ Bucket }).promise().catch((e) => { if (e.code !== 'BucketAlreadyOwnedByYou') throw e })
+    await s3.putBucketVersioning({ Bucket, VersioningConfiguration: { Status: 'Enabled' } }).promise()
+    await s3.putBucketCors({ Bucket, CORSConfiguration: { CORSRules: [{ AllowedHeaders: ['*'], AllowedMethods: ['GET','PUT','POST','HEAD'],
+      AllowedOrigins: ['http://localhost:3000','http://localhost:5001'], ExposeHeaders: ['ETag','x-amz-version-id'] }] } }).promise()
+  }
+  await new AWS.SQS({ ...opts, region: 'us-east-1' }).createQueue({ QueueName: 'local-webhooks-sqs-main' }).promise()
+  const c = await MongoClient.connect('mongodb://127.0.0.1:27017/formsg?replicaSet=rs0')
+  await c.db().collection('agencies').updateOne({ shortName: 'govtech' }, { \$setOnInsert: { shortName: 'govtech',
+    fullName: 'Government Technology Agency', emailDomain: ['tech.gov.sg','data.gov.sg','form.sg','open.gov.sg'] } }, { upsert: true })
+  await c.close()
+})()"
+```
+
+### Virus scanner (real ClamAV)
+
+```bash
+cat > /tmp/clamd.conf <<'CONF'
+LocalSocket /tmp/clamd.ctl
+LocalSocketMode 666
+DatabaseDirectory /var/lib/clamav
+User clamav
+Foreground yes
+CONF
+sudo clamd -c /tmp/clamd.conf
+curl -fL -o /tmp/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && chmod +x /tmp/aws-lambda-rie
+cd serverless/virus-scanner && npm run build
+NODE_ENV=development VIRUS_SCANNER_QUARANTINE_S3_BUCKET=local-virus-scanner-quarantine-bucket \
+  VIRUS_SCANNER_CLEAN_S3_BUCKET=local-virus-scanner-clean-bucket \
+  /tmp/aws-lambda-rie --runtime-interface-emulator-address 0.0.0.0:9999 ./node_modules/.bin/aws-lambda-ric build/index.handler
+```
+
+### Backend (:5001), Mockpass, Vite (:3000), Storybook (:6006)
+
+The backend takes every `NAME=value` from `services.backend.environment` in `docker-compose.yml` (local test keys only), with these overrides:
+
+```bash
+MOCKPASS_PORT=5156 ./node_modules/.bin/mockpass
+node -e "
+const env = { ...process.env }
+for (const e of require('js-yaml').load(require('fs').readFileSync('docker-compose.yml', 'utf8')).services.backend.environment) {
+  const i = e.indexOf('='); if (i > 0) env[e.slice(0, i)] = e.slice(i + 1)
+}
+Object.assign(env, { PORT: '5001', DB_HOST: 'mongodb://127.0.0.1:27017/formsg?replicaSet=rs0', SES_HOST: '127.0.0.1',
+  AWS_REGION: 'ap-southeast-1', VIRUS_SCANNER_LAMBDA_ENDPOINT: 'http://localhost:9999', GROWTHBOOK_CLIENT_KEY: 'sdk-local-verification' })
+require('child_process').spawn('./node_modules/.bin/ts-node', ['--transpile-only', 'src/app/server.ts'], { env, stdio: 'inherit' })"
+cd frontend && npm start                       # Vite on :3000, /api -> :5001
+cd frontend && npm run storybook -- --ci       # Storybook on :6006
+```
+
+`GROWTHBOOK_CLIENT_KEY` only needs to be non-empty; no feature flag gates this migration.
+
+### Flow
+
+1. Log in at `http://localhost:3000/login` with a synthetic `@tech.gov.sg` address; read the OTP in MailDev.
+2. Create a Storage-mode form, save the secret key outside the repo, add a Short answer and an Attachment field.
+3. In Settings, disable reCAPTCHA (local run only) and open the form with the secret key.
+4. Submit the public form with a synthetic file, e.g. `head -c 4096 /dev/urandom | base64 > /tmp/upload.txt`.
+5. In Results, unlock with the secret key, open the response and download the attachment; `sha256sum` upload and download must match.
+6. Open a story (e.g. `?path=/story/components-button--solid-primary`) and run `cd frontend && npx vitest run`.
+
+When Storybook is driven through Chrome DevTools automation, the MSW service worker can stay paused on the debugger (`sb-show-preparing-story` forever); resume it with `Runtime.runIfWaitingForDebugger` on the worker target. This does not happen in a normal browser.
