@@ -111,6 +111,8 @@ mkdir -p "$E2E" && cd "$REPO"
 npm ci # root postinstall installs frontend/shared too
 ```
 
+If `direnv` reports a blocked `.envrc`, export the Node `PATH` and env vars above explicitly (or run `direnv allow` if you trust the file).
+
 ### MongoDB replica set and agency seed
 
 ```bash
@@ -244,3 +246,5 @@ Create Storage mode form, download Secret Key, acknowledge key storage, add Shor
 | Frontend lint                    | `npm run lint:frontend`                                | pass: 0 errors, 32 warnings (baseline: 34 warnings)                                                                               |
 | Backend lint                     | `npm run lint-ci`                                      | pass (= baseline)                                                                                                                 |
 | Whitespace                       | `git diff --check`                                     | clean                                                                                                                             |
+
+Storybook render sweep: every story in `storybook-static/index.json` (724) loaded headlessly with Playwright. All render without a page error except `pages-publicformpage--with-captcha`, where third-party captcha calls `requestStorageAccess`, which headless Chrome blocks.
