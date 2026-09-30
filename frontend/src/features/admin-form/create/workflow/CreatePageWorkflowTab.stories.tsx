@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { AttachmentSize, BasicField, FormFieldDto } from '~shared/types/field'
 import {
@@ -206,84 +206,121 @@ const FORM_WITH_WORKFLOW: Partial<AdminFormDto> = {
   workflow: [workflow_step_1, workflow_step_2],
 }
 
-const Template: Story = () => <CreatePageWorkflowTab />
-export const NoWorkflow = Template.bind({})
+const Template: StoryFn = () => <CreatePageWorkflowTab />
 
-export const MobileNoWorkflow = Template.bind({})
-MobileNoWorkflow.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const NoWorkflow = {
+  render: Template,
+}
+
+export const MobileNoWorkflow = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const WithWorkflow = Template.bind({})
-WithWorkflow.parameters = {
-  msw: buildMswRoutes(FORM_WITH_WORKFLOW),
-}
+export const WithWorkflow = {
+  render: Template,
 
-export const MobileWithWorkflow = Template.bind({})
-MobileWithWorkflow.parameters = {
-  msw: buildMswRoutes(FORM_WITH_WORKFLOW),
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    msw: buildMswRoutes(FORM_WITH_WORKFLOW),
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Step1Respondent = Template.bind({})
-Step1Respondent.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [workflow_step_1_with_respondent],
-  }),
+export const MobileWithWorkflow = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes(FORM_WITH_WORKFLOW),
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-export const Step3Approval = Template.bind({})
-Step3Approval.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [workflow_step_1, workflow_step_2, workflow_step_3_with_approval],
-  }),
+export const Step1Respondent = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [workflow_step_1_with_respondent],
+    }),
+  },
 }
 
-export const Step1RespondentDeleted = Template.bind({})
-Step1RespondentDeleted.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [workflow_step_1_with_deleted_respondent],
-  }),
+export const Step3Approval = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [
+        workflow_step_1,
+        workflow_step_2,
+        workflow_step_3_with_approval,
+      ],
+    }),
+  },
 }
 
-export const Step3ApprovalFieldDeleted = Template.bind({})
-Step3ApprovalFieldDeleted.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [
-      workflow_step_1,
-      workflow_step_2,
-      workflow_step_3_with_deleted_approval,
-    ],
-  }),
+export const Step1RespondentDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [workflow_step_1_with_deleted_respondent],
+    }),
+  },
 }
 
-export const Step2FieldDeleted = Template.bind({})
-Step2FieldDeleted.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [workflow_step_1, workflow_step_2_with_deleted_field],
-  }),
+export const Step3ApprovalFieldDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [
+        workflow_step_1,
+        workflow_step_2,
+        workflow_step_3_with_deleted_approval,
+      ],
+    }),
+  },
 }
 
-export const Step2AllFieldsDeleted = Template.bind({})
-Step2AllFieldsDeleted.parameters = {
-  msw: buildMswRoutes({
-    ...FORM_WITH_WORKFLOW,
-    workflow: [workflow_step_1, workflow_step_2_with_all_fields_deleted],
-  }),
+export const Step2FieldDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [workflow_step_1, workflow_step_2_with_deleted_field],
+    }),
+  },
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: buildMswRoutes({}, 'infinite'),
+export const Step2AllFieldsDeleted = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({
+      ...FORM_WITH_WORKFLOW,
+      workflow: [workflow_step_1, workflow_step_2_with_all_fields_deleted],
+    }),
+  },
+}
+
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: buildMswRoutes({}, 'infinite'),
+  },
 }

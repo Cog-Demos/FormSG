@@ -1,6 +1,6 @@
 import { MemoryRouter, Route } from 'react-router'
 import { Routes } from 'react-router-dom'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   FormAuthType,
@@ -66,67 +66,82 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <SettingsPage />
-export const Desktop = Template.bind({})
+const Template: StoryFn = () => <SettingsPage />
 
-export const PreventActivation = Template.bind({})
-PreventActivation.parameters = {
-  msw: [
-    ...createFormBuilderMocks(),
-    getFreeSmsQuota(),
-    getAdminFormSubmissions(),
-    patchAdminFormSettings(),
-    getAdminFormSettings({
-      overrides: {
-        status: FormStatus.Private,
-        authType: FormAuthType.SP,
-        esrvcId: '',
-      },
-    }),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
+export const Desktop = {
+  render: Template,
 }
 
-export const Tablet = Template.bind({})
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const PreventActivation = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks(),
+      getFreeSmsQuota(),
+      getAdminFormSubmissions(),
+      patchAdminFormSettings(),
+      getAdminFormSettings({
+        overrides: {
+          status: FormStatus.Private,
+          authType: FormAuthType.SP,
+          esrvcId: '',
+        },
+      }),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
   },
-  chromatic: { viewports: [viewports.md] },
 }
 
-export const Mobile = Template.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Tablet = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
   },
-  chromatic: { viewports: [viewports.xs] },
+}
+
+export const Mobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
 const storageModeKeypair = formsgSdk.crypto.generate()
 
-export const StorageModeSettings = Template.bind({})
-StorageModeSettings.parameters = {
-  docs: {
-    storyDescription: `The passing secret key is ${storageModeKeypair.secretKey}`,
+export const StorageModeSettings = {
+  render: Template,
+
+  parameters: {
+    docs: {
+      storyDescription: `The passing secret key is ${storageModeKeypair.secretKey}`,
+    },
+    msw: [
+      getFreeSmsQuota(),
+      ...createFormBuilderMocks({ responseMode: FormResponseMode.Encrypt }),
+      getAdminFormSettings({
+        mode: FormResponseMode.Encrypt,
+        overrides: {
+          status: FormStatus.Private,
+          publicKey: storageModeKeypair.publicKey,
+        },
+      }),
+      getAdminFormSubmissions(),
+      patchAdminFormSettings({
+        mode: FormResponseMode.Encrypt,
+        overrides: { publicKey: storageModeKeypair.publicKey },
+      }),
+      getUser(),
+      getAdminFormCollaborators(),
+    ],
   },
-  msw: [
-    getFreeSmsQuota(),
-    ...createFormBuilderMocks({ responseMode: FormResponseMode.Encrypt }),
-    getAdminFormSettings({
-      mode: FormResponseMode.Encrypt,
-      overrides: {
-        status: FormStatus.Private,
-        publicKey: storageModeKeypair.publicKey,
-      },
-    }),
-    getAdminFormSubmissions(),
-    patchAdminFormSettings({
-      mode: FormResponseMode.Encrypt,
-      overrides: { publicKey: storageModeKeypair.publicKey },
-    }),
-    getUser(),
-    getAdminFormCollaborators(),
-  ],
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   createFormBuilderMocks,
@@ -45,7 +45,7 @@ export default {
 const modalRoot = document.createElement('div')
 document.body.appendChild(modalRoot)
 
-const Template: Story = () => {
+const Template: StoryFn = () => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   const el = document.createElement('div')
@@ -67,110 +67,134 @@ const Template: Story = () => {
     el,
   )
 }
-export const EditView = Template.bind({})
 
-export const EditViewWithCollaborators = Template.bind({})
-EditViewWithCollaborators.parameters = {
-  msw: [
-    getAdminFormCollaborators({
-      delay: 0,
-      overrides: [
-        {
-          email: 'viewer@example.com',
-          write: false,
-        },
-        {
-          email: 'editor@example.com',
-          write: true,
-        },
-        {
-          email:
-            'super-duper-long-email-the-quick-brown-fox-jumps-over-the-lazy-dog@example.com',
-          write: true,
-        },
-      ],
-    }),
-    ...baseMswRoutes,
-  ],
+export const EditView = {
+  render: Template,
 }
 
-export const EditViewLoading = Template.bind({})
-EditViewLoading.parameters = {
-  msw: [getAdminFormCollaborators({ delay: 'infinite' }), ...baseMswRoutes],
-}
+export const EditViewWithCollaborators = {
+  render: Template,
 
-export const EditViewMobile = Template.bind({})
-EditViewMobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    msw: [
+      getAdminFormCollaborators({
+        delay: 0,
+        overrides: [
+          {
+            email: 'viewer@example.com',
+            write: false,
+          },
+          {
+            email: 'editor@example.com',
+            write: true,
+          },
+          {
+            email:
+              'super-duper-long-email-the-quick-brown-fox-jumps-over-the-lazy-dog@example.com',
+            write: true,
+          },
+        ],
+      }),
+      ...baseMswRoutes,
+    ],
   },
-  chromatic: { viewports: [viewports.xs] },
-  msw: [
-    getAdminFormCollaborators({
-      delay: 0,
-      overrides: [
-        {
-          email: 'viewer@example.com',
-          write: false,
-        },
-        {
-          email: 'editor@example.com',
-          write: true,
-        },
-      ],
-    }),
-    ...baseMswRoutes,
-  ],
 }
 
-export const ViewerView = Template.bind({})
-ViewerView.parameters = {
-  msw: [
-    ...createFormBuilderMocks({}, 0),
-    getUser({
-      mockUser: { ...MOCK_USER, email: 'viewer@example.com' },
-      delay: 0,
-    }),
-    getAdminFormCollaborators({
-      overrides: [
-        {
-          email: 'viewer@example.com',
-          write: false,
-        },
-        {
-          email:
-            'super-duper-long-email-the-quick-brown-fox-jumps-over-the-lazy-dog@example.com',
-          write: true,
-        },
-      ],
-    }),
-  ],
+export const EditViewLoading = {
+  render: Template,
+
+  parameters: {
+    msw: [getAdminFormCollaborators({ delay: 'infinite' }), ...baseMswRoutes],
+  },
 }
 
-export const ViewerViewMobile = Template.bind({})
-ViewerViewMobile.parameters = {
-  ...ViewerView.parameters,
-  ...getMobileViewParameters(),
+export const EditViewMobile = {
+  render: Template,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+    msw: [
+      getAdminFormCollaborators({
+        delay: 0,
+        overrides: [
+          {
+            email: 'viewer@example.com',
+            write: false,
+          },
+          {
+            email: 'editor@example.com',
+            write: true,
+          },
+        ],
+      }),
+      ...baseMswRoutes,
+    ],
+  },
 }
 
-export const ViewerViewLoading = Template.bind({})
-ViewerViewLoading.parameters = {
-  msw: [
-    ...createFormBuilderMocks({}, 0),
-    getUser({
-      mockUser: { ...MOCK_USER, email: 'viewer@example.com' },
-      delay: 0,
-    }),
-    getAdminFormCollaborators({
-      delay: 'infinite',
-    }),
-  ],
+export const ViewerView = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({}, 0),
+      getUser({
+        mockUser: { ...MOCK_USER, email: 'viewer@example.com' },
+        delay: 0,
+      }),
+      getAdminFormCollaborators({
+        overrides: [
+          {
+            email: 'viewer@example.com',
+            write: false,
+          },
+          {
+            email:
+              'super-duper-long-email-the-quick-brown-fox-jumps-over-the-lazy-dog@example.com',
+            write: true,
+          },
+        ],
+      }),
+    ],
+  },
 }
 
-export const EditCollaboratorBadRequestError = Template.bind({})
-EditCollaboratorBadRequestError.parameters = {
-  msw: [
-    updateFormCollaborators({ delay: 0, errorCode: 400 }),
-    ...baseMswRoutes,
-  ],
+export const ViewerViewMobile = {
+  render: Template,
+
+  parameters: {
+    ...ViewerView.parameters,
+    ...getMobileViewParameters(),
+  },
+}
+
+export const ViewerViewLoading = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      ...createFormBuilderMocks({}, 0),
+      getUser({
+        mockUser: { ...MOCK_USER, email: 'viewer@example.com' },
+        delay: 0,
+      }),
+      getAdminFormCollaborators({
+        delay: 'infinite',
+      }),
+    ],
+  },
+}
+
+export const EditCollaboratorBadRequestError = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      updateFormCollaborators({ delay: 0, errorCode: 400 }),
+      ...baseMswRoutes,
+    ],
+  },
 }
