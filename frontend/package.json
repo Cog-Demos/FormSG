@@ -95,22 +95,20 @@
       "See https://github.com/emotion-js/emotion/issues/1800"
     ],
     "build": [
-      "The flags are required for the app to build successfully.",
-      "`CI=false` ensures that warnings in the app linter are not treated as errors (preventing a build)",
-      "`BUILD_PATH='../dist/frontend` ensures build output to be created in the root /dist folder",
-      "`INLINE_RUNTIME_CHUNK=false` prevents inline scripts from appearing in the build output. This is required due to our strict CSP rules on the backend that disallow inline scripts",
-      "`SKIP_PREFLIGHT_CHECK=true` skips node_module warnings that results from having a root node_module above this application"
+      "The Datadog chunk (datadog-chunk.ts) is bundled by the `formsg:datadog-chunk` Vite plugin (see vite/datadogChunk.ts) during `vite build` and injected into <head> before the app entry.",
+      "Output goes to the root /dist/frontend folder (see `build.outDir` in vite.config.ts).",
+      "`NODE_OPTIONS=--max-old-space-size=8192` is needed because generating source maps (uploaded to Datadog) peaks at ~6GB, above the default heap limit.",
+      "No inline scripts are emitted (`build.modulePreload.polyfill: false`); this is required due to our strict CSP rules on the backend that disallow inline scripts"
     ]
   },
   "scripts": {
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts || true",
     "clean:emotion-types": "rimraf node_modules/@emotion/core/types",
     "postinstall": "patch-package && npm run gen:theme-typings && npm run clean:emotion-types && npm --prefix ../shared install",
-    "start": "env-cmd -f .buildtime-env craco --openssl-legacy-provider start",
-    "build": "npm run build:dd-chunk && cross-env CI=false BUILD_PATH='../dist/frontend' INLINE_RUNTIME_CHUNK=false SKIP_PREFLIGHT_CHECK=true craco build && cd ../ && cp -rf frontend/static/js dist/frontend/static",
-    "build:dd-chunk": "webpack --config webpack.dd.config.js",
+    "start": "env-cmd -f .buildtime-env vite",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "preview": "vite preview",
     "test": "cross-env SKIP_PREFLIGHT_CHECK=true craco test --silent",
-    "eject": "react-scripts eject",
     "storybook": "NODE_OPTIONS=--openssl-legacy-provider start-storybook -p 6006",
     "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook",
     "lint": "eslint ./ --ignore-path .gitignore && prettier . -c",
@@ -118,9 +116,6 @@
     "test:a11y": "npm run build-storybook && jest --config .storybook/storyshots/jest.config.js",
     "test:a11y-dev": "cross-env USE_DEV_SERVER=true jest --config .storybook/storyshots/jest.config.js",
     "pre-commit": "lint-staged"
-  },
-  "overrides": {
-    "react-error-overlay": "6.0.9"
   },
   "browserslist": {
     "production": [
@@ -136,7 +131,6 @@
   },
   "devDependencies": {
     "@chakra-ui/cli": "^1.9.0",
-    "@craco/craco": "^6.4.3",
     "@storybook/addon-a11y": "^6.5.5",
     "@storybook/addon-actions": "^6.5.5",
     "@storybook/addon-essentials": "^6.5.5",
@@ -173,8 +167,8 @@
     "@types/validator": "^13.7.0",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "chromatic": "^6.2.0",
-    "craco-alias": "^3.0.1",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "eslint": "^8.57.0",
@@ -185,8 +179,6 @@
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "eslint-plugin-storybook": "^0.5.12",
     "eslint-plugin-testing-library": "^6.2.2",
-    "html-webpack-plugin": "^4.5.2",
-    "http-proxy-middleware": "^2.0.6",
     "lint-staged": "^12.1.2",
     "mockdate": "^3.0.5",
     "msw": "^0.36.3",
@@ -195,16 +187,16 @@
     "prettier": "^3.2.5",
     "puppeteer": "^13.0.0",
     "react-refresh": "^0.14.0",
-    "react-scripts": "^4.0.3",
     "resize-observer-polyfill": "^1.5.1",
     "rimraf": "^3.0.2",
     "storybook-addon-turbo-build": "^1.1.0",
     "storybook-preset-craco": "0.0.6",
     "storybook-react-i18next": "^1.0.20",
     "ts-jest": "^27.1.1",
-    "worker-loader": "^3.0.8"
+    "vite": "^5.4.21",
+    "vite-plugin-node-polyfills": "^0.28.0",
+    "vite-plugin-svgr": "^4.5.0"
   },
-  "proxy": "http://localhost:5001",
   "msw": {
     "workerDirectory": "public"
   }

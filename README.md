@@ -113,6 +113,8 @@ After the Docker image has finished building, the following local applications c
 - The backend API server can be accessed at [localhost:5001](localhost:5001)
 - The development mail server can be accessed at [localhost:1080](localhost:1080)
 
+The React application is served by the [Vite](https://vite.dev) dev server (`npm run dev:frontend`, configured in [frontend/vite.config.ts](frontend/vite.config.ts)), which proxies `/api` requests to the backend on port 5001. Frontend build-time environment variables must be prefixed with `VITE_` (e.g. `VITE_GA_TRACKING_ID`, `VITE_FORMSG_SDK_MODE`; see [frontend/.buildtime-env](frontend/.buildtime-env)) and are read via `import.meta.env`.
+
 ### Adding dependencies
 
 Run `npm install` as per usual.
