@@ -6,6 +6,7 @@ import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 import { version } from './package.json'
+import { datadogChunk } from './vite/datadogChunk'
 
 const polyfills = () =>
   nodePolyfills({
@@ -14,7 +15,7 @@ const polyfills = () =>
 
 export default defineConfig({
   base: './',
-  plugins: [react(), tsconfigPaths(), svgr(), polyfills()],
+  plugins: [react(), tsconfigPaths(), svgr(), polyfills(), datadogChunk()],
   worker: {
     format: 'es',
     plugins: () => [tsconfigPaths(), polyfills()],
@@ -49,6 +50,7 @@ export default defineConfig({
   build: {
     outDir: '../dist/frontend',
     emptyOutDir: true,
+    assetsDir: 'static',
     sourcemap: true,
   },
 })

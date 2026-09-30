@@ -85,10 +85,10 @@ To install the relevant npm packages (frontend, backend and virus-scanner), run 
 npm install && npm --prefix serverless/virus-scanner install
 ```
 
-To prevent breaking changes to webpack4 introduced in node 17 and above, enable the `--openssl-legacy-provider` flag:
+The frontend is built with Vite and needs no special `NODE_OPTIONS`. If you exported `NODE_OPTIONS` for the previous webpack-based build, unset it:
 
 ```bash
-export NODE_OPTIONS=--openssl-legacy-provider
+unset NODE_OPTIONS
 ```
 
 If you are on Mac OS X, you may want to allow Docker to use more RAM (minimum of 4GB) by clicking on the Docker icon on the toolbar, clicking on the "Preferences" menu item, then clicking on the "Resources" link on the left.
