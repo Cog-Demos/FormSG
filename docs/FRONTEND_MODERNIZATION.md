@@ -95,8 +95,12 @@ All data below is synthetic. Services run as containers on the host network port
 
 ```bash
 # 1. Containers
+# Submission reads use read: 'secondary' (src/app/models/submission.server.model.ts), so the replica set
+# needs a secondary: with a primary only, Results times out (MongooseServerSelectionError, HTTP 500).
+# Both members advertise the docker0 gateway so the host and the containers can reach them.
 docker run -d --name fsg-mongo -p 27017:27017 mongo:4.4 --replSet rs0 --bind_ip_all
-docker exec fsg-mongo mongo --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+docker run -d --name fsg-mongo-secondary --network host mongo:4.4 --replSet rs0 --port 27018 --bind_ip_all
+docker exec fsg-mongo mongo --quiet --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"172.17.0.1:27017"},{_id:1,host:"172.17.0.1:27018",priority:0}]})'
 docker exec -i fsg-mongo mongo --quiet < init-mongo.js          # seeds agencies (open.gov.sg etc.)
 docker run -d --name fsg-maildev -p 1080:1080 -p 1025:1025 maildev/maildev
 docker run -d --name fsg-localstack -p 4566:4566 -e SERVICES=s3,sqs,secretsmanager \
