@@ -115,7 +115,7 @@
     "build-storybook": "NODE_OPTIONS=--openssl-legacy-provider build-storybook",
     "lint": "eslint ./ --ignore-path .gitignore && prettier . -c",
     "lint:fix": "eslint ./ --ignore-path .gitignore --fix && prettier . -c --write",
-    "test:a11y": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && test-storybook --index-json --verbose --url http://127.0.0.1:6006\"",
+    "test:a11y": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && test-storybook --index-json --verbose --url http://127.0.0.1:6006\"",
     "test:a11y-dev": "test-storybook --index-json --verbose --url http://localhost:6006",
     "pre-commit": "lint-staged"
   },
