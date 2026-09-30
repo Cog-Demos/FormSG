@@ -36,7 +36,8 @@
       "~theme/*": ["./src/theme/*"],
       "~typings/*": ["./src/typings/*"],
       "~/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "src/**/*",

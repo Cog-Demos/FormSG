@@ -18,7 +18,7 @@ describe('FeedbackCsvGenerator', () => {
   })
 
   afterAll(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Constructor', () => {
@@ -54,6 +54,7 @@ describe('FeedbackCsvGenerator', () => {
         rating: MOCK_FEEDBACK_RATING,
         comment: MOCK_FEEDBACK_COMMENT,
         formId: 'formId' as FormId,
+        submissionId: 'submissionId',
       }
 
       const MOCK_CREATED_TIME = moment().toISOString()
@@ -93,6 +94,7 @@ describe('FeedbackCsvGenerator', () => {
         comment: MOCK_FEEDBACK_COMMENT,
         formId: 'formId' as FormId,
         created: MOCK_CREATED_TIME as DateString,
+        submissionId: 'submissionId',
       }
       const expectedLineAdded = stringify([
         MOCK_CREATED_TIME_SG_STRING,
@@ -128,6 +130,7 @@ describe('FeedbackCsvGenerator', () => {
         formId: 'formId' as FormId,
         created: MOCK_CREATED_TIME as DateString,
         lastModified: MOCK_MODIFIED_TIME as DateString,
+        submissionId: 'submissionId',
       }
       const expectedLineAdded = stringify([
         MOCK_CREATED_TIME_SG_STRING,
