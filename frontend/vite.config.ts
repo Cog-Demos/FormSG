@@ -44,7 +44,6 @@ export default defineConfig(async () => {
       plugins: () => [tsconfigPaths(), nodePolyfills({ include: ['stream'] })],
     },
     server: {
-      host: true,
       port: 3000,
       proxy: {
         '/api': {
