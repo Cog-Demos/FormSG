@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: '../dist/frontend',
       emptyOutDir: true,
-      sourcemap: true,
+      sourcemap: 'hidden',
       assetsDir: 'static',
       chunkSizeWarningLimit: 2048,
       rollupOptions: {
