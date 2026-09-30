@@ -6,6 +6,7 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 
 import { version } from './package.json'
+import { datadogChunk } from './vite/datadogChunk'
 
 process.env.VITE_APP_VERSION ??= version
 
@@ -22,6 +23,7 @@ export default defineConfig(async () => {
       svgr(),
       // csv-string imports `stream`.
       nodePolyfills({ include: ['stream'] }),
+      datadogChunk(),
     ],
     resolve: {
       // p-queue's "exports" field does not expose the `p-queue/dist` subpath.
