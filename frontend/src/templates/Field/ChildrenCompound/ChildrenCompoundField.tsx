@@ -181,6 +181,8 @@ export const ChildrenCompoundField = ({
   )
 }
 
+type ChildFieldPath = `${string}.child.${number}.${number}`
+
 interface ChildrenBodyProps {
   currChildBodyIdx: number
   schema: ChildrenCompoundFieldSchema
@@ -217,7 +219,7 @@ const ChildrenBody = ({
   const { register, getValues, setValue, watch } = formContext
 
   const childNamePath = useMemo(
-    () => `${schema._id}.child.${currChildBodyIdx}.0`,
+    (): ChildFieldPath => `${schema._id}.child.${currChildBodyIdx}.0`,
     [schema._id, currChildBodyIdx],
   )
 
@@ -372,7 +374,7 @@ const ChildrenBody = ({
           // First index taken by name.
           index += 1
           const key = `${field.id}+${index}`
-          const fieldPath = `${schema._id}.child.${currChildBodyIdx}.${index}`
+          const fieldPath: ChildFieldPath = `${schema._id}.child.${currChildBodyIdx}.${index}`
           const myInfoValue = getChildAttr(subField)
           const childrenSubFieldError = error ? error[index] : undefined
 

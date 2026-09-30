@@ -88,13 +88,13 @@ export const TableField = ({
     // Update field array when min rows changes.
     if (hasMinRowsChanged) {
       const prevRowLength = fields.length
-      if (schema.minimumRows > prevRowLength) {
-        for (let i = prevRowLength; i < schema.minimumRows; i++) {
+      if (Number(schema.minimumRows) > prevRowLength) {
+        for (let i = prevRowLength; i < Number(schema.minimumRows); i++) {
           appendTableRow()
         }
       } else {
         // Remove rows from field array
-        for (let i = prevRowLength; i > schema.minimumRows; i--) {
+        for (let i = prevRowLength; i > Number(schema.minimumRows); i--) {
           remove(i - 1)
         }
       }
@@ -102,12 +102,13 @@ export const TableField = ({
   }, [appendTableRow, fields.length, hasMinRowsChanged, remove, schema])
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    // @ts-expect-error ColumnCell's extra props are supplied via cell.render('Cell', {...}), which react-table's Column typing cannot express
     useTable({ columns: columnsData, data: fields })
 
   const handleAddRow = useCallback(() => {
     if (
       !schema.addMoreRows ||
-      (!!schema.maximumRows && fields.length >= schema.maximumRows)
+      (!!schema.maximumRows && fields.length >= Number(schema.maximumRows))
     )
       return
     return appendTableRow()
@@ -115,7 +116,10 @@ export const TableField = ({
 
   const handleRemoveRow = useCallback(
     (rowIndex: number) => {
-      if (fields.length <= schema.minimumRows || rowIndex >= fields.length) {
+      if (
+        fields.length <= Number(schema.minimumRows) ||
+        rowIndex >= fields.length
+      ) {
         return
       }
       return remove(rowIndex)
@@ -148,7 +152,7 @@ export const TableField = ({
   return (
     <TableFieldContainer schema={schema}>
       <Box
-        d="block"
+        display="block"
         w="100%"
         overflowX="auto"
         sx={{
@@ -228,7 +232,8 @@ export const TableField = ({
                     >
                       <IconButton
                         isDisabled={
-                          schema.disabled || fields.length <= schema.minimumRows
+                          schema.disabled ||
+                          fields.length <= Number(schema.minimumRows)
                         }
                         variant="clear"
                         colorScheme="danger"

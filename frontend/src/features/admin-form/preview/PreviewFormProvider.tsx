@@ -51,7 +51,7 @@ export const PreviewFormProvider = ({
     useCommonFormProvider(formId)
 
   const showErrorToast = useCallback(
-    (error) => {
+    (error: unknown) => {
       toast({
         status: 'danger',
         description:
@@ -337,6 +337,9 @@ export const PreviewFormProvider = ({
         handleLogout: undefined,
         isPaymentEnabled,
         isPreview: true,
+        hasSingleSubmissionValidationError: false,
+        setHasSingleSubmissionValidationError: () => undefined,
+        hasRespondentNotWhitelistedError: false,
         ...commonFormValues,
         ...data,
         ...rest,

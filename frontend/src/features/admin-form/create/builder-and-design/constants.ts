@@ -37,7 +37,12 @@ export const BASIC_FIELDS_ORDERED = [
   BasicField.Uen,
 ]
 
-export const MYINFO_FIELDS_ORDERED: MyInfoAttribute[] = [
+export type MyInfoFieldCreationAttribute = Exclude<
+  MyInfoAttribute,
+  `${MyInfoChildAttributes}`
+>
+
+export const MYINFO_FIELDS_ORDERED: MyInfoFieldCreationAttribute[] = [
   // Personal section
   MyInfoAttribute.Name,
   MyInfoAttribute.Sex,
