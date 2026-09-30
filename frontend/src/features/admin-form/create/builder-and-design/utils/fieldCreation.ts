@@ -4,7 +4,6 @@ import {
   BasicField,
   FieldCreateDto,
   MyInfoAttribute,
-  MyInfoChildAttributes,
   MyInfoField,
   RatingShape,
 } from '~shared/types/field'
@@ -16,6 +15,7 @@ import {
   MYINFO_DROPDOWNFIELD_META,
   MYINFO_MOBILEFIELD_META,
   MYINFO_TEXTFIELD_META,
+  MyInfoFieldCreationAttribute,
 } from '../constants'
 
 import { createShortTextColumn } from './columnCreation'
@@ -216,10 +216,7 @@ export const getFieldCreationMeta = (fieldType: BasicField): FieldCreateDto => {
 }
 
 export const getMyInfoFieldCreationMeta = (
-  myInfoAttribute: Exclude<
-    MyInfoAttribute,
-    MyInfoChildAttributes[keyof MyInfoChildAttributes]
-  >,
+  myInfoAttribute: MyInfoFieldCreationAttribute,
 ): MyInfoField => {
   const baseMeta: Pick<
     MyInfoField,

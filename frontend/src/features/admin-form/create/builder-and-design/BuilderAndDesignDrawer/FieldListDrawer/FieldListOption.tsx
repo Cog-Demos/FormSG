@@ -1,13 +1,13 @@
 import { CSSProperties, useCallback, useMemo } from 'react'
+import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
-} from 'react-beautiful-dnd'
-import { Box, BoxProps, forwardRef, Icon, Stack, Text } from '@chakra-ui/react'
+} from '@hello-pangea/dnd'
 
 import { FormResponseMode } from '~shared/types'
-import { BasicField, MyInfoAttribute } from '~shared/types/field'
+import { BasicField } from '~shared/types/field'
 
 import { useIsMobile } from '~hooks/useIsMobile'
 import Badge from '~components/Badge'
@@ -18,6 +18,7 @@ import {
 } from '~features/admin-form/create/constants'
 import { useUser } from '~features/user/queries'
 
+import { MyInfoFieldCreationAttribute } from '../../constants'
 import { useCreateTabForm } from '../../useCreateTabForm'
 import {
   updateCreateStateSelector,
@@ -53,7 +54,7 @@ interface BasicFieldOptionProps extends FieldOptionProps {
 }
 
 interface MyInfoFieldOptionProps extends FieldOptionProps {
-  fieldType: MyInfoAttribute
+  fieldType: MyInfoFieldCreationAttribute
 }
 
 interface DraggableBasicFieldOptionProps
@@ -65,7 +66,7 @@ interface DraggableBasicFieldOptionProps
 interface DraggableMyInfoFieldOptionProps
   extends Omit<FieldOptionProps, 'isActive'> {
   index: number
-  fieldType: MyInfoAttribute
+  fieldType: MyInfoFieldCreationAttribute
 }
 
 export const DraggableBasicFieldListOption = ({

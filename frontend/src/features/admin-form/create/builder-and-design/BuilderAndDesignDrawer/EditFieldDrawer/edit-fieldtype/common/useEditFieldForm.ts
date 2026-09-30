@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import {
   DeepPartial,
+  FieldValues,
   Mode,
   UnpackNestedValue,
   useForm,
@@ -39,7 +40,7 @@ import { isMyInfo } from '~features/myinfo/utils'
 import { EditFieldProps } from './types'
 
 type UseEditFieldFormProps<
-  FormShape,
+  FormShape extends FieldValues,
   FieldShape extends FieldBase,
 > = EditFieldProps<FieldShape> & {
   transform: {
@@ -61,7 +62,7 @@ type UseEditFieldFormProps<
   mode?: Mode
 }
 
-export type UseEditFieldFormReturn<U> = UseFormReturn<U> & {
+export type UseEditFieldFormReturn<U extends FieldValues> = UseFormReturn<U> & {
   handleUpdateField: () => Promise<void>
   handleCancel: () => void
   buttonText: string
@@ -69,7 +70,10 @@ export type UseEditFieldFormReturn<U> = UseFormReturn<U> & {
   formMethods: UseFormReturn<U>
 }
 
-export const useEditFieldForm = <FormShape, FieldShape extends FormField>({
+export const useEditFieldForm = <
+  FormShape extends FieldValues,
+  FieldShape extends FormField,
+>({
   field,
   transform,
   mode,
@@ -134,7 +138,7 @@ export const useEditFieldForm = <FormShape, FieldShape extends FormField>({
   )
 
   const onSaveSuccess = useCallback(
-    (newField) => {
+    (newField: FormFieldDto) => {
       editForm.reset(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore

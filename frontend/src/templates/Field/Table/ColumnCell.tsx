@@ -180,7 +180,7 @@ export const ColumnCell = ({
         // be shown in the individual column cells.
         isMobile ? (
           <FormErrorMessage>
-            {get(errors, `${inputName}.message`)}
+            {errors[schemaId]?.[row.index]?.[column.id]?.message}
           </FormErrorMessage>
         ) : null
       }

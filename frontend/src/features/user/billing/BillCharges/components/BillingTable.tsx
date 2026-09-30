@@ -25,6 +25,7 @@ const AUTHTYPE_TO_TEXT = {
   [FormAuthType.SGID]: 'sgID',
   [FormAuthType.MyInfo]: 'MyInfo',
   [FormAuthType.CP]: 'Corppass',
+  [FormAuthType.SGID_MyInfo]: 'sgID MyInfo',
 }
 
 const BILLING_TABLE_COLUMNS: Column<BillingColumnData>[] = [
