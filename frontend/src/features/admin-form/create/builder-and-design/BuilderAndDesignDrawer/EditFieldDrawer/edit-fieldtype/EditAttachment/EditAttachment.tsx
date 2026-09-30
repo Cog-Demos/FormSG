@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { Controller, RegisterOptions } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import { FormControl, Skeleton } from '@chakra-ui/react'
 import { extend, pick } from 'lodash'
 
@@ -15,7 +15,10 @@ import {
   ACCEPTED_FILETYPES_SPREADSHEET,
   GUIDE_EMAIL_RELIABILITY,
 } from '~constants/links'
-import { createBaseValidationRules } from '~utils/fieldValidation'
+import {
+  createBaseValidationRules,
+  FieldValidationRules,
+} from '~utils/fieldValidation'
 import { SingleSelect } from '~components/Dropdown'
 import type { ComboboxItem } from '~components/Dropdown/types'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
@@ -124,7 +127,7 @@ export const EditAttachment = ({ field }: EditAttachmentProps): JSX.Element => {
   }, [form])
 
   const attachmentSizeValidationRule = useMemo(
-    (): RegisterOptions => ({
+    (): FieldValidationRules => ({
       validate: (val) => {
         return (
           maxTotalSizeMb - otherAttachmentsSize >= Number(val) ||

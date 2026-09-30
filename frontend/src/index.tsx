@@ -4,7 +4,7 @@ import './i18n/i18n'
 import './polyfills'
 
 import * as React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 
 import { App } from './app/App'
 import * as dayjs from './utils/dayjs'
@@ -33,11 +33,11 @@ window.gtag = gtag
 // Init dayjs
 dayjs.init()
 
-ReactDOM.render(
+const container = document.getElementById('root') as HTMLElement
+createRoot(container).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root'),
 )
 
 // If you want your app to work offline and load faster, you can change

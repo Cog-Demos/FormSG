@@ -1,9 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import {
-  RegisterOptions,
-  useForm,
-  UseFormRegisterReturn,
-} from 'react-hook-form'
+import { useForm, UseFormRegisterReturn } from 'react-hook-form'
 import { BiHide, BiShow } from 'react-icons/bi'
 import {
   FormControl,
@@ -19,6 +15,7 @@ import { useToggle } from 'rooks'
 import { featureFlags } from '~shared/constants'
 import { TwilioCredentials } from '~shared/types/twilio'
 
+import { FieldValidationRules } from '~utils/fieldValidation'
 import { trimStringsInObject } from '~utils/trimStringsInObject'
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
@@ -32,7 +29,10 @@ import { useMutateTwilioCreds } from '../../mutations'
 
 import { DeleteTwilioModal } from './DeleteTwilioModal'
 
-const TWILIO_INPUT_RULES: Record<keyof TwilioCredentials, RegisterOptions> = {
+const TWILIO_INPUT_RULES: Record<
+  keyof TwilioCredentials,
+  FieldValidationRules
+> = {
   accountSid: {
     required: 'Account SID is required',
     pattern: {

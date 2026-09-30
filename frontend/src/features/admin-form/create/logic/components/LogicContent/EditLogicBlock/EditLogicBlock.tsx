@@ -65,7 +65,7 @@ export const useEditLogicBlock = ({
         // Cannot be undefined or the default value will be used.
         // This may cause old values to be shown when appending.
         field: '',
-      }),
+      } as EditLogicInputs['conditions'][number]),
     [append],
   )
 

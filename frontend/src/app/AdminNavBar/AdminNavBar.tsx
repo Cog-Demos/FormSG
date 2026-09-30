@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { ElementType, useCallback, useEffect, useMemo } from 'react'
 import { BiCommentDetail } from 'react-icons/bi'
 import { GoPrimitiveDot } from 'react-icons/go'
 import { Link as ReactLink } from 'react-router-dom'
 import {
-  As,
   Box,
   chakra,
   Flex,
@@ -48,7 +47,7 @@ const BrandSmallLogo = chakra(BrandMarkSvg)
 type AdminNavBarLinkProps = {
   label: string
   href: string
-  MobileIcon?: As
+  MobileIcon?: ElementType
 }
 
 const NAV_LINKS: AdminNavBarLinkProps[] = [

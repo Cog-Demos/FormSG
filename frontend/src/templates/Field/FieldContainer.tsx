@@ -60,7 +60,7 @@ export const FieldContainer = ({
 }: FieldContainerProps): JSX.Element => {
   const { errors, isSubmitting, isValid } = useFormState({ name: schema._id })
 
-  const error: FieldError | undefined = get(errors, errorKey ?? schema._id)
+  const error = get(errors, errorKey ?? schema._id) as FieldError | undefined
 
   return (
     <FormControl

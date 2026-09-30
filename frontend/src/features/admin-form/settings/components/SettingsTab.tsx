@@ -1,10 +1,11 @@
-import { As, Box, Icon, Tab } from '@chakra-ui/react'
+import { ElementType } from 'react'
+import { Box, Icon, Tab } from '@chakra-ui/react'
 
 import Badge from '~components/Badge'
 
 export interface SettingsTabProps {
   label: string
-  icon: As
+  icon: ElementType
   showNewBadge?: boolean
 }
 

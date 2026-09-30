@@ -23,6 +23,7 @@ import {
 } from '~shared/utils/payments'
 
 import { useIsMobile } from '~hooks/useIsMobile'
+import { FieldValidationRules } from '~utils/fieldValidation'
 import Button from '~components/Button'
 import FormErrorMessage from '~components/FormControl/FormErrorMessage'
 import FormLabel from '~components/FormControl/FormLabel'
@@ -134,7 +135,7 @@ export const ProductModal = ({
     onClose()
   })
 
-  const minQtyValidation: RegisterOptions = {
+  const minQtyValidation: FieldValidationRules = {
     validate: (valStr: string) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 
@@ -153,7 +154,7 @@ export const ProductModal = ({
       return true
     },
   }
-  const maxQtyValidation: RegisterOptions = {
+  const maxQtyValidation: FieldValidationRules = {
     validate: (valStr: string) => {
       if (!getValues(MULTI_QTY_KEY)) return true
 
