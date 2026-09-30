@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router-dom'
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { fullScreenDecorator } from '~utils/storybook'
 
@@ -20,7 +20,7 @@ export default {
   },
 } as Meta
 
-const Template: Story<ShareFormModalProps> = (args) => {
+const Template: StoryFn<ShareFormModalProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   return (
@@ -31,15 +31,24 @@ const Template: Story<ShareFormModalProps> = (args) => {
     />
   )
 }
-export const Default = Template.bind({})
-Default.args = {
-  formId: 'mock-storybook-id',
+
+export const Default = {
+  render: Template,
+
+  args: {
+    formId: 'mock-storybook-id',
+  },
 }
 
-export const Loading = Template.bind({})
+export const Loading = {
+  render: Template,
+}
 
-export const PrivateFormWarning = Template.bind({})
-PrivateFormWarning.args = {
-  ...Default.args,
-  isFormPrivate: true,
+export const PrivateFormWarning = {
+  render: Template,
+
+  args: {
+    ...Default.args,
+    isFormPrivate: true,
+  },
 }

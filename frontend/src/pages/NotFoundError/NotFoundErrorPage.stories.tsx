@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { getUnauthedUser } from '~/mocks/msw/handlers/user'
 
@@ -25,20 +25,30 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <NotFoundErrorPage />
-export const NotLoggedIn = Template.bind({})
-NotLoggedIn.decorators = [LoggedOutDecorator]
-NotLoggedIn.parameters = {
-  msw: [getUnauthedUser()],
+const Template: StoryFn = () => <NotFoundErrorPage />
+
+export const NotLoggedIn = {
+  render: Template,
+  decorators: [LoggedOutDecorator],
+
+  parameters: {
+    msw: [getUnauthedUser()],
+  },
 }
 
-export const MobileNotLoggedIn = Template.bind({})
-MobileNotLoggedIn.parameters = getMobileViewParameters()
-MobileNotLoggedIn.decorators = NotLoggedIn.decorators
+export const MobileNotLoggedIn = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+  decorators: NotLoggedIn.decorators,
+}
 
-export const LoggedIn = Template.bind({})
-LoggedIn.decorators = [LoggedInDecorator]
+export const LoggedIn = {
+  render: Template,
+  decorators: [LoggedInDecorator],
+}
 
-export const MobileLoggedIn = Template.bind({})
-MobileLoggedIn.parameters = getMobileViewParameters()
-MobileLoggedIn.decorators = LoggedIn.decorators
+export const MobileLoggedIn = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+  decorators: LoggedIn.decorators,
+}

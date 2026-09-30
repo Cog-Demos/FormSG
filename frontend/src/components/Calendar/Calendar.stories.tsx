@@ -1,5 +1,5 @@
 import { useControllableState } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { isWeekend } from 'date-fns'
 
 import { mockDateDecorator } from '~utils/storybook'
@@ -16,7 +16,7 @@ export default {
   },
 } as Meta<CalendarProps>
 
-const CalendarOnlyTemplate: Story<CalendarProps> = ({
+const CalendarOnlyTemplate: StoryFn<CalendarProps> = ({
   value,
   onChange,
   ...args
@@ -31,14 +31,22 @@ const CalendarOnlyTemplate: Story<CalendarProps> = ({
   )
 }
 
-export const Default = CalendarOnlyTemplate.bind({})
-
-export const CalendarWithValue = CalendarOnlyTemplate.bind({})
-CalendarWithValue.args = {
-  value: new Date('2001-01-01'),
+export const Default = {
+  render: CalendarOnlyTemplate,
 }
 
-export const CalendarWeekdayOnly = CalendarOnlyTemplate.bind({})
-CalendarWeekdayOnly.args = {
-  isDateUnavailable: (d) => isWeekend(d),
+export const CalendarWithValue = {
+  render: CalendarOnlyTemplate,
+
+  args: {
+    value: new Date('2001-01-01'),
+  },
+}
+
+export const CalendarWeekdayOnly = {
+  render: CalendarOnlyTemplate,
+
+  args: {
+    isDateUnavailable: (d: Date) => isWeekend(d),
+  },
 }

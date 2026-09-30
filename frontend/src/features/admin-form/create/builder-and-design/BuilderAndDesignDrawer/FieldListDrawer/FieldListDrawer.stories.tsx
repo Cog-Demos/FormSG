@@ -1,4 +1,5 @@
-import { DragDropContext } from 'react-beautiful-dnd'
+import { FC, PropsWithChildren } from 'react'
+import { DragDropContext } from '@hello-pangea/dnd'
 import { StoryFn } from '@storybook/react'
 
 import { FormResponseMode } from '~shared/types'
@@ -10,6 +11,9 @@ import { StoryRouter } from '~utils/storybook'
 import { CreatePageSidebarProvider } from '~features/admin-form/create/common'
 
 import { FieldListDrawer } from '..'
+
+const CreatePageSidebarProviderWithChildren =
+  CreatePageSidebarProvider as FC<PropsWithChildren>
 
 export default {
   component: FieldListDrawer,
@@ -23,9 +27,9 @@ export default {
     (Story: StoryFn) => (
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       <DragDropContext onDragEnd={() => {}}>
-        <CreatePageSidebarProvider>
+        <CreatePageSidebarProviderWithChildren>
           <Story />
-        </CreatePageSidebarProvider>
+        </CreatePageSidebarProviderWithChildren>
       </DragDropContext>
     ),
   ],

@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, MobileFieldBase } from '~shared/types'
 
@@ -44,48 +44,60 @@ interface StoryArgs {
   field: MobileFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditMobile field={field} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  field: {
-    ...DEFAULT_MOBILE_FIELD,
-    isVerifiable: true,
+export const Default = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_MOBILE_FIELD,
+      isVerifiable: true,
+    },
   },
 }
 
-export const Loading = Template.bind({})
-Loading.parameters = {
-  msw: [
-    getFreeSmsQuota({ delay: 'infinite' }),
-    ...createFormBuilderMocks({}, 0),
-  ],
+export const Loading = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getFreeSmsQuota({ delay: 'infinite' }),
+      ...createFormBuilderMocks({}, 0),
+    ],
+  },
 }
 
-export const VerifiedQuotaExceeded = Template.bind({})
-VerifiedQuotaExceeded.parameters = {
-  msw: [
-    getFreeSmsQuota({
-      override: {
-        freeSmsCounts: 10000,
-        quota: 10000,
-      },
-    }),
-    ...createFormBuilderMocks({}, 0),
-  ],
+export const VerifiedQuotaExceeded = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getFreeSmsQuota({
+        override: {
+          freeSmsCounts: 10000,
+          quota: 10000,
+        },
+      }),
+      ...createFormBuilderMocks({}, 0),
+    ],
+  },
 }
 
-export const HasCustomCredentials = Template.bind({})
-HasCustomCredentials.parameters = {
-  msw: [
-    getFreeSmsQuota({
-      override: {
-        freeSmsCounts: 10000,
-        quota: 10000,
-      },
-    }),
-    ...createFormBuilderMocks({ msgSrvcName: 'custom-credentials' }, 0),
-  ],
+export const HasCustomCredentials = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getFreeSmsQuota({
+        override: {
+          freeSmsCounts: 10000,
+          quota: 10000,
+        },
+      }),
+      ...createFormBuilderMocks({ msgSrvcName: 'custom-credentials' }, 0),
+    ],
+  },
 }

@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, EmailFieldBase } from '~shared/types'
 
@@ -51,35 +51,44 @@ interface StoryArgs {
   field: EmailFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditEmail field={field} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  field: DEFAULT_EMAIL_FIELD,
-}
+export const Default = {
+  render: Template,
 
-export const WithDomainRestriction = Template.bind({})
-WithDomainRestriction.args = {
-  field: {
-    ...DEFAULT_EMAIL_FIELD,
-    isVerifiable: true,
-    hasAllowedEmailDomains: true,
-    allowedEmailDomains: ['@open.gov.sg'],
+  args: {
+    field: DEFAULT_EMAIL_FIELD,
   },
 }
 
-export const WithEmailConfirmation = Template.bind({})
-WithEmailConfirmation.args = {
-  field: {
-    ...DEFAULT_EMAIL_FIELD,
-    autoReplyOptions: {
-      hasAutoReply: true,
-      autoReplySubject: 'Storybook email confirmation',
-      autoReplySender: 'Form Storybook Team',
-      autoReplyMessage: 'This is a message that the user will see',
-      includeFormSummary: false,
+export const WithDomainRestriction = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_EMAIL_FIELD,
+      isVerifiable: true,
+      hasAllowedEmailDomains: true,
+      allowedEmailDomains: ['@open.gov.sg'],
+    },
+  },
+}
+
+export const WithEmailConfirmation = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_EMAIL_FIELD,
+      autoReplyOptions: {
+        hasAutoReply: true,
+        autoReplySubject: 'Storybook email confirmation',
+        autoReplySender: 'Form Storybook Team',
+        autoReplyMessage: 'This is a message that the user will see',
+        includeFormSummary: false,
+      },
     },
   },
 }

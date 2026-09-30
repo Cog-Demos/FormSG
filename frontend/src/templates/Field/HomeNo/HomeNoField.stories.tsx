@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField } from '~shared/types/field'
 
@@ -44,7 +44,10 @@ interface StoryHomeNoFieldProps extends HomeNoFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryHomeNoFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryHomeNoFieldProps> = ({
+  defaultValue,
+  ...args
+}) => {
   const formMethods = useForm({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -83,25 +86,37 @@ const Template: Story<StoryHomeNoFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
-  defaultValue: '',
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '',
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const ValidationInvalidLandline = Template.bind({})
-ValidationInvalidLandline.args = {
-  schema: baseSchema,
-  defaultValue: '98765432',
+export const ValidationInvalidLandline = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '98765432',
+  },
 }
 
-export const ValidationValidLandline = Template.bind({})
-ValidationValidLandline.args = {
-  schema: baseSchema,
-  defaultValue: '61234567',
+export const ValidationValidLandline = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+    defaultValue: '61234567',
+  },
 }
