@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { merge } from 'lodash'
 import { rest } from 'msw'
 
@@ -44,58 +44,76 @@ const baseSchema: ImageFieldSchema = {
   url: MockImage,
 }
 
-interface StoryImageFieldProps extends ImageFieldProps {
-  defaultValue?: string
-}
-
-const Template: Story<StoryImageFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<ImageFieldProps> = (args) => {
   return <ImageFieldComponent {...args} />
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  schema: baseSchema,
-}
+export const Default = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  schema: baseSchema,
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    schema: baseSchema,
   },
-  chromatic: { viewports: [viewports.xs] },
 }
-export const Tablet = Template.bind({})
-Tablet.args = {
-  schema: baseSchema,
-}
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+
+export const Mobile = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
   },
-  chromatic: { viewports: [viewports.md] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-export const Loading = Template.bind({})
-Loading.args = {
-  schema: merge({}, baseSchema, { url: '/mock/api' }),
-}
-Loading.parameters = {
-  msw: [
-    rest.get('/mock/api', (_req, res, ctx) => {
-      return res(ctx.delay('infinite'))
-    }),
-  ],
+export const Tablet = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
 }
 
-export const EmptySrc = Template.bind({})
-EmptySrc.args = {
-  schema: merge({}, baseSchema, { url: '' }),
+export const Loading = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, { url: '/mock/api' }),
+  },
+
+  parameters: {
+    msw: [
+      rest.get('/mock/api', (_req, res, ctx) => {
+        return res(ctx.delay('infinite'))
+      }),
+    ],
+  },
 }
 
-export const InvalidSrc = Template.bind({})
-InvalidSrc.args = {
-  schema: merge({}, baseSchema, { url: 'this is an invalid url' }),
+export const EmptySrc = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, { url: '' }),
+  },
+}
+
+export const InvalidSrc = {
+  render: Template,
+
+  args: {
+    schema: merge({}, baseSchema, { url: 'this is an invalid url' }),
+  },
 }

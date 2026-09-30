@@ -4,7 +4,7 @@ import {
   FormErrorMessage,
   FormLabel,
 } from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
@@ -16,49 +16,55 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<InputProps> = (args) => <Input {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  placeholder: 'Test placeholder',
+export const Default: StoryObj<InputProps> = {
+  args: {
+    placeholder: 'Test placeholder',
+  },
 }
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: 'Prefilled field',
-  isPrefilled: true,
+export const Prefilled: StoryObj<InputProps> = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: 'Prefilled field',
+    isPrefilled: true,
+  },
 }
 
-export const PrefilledLocked = Template.bind({})
-PrefilledLocked.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: 'Prefilled locked field',
-  isPrefilled: true,
-  isPrefillLocked: true,
+export const PrefilledLocked: StoryObj<InputProps> = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: 'Prefilled locked field',
+    isPrefilled: true,
+    isPrefillLocked: true,
+  },
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
-  placeholder: 'Test placeholder',
-  defaultValue: 'Field error',
+export const Error: StoryObj<InputProps> = {
+  args: {
+    isInvalid: true,
+    placeholder: 'Test placeholder',
+    defaultValue: 'Field error',
+  },
 }
 
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
-  placeholder: 'Test placeholder',
-  defaultValue: 'Field success',
-}
-export const Disabled = Template.bind({})
-Disabled.args = {
-  defaultValue: 'Some text',
-  placeholder: 'Test placeholder',
-  isDisabled: true,
+export const Success: StoryObj<InputProps> = {
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+    placeholder: 'Test placeholder',
+    defaultValue: 'Field success',
+  },
 }
 
-export const Playground: Story = ({
+export const Disabled: StoryObj<InputProps> = {
+  args: {
+    defaultValue: 'Some text',
+    placeholder: 'Test placeholder',
+    isDisabled: true,
+  },
+}
+
+const PlaygroundTemplate: StoryFn = ({
   name,
   label,
   isDisabled,
@@ -99,10 +105,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Field label',
-  placeholder: 'Fill in this field',
-  isRequired: true,
-  isDisabled: false,
+
+export const Playground: StoryObj = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Field label',
+    placeholder: 'Fill in this field',
+    isRequired: true,
+    isDisabled: false,
+  },
 }

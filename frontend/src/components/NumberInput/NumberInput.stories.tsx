@@ -4,11 +4,11 @@ import {
   FormErrorMessage,
   FormLabel,
 } from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
-import { NumberInput, NumberInputProps } from './NumberInput'
+import { NumberInput } from './NumberInput'
 
 export default {
   title: 'Components/NumberInput',
@@ -16,44 +16,50 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<NumberInputProps> = (args) => <NumberInput {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  placeholder: 'Test placeholder',
+export const Default: StoryObj<typeof NumberInput> = {
+  args: {
+    placeholder: 'Test placeholder',
+  },
 }
 
-export const HideSteppers = Template.bind({})
-HideSteppers.args = {
-  placeholder: 'This field has no steppers',
-  showSteppers: false,
+export const HideSteppers: StoryObj<typeof NumberInput> = {
+  args: {
+    placeholder: 'This field has no steppers',
+    showSteppers: false,
+  },
 }
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: '3.142',
-  isPrefilled: true,
+export const Prefilled: StoryObj<typeof NumberInput> = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: '3.142',
+    isPrefilled: true,
+  },
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
-  defaultValue: '-1',
+export const Error: StoryObj<typeof NumberInput> = {
+  args: {
+    isInvalid: true,
+    defaultValue: '-1',
+  },
 }
 
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
-  defaultValue: '1337',
-}
-export const Disabled = Template.bind({})
-Disabled.args = {
-  defaultValue: '0',
-  isDisabled: true,
+export const Success: StoryObj<typeof NumberInput> = {
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+    defaultValue: '1337',
+  },
 }
 
-export const Playground: Story = ({
+export const Disabled: StoryObj<typeof NumberInput> = {
+  args: {
+    defaultValue: '0',
+    isDisabled: true,
+  },
+}
+
+const PlaygroundTemplate: StoryFn = ({
   name,
   label,
   isDisabled,
@@ -96,10 +102,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Field label',
-  placeholder: 'Fill in this field',
-  isRequired: true,
-  isDisabled: false,
+
+export const Playground: StoryObj = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Field label',
+    placeholder: 'Fill in this field',
+    isRequired: true,
+    isDisabled: false,
+  },
 }

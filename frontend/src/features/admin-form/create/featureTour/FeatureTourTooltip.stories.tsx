@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { fullScreenDecorator } from '~utils/storybook'
 import { ButtonProps } from '~components/Button'
@@ -21,7 +21,7 @@ export default {
   },
 } as Meta
 
-const Template: Story<FeatureTourTooltipProps> = (args) => {
+const Template: StoryFn<FeatureTourTooltipProps> = (args) => {
   const [featureStep, setFeatureStep] = useState<number>(args.index ?? 0)
 
   const handleNextClick = () => {
@@ -63,10 +63,15 @@ const Template: Story<FeatureTourTooltipProps> = (args) => {
   )
 }
 
-export const BasicUsage = Template.bind({})
+export const BasicUsage = {
+  render: Template,
+}
 
-export const LastFeatureStep = Template.bind({})
-LastFeatureStep.args = {
-  index: FEATURE_STEPS.length - 1,
-  isLastStep: true,
+export const LastFeatureStep = {
+  render: Template,
+
+  args: {
+    index: FEATURE_STEPS.length - 1,
+    isLastStep: true,
+  },
 }

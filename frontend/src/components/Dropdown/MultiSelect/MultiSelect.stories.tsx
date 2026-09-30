@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { BiRadioCircleMarked } from 'react-icons/bi'
 import { FormControl } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { get } from 'lodash'
 import difference from 'lodash/difference'
 
@@ -73,50 +73,75 @@ export default {
   },
 } as Meta<MultiSelectProps>
 
-const Template: Story<MultiSelectProps> = ({ values: valuesProp, ...args }) => {
+const Template: StoryFn<MultiSelectProps> = ({
+  values: valuesProp,
+  ...args
+}) => {
   const [values, setValues] = useState<string[]>(valuesProp)
 
   return <MultiSelect {...args} values={values} onChange={setValues} />
 }
-export const Default = Template.bind({})
 
-export const WithDefaultInput = Template.bind({})
-WithDefaultInput.args = {
-  downshiftComboboxProps: {
-    initialInputValue: 'What',
+export const Default = {
+  render: Template,
+}
+
+export const WithDefaultInput = {
+  render: Template,
+
+  args: {
+    downshiftComboboxProps: {
+      initialInputValue: 'What',
+      defaultIsOpen: true,
+    },
+  },
+}
+
+export const MobileTruncatedOption = {
+  render: Template,
+
+  args: {
+    values: ['What happens when the label is fairly long', 'Bat'],
     defaultIsOpen: true,
   },
-}
 
-export const MobileTruncatedOption = Template.bind({})
-MobileTruncatedOption.args = {
-  values: ['What happens when the label is fairly long', 'Bat'],
-  defaultIsOpen: true,
-}
-MobileTruncatedOption.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Invalid = Template.bind({})
-Invalid.args = {
-  isInvalid: true,
+export const Invalid = {
+  render: Template,
+
+  args: {
+    isInvalid: true,
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  isDisabled: true,
+export const Disabled = {
+  render: Template,
+
+  args: {
+    isDisabled: true,
+  },
 }
 
-export const DisabledWithSelection = Template.bind({})
-DisabledWithSelection.args = {
-  isDisabled: true,
-  values: ['What happens when the label is fairly long', 'Bat'],
+export const DisabledWithSelection = {
+  render: Template,
+
+  args: {
+    isDisabled: true,
+    values: ['What happens when the label is fairly long', 'Bat'],
+  },
 }
 
-export const Playground: Story<MultiSelectProps> = ({ items, isDisabled }) => {
+const PlaygroundTemplate: StoryFn<MultiSelectProps> = ({
+  items,
+  isDisabled,
+}) => {
   const name = 'Multiselect'
   const {
     handleSubmit,
@@ -166,6 +191,10 @@ export const Playground: Story<MultiSelectProps> = ({ items, isDisabled }) => {
   )
 }
 
-Playground.args = {
-  isDisabled: false,
+export const Playground: StoryObj<MultiSelectProps> = {
+  render: PlaygroundTemplate,
+
+  args: {
+    isDisabled: false,
+  },
 }

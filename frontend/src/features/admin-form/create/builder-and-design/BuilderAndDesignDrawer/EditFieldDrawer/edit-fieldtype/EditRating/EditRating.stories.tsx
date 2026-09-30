@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, RatingFieldBase, RatingShape } from '~shared/types'
 
@@ -42,9 +42,11 @@ interface StoryArgs {
   field: RatingFieldBase
 }
 
-const Template: Story<StoryArgs> = ({ field }) => {
+const Template: StoryFn<StoryArgs> = ({ field }) => {
   return <EditRating field={field} />
 }
 
-export const Default = Template.bind({})
-Default.storyName = 'EditRating'
+export const Default = {
+  render: Template,
+  name: 'EditRating',
+}

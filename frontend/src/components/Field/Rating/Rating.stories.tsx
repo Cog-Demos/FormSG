@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import { viewports } from '~/utils/storybook'
 
@@ -21,9 +21,7 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<RatingProps> = (args) => <Rating {...args} />
-
-const ResponsiveGroup: Story<RatingProps> = (args) => (
+const ResponsiveGroup: StoryFn<RatingProps> = (args) => (
   <Stack spacing="2rem">
     <Rating
       {...args}
@@ -49,7 +47,7 @@ const ResponsiveGroup: Story<RatingProps> = (args) => (
   </Stack>
 )
 
-const TemplateGroup: Story<RatingProps> = (args) => (
+const TemplateGroup: StoryFn<RatingProps> = (args) => (
   <SimpleGrid
     columns={2}
     spacing={8}
@@ -122,82 +120,105 @@ const TemplateGroup: Story<RatingProps> = (args) => (
   </SimpleGrid>
 )
 
-export const Default = Template.bind({})
-Default.args = {
-  numberOfRatings: 10,
-  variant: 'number',
-  name: 'Test rating input',
-}
-
-export const Disabled = Template.bind({})
-Disabled.args = {
-  ...Default.args,
-  isDisabled: true,
-}
-
-export const WithHelperText = Template.bind({})
-WithHelperText.args = {
-  numberOfRatings: 10,
-  variant: 'number',
-  name: 'Test rating input',
-  helperText: '1: Strongly agree, 10: Strongly disagree',
-}
-
-export const VariantNumber = TemplateGroup.bind({})
-VariantNumber.args = {
-  name: 'Test rating input',
-  numberOfRatings: 5,
-  variant: 'number',
-}
-VariantNumber.storyName = 'Variant/Number'
-
-export const VariantStar = TemplateGroup.bind({})
-VariantStar.args = {
-  name: 'Test rating input',
-  numberOfRatings: 5,
-  variant: 'star',
-}
-VariantStar.storyName = 'Variant/Star'
-
-export const VariantHeart = TemplateGroup.bind({})
-VariantHeart.args = {
-  name: 'Test rating input',
-  numberOfRatings: 5,
-  variant: 'heart',
-}
-VariantHeart.storyName = 'Variant/Heart'
-
-export const Mobile = ResponsiveGroup.bind({})
-Mobile.args = {
-  name: 'Test rating input',
-  helperText: '1: Strongly agree, 10: Strongly disagree',
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Default = {
+  args: {
+    numberOfRatings: 10,
+    variant: 'number',
+    name: 'Test rating input',
   },
-  controls: {
-    include: ['name', 'colorScheme', 'wrapComponentsPerRow', 'helperText'],
-  },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Tablet = ResponsiveGroup.bind({})
-Tablet.args = {
-  name: 'Test rating input',
-  helperText: '1: Strongly agree, 10: Strongly disagree',
-}
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Disabled = {
+  args: {
+    ...Default.args,
+    isDisabled: true,
   },
-  controls: {
-    include: ['name', 'colorScheme', 'wrapComponentsPerRow', 'helperText'],
-  },
-  chromatic: { viewports: [viewports.md] },
 }
 
-export const Playground: Story = ({
+export const WithHelperText = {
+  args: {
+    numberOfRatings: 10,
+    variant: 'number',
+    name: 'Test rating input',
+    helperText: '1: Strongly agree, 10: Strongly disagree',
+  },
+}
+
+export const VariantNumber = {
+  render: TemplateGroup,
+
+  args: {
+    name: 'Test rating input',
+    numberOfRatings: 5,
+    variant: 'number',
+  },
+
+  name: 'Variant/Number',
+}
+
+export const VariantStar = {
+  render: TemplateGroup,
+
+  args: {
+    name: 'Test rating input',
+    numberOfRatings: 5,
+    variant: 'star',
+  },
+
+  name: 'Variant/Star',
+}
+
+export const VariantHeart = {
+  render: TemplateGroup,
+
+  args: {
+    name: 'Test rating input',
+    numberOfRatings: 5,
+    variant: 'heart',
+  },
+
+  name: 'Variant/Heart',
+}
+
+export const Mobile = {
+  render: ResponsiveGroup,
+
+  args: {
+    name: 'Test rating input',
+    helperText: '1: Strongly agree, 10: Strongly disagree',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    controls: {
+      include: ['name', 'colorScheme', 'wrapComponentsPerRow', 'helperText'],
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
+}
+
+export const Tablet = {
+  render: ResponsiveGroup,
+
+  args: {
+    name: 'Test rating input',
+    helperText: '1: Strongly agree, 10: Strongly disagree',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    controls: {
+      include: ['name', 'colorScheme', 'wrapComponentsPerRow', 'helperText'],
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
+}
+
+const PlaygroundTemplate: StoryFn = ({
   name,
   label,
   isDisabled,
@@ -233,6 +254,8 @@ export const Playground: Story = ({
           variant={variant}
           numberOfRatings={numberOfRatings}
           {...args}
+          fieldTitle={label}
+          isRequired={isRequired}
           isDisabled={isDisabled}
           {...field}
         />
@@ -246,12 +269,17 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Rating field label',
-  isRequired: false,
-  isDisabled: false,
-  defaultValue: 3,
-  numberOfRatings: 10,
-  variant: 'number',
+
+export const Playground: StoryObj = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Rating field label',
+    isRequired: false,
+    isDisabled: false,
+    defaultValue: 3,
+    numberOfRatings: 10,
+    variant: 'number',
+  },
 }
