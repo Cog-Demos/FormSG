@@ -52,7 +52,7 @@ jobs:
         run: |
           sed -i -e "s|@VITE_APP_URL|${{secrets.APP_URL}}|g" -e "s/@VITE_APP_DD_RUM_APP_ID/$VITE_APP_DD_RUM_APP_ID/g" -e "s/@VITE_APP_DD_RUM_CLIENT_TOKEN/$VITE_APP_DD_RUM_CLIENT_TOKEN/g" -e "s/@VITE_APP_DD_RUM_ENV/$VITE_APP_DD_RUM_ENV/g" -e "s/@VITE_APP_VERSION/${{env.APP_VERSION}}/g" -e "s/@VITE_APP_DD_SAMPLE_RATE/$VITE_APP_DD_SAMPLE_RATE/g" frontend/datadog-chunk.ts
           echo VITE_APP_VERSION=${{env.APP_VERSION}} > frontend/.env
-          echo VITE_APP_URL=$VITE_APP_URL > frontend/.env
+          echo VITE_APP_URL=$VITE_APP_URL >> frontend/.env
           echo VITE_APP_GA_TRACKING_ID=$VITE_APP_GA_TRACKING_ID >> frontend/.env
           echo VITE_APP_FORMSG_SDK_MODE=$VITE_APP_FORMSG_SDK_MODE >> frontend/.env
           echo VITE_APP_DD_RUM_CLIENT_TOKEN=$VITE_APP_DD_RUM_CLIENT_TOKEN >> frontend/.env
