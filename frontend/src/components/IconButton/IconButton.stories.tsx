@@ -1,6 +1,6 @@
 import { BiGitMerge } from 'react-icons/bi'
 import { ButtonGroup, SimpleGrid, Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { IconButton, IconButtonProps } from './IconButton'
 
@@ -10,11 +10,7 @@ export default {
   parameters: { backgrounds: { default: 'light' } },
 } as Meta
 
-const ButtonTemplate: Story<IconButtonProps> = (args) => (
-  <IconButton {...args} />
-)
-
-const ButtonGroupTemplate: Story<IconButtonProps> = (args) => {
+const ButtonGroupTemplate: StoryFn<IconButtonProps> = (args) => {
   return (
     <SimpleGrid
       columns={2}
@@ -46,73 +42,101 @@ const ButtonGroupTemplate: Story<IconButtonProps> = (args) => {
   )
 }
 
-export const Default = ButtonTemplate.bind({})
-Default.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  icon: <BiGitMerge />,
-  variant: 'solid',
-  size: 'md',
+export const Default = {
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    icon: <BiGitMerge />,
+    variant: 'solid',
+    size: 'md',
+  },
 }
 
-export const SolidPrimary = ButtonGroupTemplate.bind({})
-SolidPrimary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'solid',
-  colorScheme: 'primary',
+export const SolidPrimary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'solid',
+    colorScheme: 'primary',
+  },
 }
 
-export const OutlinePrimary = ButtonGroupTemplate.bind({})
-OutlinePrimary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'outline',
-  colorScheme: 'primary',
+export const OutlinePrimary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'outline',
+    colorScheme: 'primary',
+  },
 }
 
-export const ClearPrimary = ButtonGroupTemplate.bind({})
-ClearPrimary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'clear',
-  colorScheme: 'primary',
+export const ClearPrimary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'clear',
+    colorScheme: 'primary',
+  },
 }
 
-export const ReverseSecondary = ButtonGroupTemplate.bind({})
-ReverseSecondary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'reverse',
-  colorScheme: 'secondary',
+export const ReverseSecondary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'reverse',
+    colorScheme: 'secondary',
+  },
 }
 
-export const OutlineSecondary = ButtonGroupTemplate.bind({})
-OutlineSecondary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'outline',
-  colorScheme: 'secondary',
+export const OutlineSecondary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'outline',
+    colorScheme: 'secondary',
+  },
 }
 
-export const ClearSecondary = ButtonGroupTemplate.bind({})
-ClearSecondary.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'clear',
-  colorScheme: 'secondary',
+export const ClearSecondary = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'clear',
+    colorScheme: 'secondary',
+  },
 }
 
-export const SolidDanger = ButtonGroupTemplate.bind({})
-SolidDanger.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'solid',
-  colorScheme: 'danger',
+export const SolidDanger = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'solid',
+    colorScheme: 'danger',
+  },
 }
 
-export const OutlineDanger = ButtonGroupTemplate.bind({})
-OutlineDanger.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'outline',
-  colorScheme: 'danger',
+export const OutlineDanger = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'outline',
+    colorScheme: 'danger',
+  },
 }
 
-export const ClearDanger = ButtonGroupTemplate.bind({})
-ClearDanger.args = {
-  'aria-label': 'Test Storybook Icon Button',
-  variant: 'clear',
-  colorScheme: 'danger',
+export const ClearDanger = {
+  render: ButtonGroupTemplate,
+
+  args: {
+    'aria-label': 'Test Storybook Icon Button',
+    variant: 'clear',
+    colorScheme: 'danger',
+  },
 }

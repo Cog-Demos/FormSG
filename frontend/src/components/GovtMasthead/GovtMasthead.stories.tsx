@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/react'
 
 import { viewports } from '~utils/storybook'
 
@@ -16,34 +16,36 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<GovtMastheadProps> = (args) => (
-  <GovtMastheadComponent {...args} />
-)
-
-export const MobileDefault = Template.bind({})
-MobileDefault.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const MobileDefault: StoryObj<GovtMastheadProps> = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const MobileExpanded = Template.bind({})
-MobileExpanded.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const MobileExpanded: StoryObj<GovtMastheadProps> = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
-}
-MobileExpanded.storyName = 'Mobile/Expanded'
-MobileExpanded.args = {
-  defaultIsOpen: true,
+
+  name: 'Mobile/Expanded',
+
+  args: {
+    defaultIsOpen: true,
+  },
 }
 
-export const DesktopDefault = Template.bind({})
+export const DesktopDefault: StoryObj<GovtMastheadProps> = {}
 
-export const DesktopExpanded = Template.bind({})
-DesktopExpanded.storyName = 'Desktop/Expanded'
-DesktopExpanded.args = {
-  defaultIsOpen: true,
+export const DesktopExpanded: StoryObj<GovtMastheadProps> = {
+  name: 'Desktop/Expanded',
+
+  args: {
+    defaultIsOpen: true,
+  },
 }

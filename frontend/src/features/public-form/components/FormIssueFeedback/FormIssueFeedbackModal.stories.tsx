@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   fullScreenDecorator,
@@ -26,7 +26,7 @@ export default {
   },
 } as Meta
 
-const Template: Story<FormIssueFeedbackProps> = (args) => {
+const Template: StoryFn<FormIssueFeedbackProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
 
   return (
@@ -38,27 +38,42 @@ const Template: Story<FormIssueFeedbackProps> = (args) => {
   )
 }
 
-export const PublicView = Template.bind({})
-PublicView.args = {
-  isPreview: false,
-}
-export const MobilePublicView = Template.bind({})
-MobilePublicView.parameters = {
-  ...getMobileViewParameters(),
-}
-MobilePublicView.args = {
-  isPreview: false,
+export const PublicView = {
+  render: Template,
+
+  args: {
+    isPreview: false,
+  },
 }
 
-export const AdminPreview = Template.bind({})
-AdminPreview.args = {
-  isPreview: true,
+export const MobilePublicView = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+  },
+
+  args: {
+    isPreview: false,
+  },
 }
 
-export const MobileAdminPreView = Template.bind({})
-MobileAdminPreView.parameters = {
-  ...getMobileViewParameters(),
+export const AdminPreview = {
+  render: Template,
+
+  args: {
+    isPreview: true,
+  },
 }
-MobileAdminPreView.args = {
-  isPreview: true,
+
+export const MobileAdminPreView = {
+  render: Template,
+
+  parameters: {
+    ...getMobileViewParameters(),
+  },
+
+  args: {
+    isPreview: true,
+  },
 }

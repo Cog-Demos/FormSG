@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BasicField, TableFieldBase } from '~shared/types'
 
@@ -64,26 +64,34 @@ export default {
   },
 } as Meta<EditTableProps>
 
-const Template: Story<EditTableProps> = ({ field }) => {
+const Template: StoryFn<EditTableProps> = ({ field }) => {
   return <EditTable field={field} />
 }
 
-export const Default = Template.bind({})
+export const Default = {
+  render: Template,
+}
 
-export const WithAddMoreRows = Template.bind({})
-WithAddMoreRows.args = {
-  field: {
-    ...DEFAULT_TABLE_FIELD,
-    addMoreRows: true,
-    maximumRows: (DEFAULT_TABLE_FIELD.minimumRows || 0) - 1,
+export const WithAddMoreRows = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_TABLE_FIELD,
+      addMoreRows: true,
+      maximumRows: (DEFAULT_TABLE_FIELD.minimumRows || 0) - 1,
+    },
   },
 }
 
-export const WithSingleColumn = Template.bind({})
-WithSingleColumn.args = {
-  field: {
-    ...DEFAULT_TABLE_FIELD,
-    description: 'The button to remove a column should now be hidden',
-    columns: DEFAULT_TABLE_FIELD.columns.slice(0, 1),
+export const WithSingleColumn = {
+  render: Template,
+
+  args: {
+    field: {
+      ...DEFAULT_TABLE_FIELD,
+      description: 'The button to remove a column should now be hidden',
+      columns: DEFAULT_TABLE_FIELD.columns.slice(0, 1),
+    },
   },
 }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { merge } from 'lodash'
 
 import { BasicField, RatingShape } from '~shared/types/field'
@@ -48,7 +48,7 @@ interface StoryRatingFieldProps extends RatingFieldProps {
   triggerValidation?: boolean
 }
 
-const Template: Story<StoryRatingFieldProps> = ({
+const Template: StoryFn<StoryRatingFieldProps> = ({
   triggerValidation,
   ...args
 }) => {
@@ -82,24 +82,33 @@ const Template: Story<StoryRatingFieldProps> = ({
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: requiredSchema,
-  triggerValidation: true,
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: requiredSchema,
+    triggerValidation: true,
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...requiredSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...requiredSchema, required: false },
+  },
 }
 
-export const RatingFieldHeart = Template.bind({})
-RatingFieldHeart.args = {
-  schema: merge({}, requiredSchema, {
-    required: false,
-    ratingOptions: {
-      shape: RatingShape.Heart,
-      steps: 6,
-    },
-  }),
+export const RatingFieldHeart = {
+  render: Template,
+
+  args: {
+    schema: merge({}, requiredSchema, {
+      required: false,
+      ratingOptions: {
+        shape: RatingShape.Heart,
+        steps: 6,
+      },
+    }),
+  },
 }
