@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Text } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import {
   BasicField,
@@ -59,7 +59,10 @@ interface StoryNumberFieldProps extends NumberFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryNumberFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryNumberFieldProps> = ({
+  defaultValue,
+  ...args
+}) => {
   const formMethods = useForm({
     defaultValues: {
       [args.schema._id]: defaultValue,
@@ -98,68 +101,84 @@ const Template: Story<StoryNumberFieldProps> = ({ defaultValue, ...args }) => {
   )
 }
 
-export const ValidationRequired = Template.bind({})
-ValidationRequired.args = {
-  schema: baseSchema,
+export const ValidationRequired = {
+  render: Template,
+
+  args: {
+    schema: baseSchema,
+  },
 }
 
-export const ValidationOptional = Template.bind({})
-ValidationOptional.args = {
-  schema: { ...baseSchema, required: false },
+export const ValidationOptional = {
+  render: Template,
+
+  args: {
+    schema: { ...baseSchema, required: false },
+  },
 }
 
-export const ValidationExact3Length = Template.bind({})
-ValidationExact3Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      selectedValidation: NumberSelectedValidation.Length,
-      LengthValidationOptions: {
-        selectedLengthValidation: NumberSelectedLengthValidation.Exact,
-        customVal: 3,
-      },
-      RangeValidationOptions: {
-        customMin: null,
-        customMax: null,
-      },
-    },
-  },
-  defaultValue: '1234',
-}
-export const ValidationMin6Length = Template.bind({})
-ValidationMin6Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      selectedValidation: NumberSelectedValidation.Length,
-      LengthValidationOptions: {
-        selectedLengthValidation: NumberSelectedLengthValidation.Min,
-        customVal: 6,
-      },
-      RangeValidationOptions: {
-        customMin: null,
-        customMax: null,
+export const ValidationExact3Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        selectedValidation: NumberSelectedValidation.Length,
+        LengthValidationOptions: {
+          selectedLengthValidation: NumberSelectedLengthValidation.Exact,
+          customVal: 3,
+        },
+        RangeValidationOptions: {
+          customMin: null,
+          customMax: null,
+        },
       },
     },
+    defaultValue: '1234',
   },
-  defaultValue: '123',
 }
 
-export const ValidationMax1Length = Template.bind({})
-ValidationMax1Length.args = {
-  schema: {
-    ...baseSchema,
-    ValidationOptions: {
-      selectedValidation: NumberSelectedValidation.Length,
-      LengthValidationOptions: {
-        selectedLengthValidation: NumberSelectedLengthValidation.Max,
-        customVal: 1,
-      },
-      RangeValidationOptions: {
-        customMin: null,
-        customMax: null,
+export const ValidationMin6Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        selectedValidation: NumberSelectedValidation.Length,
+        LengthValidationOptions: {
+          selectedLengthValidation: NumberSelectedLengthValidation.Min,
+          customVal: 6,
+        },
+        RangeValidationOptions: {
+          customMin: null,
+          customMax: null,
+        },
       },
     },
+    defaultValue: '123',
   },
-  defaultValue: '67574',
+}
+
+export const ValidationMax1Length = {
+  render: Template,
+
+  args: {
+    schema: {
+      ...baseSchema,
+      ValidationOptions: {
+        selectedValidation: NumberSelectedValidation.Length,
+        LengthValidationOptions: {
+          selectedLengthValidation: NumberSelectedLengthValidation.Max,
+          customVal: 1,
+        },
+        RangeValidationOptions: {
+          customMin: null,
+          customMax: null,
+        },
+      },
+    },
+    defaultValue: '67574',
+  },
 }
