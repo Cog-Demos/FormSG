@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react'
 
-import { FormLabel, FormLabelProps } from './FormLabel'
+import { FormLabel } from './FormLabel'
 
 export default {
   title: 'Components/FormControl/FormLabel',

@@ -1,6 +1,6 @@
 import { Meta } from '@storybook/react'
 
-import { Banner, BannerProps } from './Banner'
+import { Banner } from './Banner'
 
 export default {
   title: 'Components/Banner',

@@ -26,7 +26,7 @@ import { getMobileViewParameters, StoryRouter } from '~utils/storybook'
 
 import { FormFieldWithQuestionNo } from '~features/form/types'
 
-import { NewLogicBlock, NewLogicBlockProps } from './NewLogicBlock'
+import { NewLogicBlock } from './NewLogicBlock'
 
 export default {
   title: 'Features/AdminForm/Logic/NewLogicBlock',

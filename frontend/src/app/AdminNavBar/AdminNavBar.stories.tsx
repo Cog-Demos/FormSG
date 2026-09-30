@@ -14,7 +14,7 @@ import {
 
 import { FEATURE_UPDATE_LIST } from '~features/whats-new/FeatureUpdateList'
 
-import { AdminNavBar, AdminNavBarProps } from './AdminNavBar'
+import { AdminNavBar } from './AdminNavBar'
 
 export default {
   title: 'App/AdminNavBar',

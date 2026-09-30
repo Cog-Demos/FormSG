@@ -32,10 +32,6 @@ const baseSchema: ParagraphFieldSchema = {
   _id: '611b94dfbb9e300012f702a7',
 }
 
-interface StoryParagraphFieldProps extends ParagraphFieldProps {
-  defaultValue?: string
-}
-
 export const Default = {
   args: {
     schema: baseSchema,

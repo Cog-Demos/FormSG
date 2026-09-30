@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 
-import { ResendOtpButton, ResendOtpButtonProps } from './ResendOtpButton'
+import { ResendOtpButton } from './ResendOtpButton'
 import {
   ResendOtpButtonContainer,
   ResendOtpButtonContainerProps,
