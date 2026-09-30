@@ -25,12 +25,15 @@ jobs:
               - __tests__/**
               - shared/**
               - frontend/**
+              - .github/workflows/ci.yml
             backend:
               - __tests__/**
               - shared/**
               - src/**
               - package.json
               - package-lock.json
+              - .github/workflows/ci.yml
+              - Dockerfile.*
 
   install:
     runs-on: ubuntu-latest
