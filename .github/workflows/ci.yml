@@ -22,10 +22,12 @@ jobs:
         with:
           filters: |
             frontend:
+              - .github/workflows/**
               - __tests__/**
               - shared/**
               - frontend/**
             backend:
+              - .github/workflows/**
               - __tests__/**
               - shared/**
               - src/**
