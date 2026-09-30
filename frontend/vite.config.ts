@@ -5,8 +5,8 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import svgr from 'vite-plugin-svgr'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-import { version } from './package.json'
 import { datadogChunk } from './vite/datadogChunk'
+import { version } from './package.json'
 
 const polyfills = () =>
   nodePolyfills({
