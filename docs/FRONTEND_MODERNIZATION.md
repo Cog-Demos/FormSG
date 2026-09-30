@@ -122,3 +122,220 @@ Each Phase 1 branch starts from the base branch and only touches the files it ow
 
 Overlap: `src/index.tsx` gets A's env line and E's `createRoot` change; `vite.config.ts` gets A's config and B's `build`
 section. TICKET-G resolves those merges.
+
+## Local verification setup
+
+These commands describe the isolated local stack used for the Vite verification
+on Ubuntu, with Node **18.20.2** and synthetic data only. Run from
+`/home/ubuntu/fsg-base`; do not change repository configuration or stop an
+unrelated backend Jest run. Service logs and helper files live outside the repo
+in `/tmp/fsg-verification`. Commands below assume unused ports and a fresh stack;
+reuse existing named containers instead of recreating them on every rerun.
+
+**Verification status:** a full unrecorded dry run on `37c68316e` passed: OTP login, storage-mode form
+with short-text and Attachment fields, activation, public submission scanned clean by ClamAV,
+worker decryption and CSV export, attachment download with matching SHA-256, the Settings deep
+link, and a Storybook story. After upgrading a prebundled dependency (e.g. react-joyride), restart
+Vite with `--force` and restart Storybook.
+
+### Dependencies and services
+
+```sh
+source ~/.nvm/nvm.sh
+nvm use 18.20.2
+mkdir -p /tmp/fsg-verification
+# Root npm ci was already complete for this session.
+# Install frontend dependencies when absent/out of sync:
+npm ci --prefix frontend
+```
+
+The scanner native build requires `make`, `g++`, `cmake`, `autoconf`, `libtool`,
+`unzip`, and Python with `distutils`. This machine has Python 3.11.15 at
+`/home/ubuntu/.pyenv/versions/3.11.15/bin/python3.11`; Python 3.12 failed during
+node-gyp with `ModuleNotFoundError: No module named 'distutils'`. The machine also
+has `/usr/lib/x86_64-linux-gnu/libssl.so.1.1` for older Mongo binaries.
+
+```sh
+npm_config_python=/home/ubuntu/.pyenv/versions/3.11.15/bin/python3.11 \
+  npm ci --prefix serverless/virus-scanner
+npm --prefix serverless/virus-scanner run build
+```
+
+The repository scanner Dockerfile's Debian package downloads returned 404 in this
+environment. Instead of modifying it, use the unmodified scanner on the host
+against a real ClamAV daemon and AWS Lambda Runtime Interface Emulator.
+
+### Mongo replica set and agency seed
+
+```sh
+docker run -d --name fsg-verify-mongo \
+  -p 127.0.0.1:27017:27017 mongo:4.4 --replSet rs0 --bind_ip_all
+# After mongod is ready:
+docker exec fsg-verify-mongo mongo --quiet --eval \
+  'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
+docker exec fsg-verify-mongo mongo --quiet --eval 'rs.status().ok'
+# The checked-in seed upserts govtech and was agencies.
+docker exec -i fsg-verify-mongo mongo < init-mongo.js
+```
+
+Use `mongodb://127.0.0.1:27017/formsg?replicaSet=rs0&directConnection=true`.
+The seeded `was.gov.sg` agency permits `vite.synthetic@was.gov.sg`; OTP login
+creates the synthetic user. Do not seed real user records or use real attachments.
+
+### LocalStack S3 and SQS
+
+```sh
+docker run -d --name fsg-verify-localstack \
+  -p 127.0.0.1:4566:4566 \
+  -e SERVICES=s3,sqs,secretsmanager -e DNS_ADDRESS=0 \
+  -e EXTRA_CORS_ALLOWED_ORIGINS=http://localhost:3000 \
+  localstack/localstack:3.3
+# After LocalStack reports healthy:
+for bucket in local-image-bucket local-logo-bucket local-attachment-bucket \
+  local-static-assets-bucket local-virus-scanner-quarantine-bucket \
+  local-virus-scanner-clean-bucket local-payment-proof-bucket; do
+  docker exec fsg-verify-localstack awslocal s3 mb "s3://$bucket"
+done
+for bucket in local-virus-scanner-quarantine-bucket local-virus-scanner-clean-bucket; do
+  docker exec fsg-verify-localstack awslocal s3api put-bucket-versioning \
+    --bucket "$bucket" --versioning-configuration Status=Enabled
+done
+docker exec fsg-verify-localstack awslocal sqs create-queue \
+  --region ap-southeast-1 --queue-name local-webhooks-sqs-main
+```
+
+Use the region-matched queue URL:
+`http://sqs.ap-southeast-1.localhost.localstack.cloud:4566/000000000000/local-webhooks-sqs-main`.
+The generic init-localstack script also sets up a webhook DLQ, but the verification
+stack only uses the main queue and does not test webhook delivery.
+
+### MailDev and Mockpass
+
+Run each long-lived command in its own process/session:
+
+```sh
+node ./node_modules/.bin/maildev --ip 127.0.0.1 --web 1080 --smtp 1025
+./node_modules/.bin/mockpass > /tmp/fsg-verification/mockpass.log 2>&1
+```
+
+MailDev web UI is `http://localhost:1080`; SMTP is `127.0.0.1:1025`.
+Mockpass on `:5156` is needed for backend discovery initialization even when the
+test uses only email OTP. MailDev was run from the installed root package, not
+the compose MailDev container.
+
+### Real scanner process
+
+```sh
+mkdir -p /tmp/fsg-verification/clam
+chmod 777 /tmp/fsg-verification/clam
+docker run -d --name fsg-verify-clamav \
+  -v /tmp/fsg-verification/clam:/tmp -e CLAMAV_NO_FRESHCLAMD=true \
+  clamav/clamav:1.4
+# Wait for "socket found, clamd started." in container logs.
+ln -s /tmp/fsg-verification/clam/clamd.sock /tmp/clamd.ctl
+# Development scanner code resolves host.docker.internal; on this host:
+# /etc/hosts contains: 127.0.0.1 host.docker.internal
+curl -fL https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
+  -o /tmp/fsg-verification/aws-lambda-rie
+chmod +x /tmp/fsg-verification/aws-lambda-rie
+cd serverless/virus-scanner
+NODE_ENV=development \
+VIRUS_SCANNER_QUARANTINE_S3_BUCKET=local-virus-scanner-quarantine-bucket \
+VIRUS_SCANNER_CLEAN_S3_BUCKET=local-virus-scanner-clean-bucket \
+/tmp/fsg-verification/aws-lambda-rie \
+  --runtime-interface-emulator-address 127.0.0.1:9999 \
+  ./node_modules/.bin/aws-lambda-ric build/index.handler \
+  > /tmp/fsg-verification/scanner.log 2>&1
+```
+
+The scanner source uses `http://host.docker.internal:4566` in development and
+expects `/tmp/clamd.ctl`. Both scanner buckets must have versioning enabled.
+The shared writable socket directory is only for this isolated synthetic local
+environment. The image includes signatures; freshclam is disabled for this run.
+
+### Backend environment without repository config changes
+
+Create `/tmp/fsg-verification/backend.cjs` with the following content. It imports
+the checked-in test defaults and compose development values (including SDK
+signing keys and mock identity-provider credentials) rather than requiring real
+secrets. Explicit overrides adapt container hostnames to host processes.
+
+```js
+const fs = require('fs')
+const root = '/home/ubuntu/fsg-base'
+const yaml = require(root + '/node_modules/js-yaml')
+const dotenv = require(root + '/node_modules/dotenv')
+const { spawn } = require('child_process')
+const env = {
+  ...process.env,
+  ...dotenv.parse(fs.readFileSync(root + '/__tests__/setup/.test-env')),
+}
+const config = yaml.load(fs.readFileSync(root + '/docker-compose.yml', 'utf8'))
+for (const value of config.services.backend.environment) {
+  const at = value.indexOf('=')
+  if (at !== -1) env[value.slice(0, at)] = value.slice(at + 1)
+}
+Object.assign(env, {
+  NODE_ENV: 'development',
+  PORT: '5001',
+  DB_HOST:
+    'mongodb://127.0.0.1:27017/formsg?replicaSet=rs0&directConnection=true',
+  APP_URL: 'http://localhost:5001',
+  FE_APP_URL: 'http://localhost:3000',
+  SES_HOST: '127.0.0.1',
+  SES_PORT: '1025',
+  AWS_ENDPOINT: 'http://localhost:4566',
+  AWS_REGION: 'ap-southeast-1',
+  VIRUS_SCANNER_LAMBDA_ENDPOINT: 'http://localhost:9999',
+  WEBHOOK_SQS_URL:
+    'http://sqs.ap-southeast-1.localhost.localstack.cloud:4566/000000000000/local-webhooks-sqs-main',
+  IS_SP_MAINTENANCE: '',
+  IS_CP_MAINTENANCE: '',
+  GROWTHBOOK_CLIENT_KEY: 'sdk-local-synthetic',
+})
+spawn(
+  process.execPath,
+  ['-r', 'ts-node/register/transpile-only', 'src/app/server.ts'],
+  {
+    cwd: root,
+    env,
+    stdio: 'inherit',
+  },
+).on('exit', (code) => process.exit(code ?? 1))
+```
+
+From the repository root:
+
+```sh
+node /tmp/fsg-verification/backend.cjs > /tmp/fsg-verification/backend.log 2>&1
+```
+
+`GROWTHBOOK_CLIENT_KEY` must be nonempty or backend startup throws `Missing clientKey`.
+The synthetic key does not enable remote experiments: product feature defaults
+remain unchanged. No Mongo feature-flag records were changed and there is no Vite
+migration flag. Storage mode is selected in the form-creation UI, not enabled by a
+feature flag. Payments, Turnstile and other integrations are not under test.
+
+### Frontend, Storybook and tests
+
+From the repository root, in separate Node 18.20.2 sessions:
+
+```sh
+VITE_APP_URL=http://localhost:3000 VITE_APP_FORMSG_SDK_MODE=development \
+  npm --prefix frontend start -- --force
+npm --prefix frontend run storybook
+npm --prefix frontend test
+```
+
+`--force` is important after changing Joyride or other prebundled dependencies.
+Vite should report `http://localhost:3000/` with no network host exposed;
+`/api` proxies to the backend on `:5001`. Admin login is `/login`, not `/admin`.
+The deep-link target is `/admin/form/<formId>/settings`.
+Storybook runs on `:6006`. In responses, **Download → CSV only** or **CSV with
+attachments** exercises the Vite decryption-worker pool; merely displaying one
+response is not equivalent evidence.
+
+Create a small synthetic upload outside the repository and compute `sha256sum`
+before upload. Preserve the browser-downloaded key, CSV/ZIP and extracted
+attachment. Compare the original and downloaded bytes with `sha256sum`; never
+claim attachment integrity from a filename or successful toast alone.
