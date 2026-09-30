@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { fullScreenDecorator, getMobileViewParameters } from '~utils/storybook'
 
@@ -13,6 +13,7 @@ export default {
   title: 'Features/Storage/DownloadWithAttachmentModal',
   component: DownloadWithAttachmentModal,
   decorators: [fullScreenDecorator],
+  args: { responsesCount: 12345 },
   parameters: {
     layout: 'fullscreen',
     // Prevent flaky tests due to modal animating in.
@@ -20,7 +21,7 @@ export default {
   },
 } as Meta<DownloadWithAttachmentModalProps>
 
-const Template: Story<DownloadWithAttachmentModalProps> = (args) => {
+const Template: StoryFn<DownloadWithAttachmentModalProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
   return (
     <DownloadWithAttachmentModal
@@ -32,64 +33,90 @@ const Template: Story<DownloadWithAttachmentModalProps> = (args) => {
     />
   )
 }
-export const ConfirmationStateDesktop = Template.bind({})
-ConfirmationStateDesktop.args = {
-  downloadPercentage: 0,
-  isDownloading: false,
-  responsesCount: 9001,
-}
-export const ConfirmationStateMobile = Template.bind({})
-ConfirmationStateMobile.args = ConfirmationStateDesktop.args
-ConfirmationStateMobile.parameters = getMobileViewParameters()
 
-export const DownloadingStateDesktop = Template.bind({})
-DownloadingStateDesktop.args = {
-  initialState: [DownloadWithAttachmentFlowStates.Progress, -1],
-  downloadPercentage: 30,
-  isDownloading: false,
-  responsesCount: 12345,
-}
+export const ConfirmationStateDesktop = {
+  render: Template,
 
-export const DownloadingStateMobile = Template.bind({})
-DownloadingStateMobile.args = DownloadingStateDesktop.args
-DownloadingStateMobile.parameters = getMobileViewParameters()
-
-export const CompleteStateDesktop = Template.bind({})
-CompleteStateDesktop.args = {
-  downloadMetadata: {
-    errorCount: 0,
-    successCount: 12345,
-    expectedCount: 12345,
+  args: {
+    downloadPercentage: 0,
+    isDownloading: false,
+    responsesCount: 9001,
   },
 }
 
-export const CompleteStateMobile = Template.bind({})
-CompleteStateMobile.args = CompleteStateDesktop.args
-CompleteStateMobile.parameters = getMobileViewParameters()
+export const ConfirmationStateMobile = {
+  render: Template,
+  args: ConfirmationStateDesktop.args,
+  parameters: getMobileViewParameters(),
+}
 
-export const CanceledStateDesktop = Template.bind({})
-CanceledStateDesktop.args = {
-  downloadMetadata: {
-    isCanceled: true,
+export const DownloadingStateDesktop = {
+  render: Template,
+
+  args: {
+    initialState: [DownloadWithAttachmentFlowStates.Progress, -1],
+    downloadPercentage: 30,
+    isDownloading: false,
+    responsesCount: 12345,
   },
 }
 
-export const PartialSuccessStateDesktop = Template.bind({})
-PartialSuccessStateDesktop.args = {
-  downloadMetadata: {
-    errorCount: 10,
-    successCount: 12335,
-    expectedCount: 12345,
+export const DownloadingStateMobile = {
+  render: Template,
+  args: DownloadingStateDesktop.args,
+  parameters: getMobileViewParameters(),
+}
+
+export const CompleteStateDesktop = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      errorCount: 0,
+      successCount: 12345,
+      expectedCount: 12345,
+    },
   },
 }
 
-export const PartialSuccessStateMobile = Template.bind({})
-PartialSuccessStateMobile.args = {
-  downloadMetadata: {
-    errorCount: 1,
-    successCount: 1,
-    expectedCount: 2,
+export const CompleteStateMobile = {
+  render: Template,
+  args: CompleteStateDesktop.args,
+  parameters: getMobileViewParameters(),
+}
+
+export const CanceledStateDesktop = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      isCanceled: true,
+    },
   },
 }
 
-PartialSuccessStateMobile.parameters = getMobileViewParameters()
+export const PartialSuccessStateDesktop = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      errorCount: 10,
+      successCount: 12335,
+      expectedCount: 12345,
+    },
+  },
+}
+
+export const PartialSuccessStateMobile = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      errorCount: 1,
+      successCount: 1,
+      expectedCount: 2,
+    },
+  },
+
+  parameters: getMobileViewParameters(),
+}

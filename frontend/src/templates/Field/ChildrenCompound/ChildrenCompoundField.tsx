@@ -181,6 +181,9 @@ export const ChildrenCompoundField = ({
   )
 }
 
+/** Represents `{schemaId}.child.{childIndex}.{subFieldIndex}` */
+type ChildSubFieldPath = `${string}.child.${number}.${number}`
+
 interface ChildrenBodyProps {
   currChildBodyIdx: number
   schema: ChildrenCompoundFieldSchema
@@ -217,7 +220,7 @@ const ChildrenBody = ({
   const { register, getValues, setValue, watch } = formContext
 
   const childNamePath = useMemo(
-    () => `${schema._id}.child.${currChildBodyIdx}.0`,
+    (): ChildSubFieldPath => `${schema._id}.child.${currChildBodyIdx}.0`,
     [schema._id, currChildBodyIdx],
   )
 
@@ -357,7 +360,7 @@ const ChildrenBody = ({
             icon={<BiTrash />}
             aria-label="Remove child"
             alignSelf="end"
-            disabled={fields.length <= 1}
+            isDisabled={fields.length <= 1}
             onClick={() => {
               if (fields.length > 1) {
                 remove(fields.length - 1)
@@ -372,7 +375,7 @@ const ChildrenBody = ({
           // First index taken by name.
           index += 1
           const key = `${field.id}+${index}`
-          const fieldPath = `${schema._id}.child.${currChildBodyIdx}.${index}`
+          const fieldPath: ChildSubFieldPath = `${schema._id}.child.${currChildBodyIdx}.${index}`
           const myInfoValue = getChildAttr(subField)
           const childrenSubFieldError = error ? error[index] : undefined
 

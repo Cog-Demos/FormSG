@@ -4,11 +4,11 @@ import {
   FormErrorMessage,
   FormLabel,
 } from '@chakra-ui/form-control'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 
 import Button from '../Button'
 
-import { MoneyInput, MoneyInputProps } from './MoneyInput'
+import { MoneyInput } from './MoneyInput'
 
 export default {
   title: 'Components/MoneyInput',
@@ -16,38 +16,40 @@ export default {
   decorators: [],
 } as Meta
 
-const Template: Story<MoneyInputProps> = (args) => <MoneyInput {...args} />
-export const Default = Template.bind({})
-Default.args = {
-  placeholder: 'Test placeholder',
+export const Default: StoryObj<typeof MoneyInput> = {
+  args: {
+    placeholder: 'Test placeholder',
+  },
 }
 
-export const Prefilled = Template.bind({})
-Prefilled.args = {
-  placeholder: 'Test placeholder',
-  defaultValue: '3.142',
-  isPrefilled: true,
+export const Prefilled: StoryObj<typeof MoneyInput> = {
+  args: {
+    placeholder: 'Test placeholder',
+    defaultValue: '3.142',
+    isPrefilled: true,
+  },
 }
 
-export const Error = Template.bind({})
-Error.args = {
-  isInvalid: true,
+export const Error: StoryObj<typeof MoneyInput> = {
+  args: {
+    isInvalid: true,
+  },
 }
 
-// TODO: add error cases when e is involved (e.g. 2+e3489), once these cases are handled
-
-export const Success = Template.bind({})
-Success.args = {
-  isInvalid: false,
-  isSuccess: true,
+export const Success: StoryObj<typeof MoneyInput> = {
+  args: {
+    isInvalid: false,
+    isSuccess: true,
+  },
 }
 
-export const Disabled = Template.bind({})
-Disabled.args = {
-  isDisabled: true,
+export const Disabled: StoryObj<typeof MoneyInput> = {
+  args: {
+    isDisabled: true,
+  },
 }
 
-export const Playground: Story = ({
+const PlaygroundTemplate: StoryFn = ({
   name,
   label,
   isDisabled,
@@ -90,10 +92,15 @@ export const Playground: Story = ({
     </form>
   )
 }
-Playground.args = {
-  name: 'Test playground input',
-  label: 'Field label',
-  placeholder: 'Fill in this field',
-  isRequired: true,
-  isDisabled: false,
+
+export const Playground: StoryObj = {
+  render: PlaygroundTemplate,
+
+  args: {
+    name: 'Test playground input',
+    label: 'Field label',
+    placeholder: 'Fill in this field',
+    isRequired: true,
+    isDisabled: false,
+  },
 }

@@ -66,12 +66,13 @@ export const AvatarMenuDivider = (): JSX.Element => {
 }
 
 export interface AvatarMenuProps
-  extends Pick<MenuProps, 'defaultIsOpen' | 'children'>,
+  extends Pick<MenuProps, 'defaultIsOpen'>,
     Pick<AvatarProps, 'name' | 'colorScheme'> {
   /** Name to display in the username section of the menu */
   menuUsername?: string
   hasNotification?: boolean
   menuListProps?: MenuListProps
+  children?: React.ReactNode
 }
 
 export const AvatarMenu = ({

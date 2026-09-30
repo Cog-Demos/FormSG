@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { FormControl, VStack } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn, StoryObj } from '@storybook/react'
 import { isEmpty } from 'lodash'
 
 import { viewports } from '~utils/storybook'
@@ -17,38 +17,49 @@ export default {
   component: Checkbox,
 } as Meta
 
-const Template: Story<CheckboxProps> = (args) => {
+const Template: StoryFn<CheckboxProps> = (args) => {
   return <Checkbox {...args}>{args.name}</Checkbox>
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  name: 'Default',
-}
+export const Default = {
+  render: Template,
 
-export const Mobile = Template.bind({})
-Mobile.args = {
-  name: 'Mobile',
-}
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+  args: {
+    name: 'Default',
   },
-  chromatic: { viewports: [viewports.xs] },
 }
 
-export const Tablet = Template.bind({})
-Tablet.args = {
-  name: 'Tablet',
-}
-Tablet.parameters = {
-  viewport: {
-    defaultViewport: 'tablet',
+export const Mobile = {
+  render: Template,
+
+  args: {
+    name: 'Mobile',
   },
-  chromatic: { viewports: [viewports.md] },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
+  },
 }
 
-const AllStates: Story<CheckboxProps> = (args) => {
+export const Tablet = {
+  render: Template,
+
+  args: {
+    name: 'Tablet',
+  },
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'tablet',
+    },
+    chromatic: { viewports: [viewports.md] },
+  },
+}
+
+const AllStates: StoryFn<CheckboxProps> = (args) => {
   return (
     <VStack>
       <Checkbox {...args}>Unselected</Checkbox>
@@ -70,9 +81,11 @@ const AllStates: Story<CheckboxProps> = (args) => {
   )
 }
 
-export const CheckboxStates = AllStates.bind({})
+export const CheckboxStates = {
+  render: AllStates,
+}
 
-export const Playground: Story = ({
+const PlaygroundTemplate: StoryFn = ({
   name = 'checkbox',
   othersInputName = 'others-input',
   othersCheckboxName = 'others-checkbox',
@@ -144,6 +157,10 @@ export const Playground: Story = ({
   )
 }
 
-Playground.args = {
-  label: 'Checkbox label',
+export const Playground: StoryObj = {
+  render: PlaygroundTemplate,
+
+  args: {
+    label: 'Checkbox label',
+  },
 }

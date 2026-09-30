@@ -4,7 +4,6 @@ import {
   BasicField,
   FieldCreateDto,
   MyInfoAttribute,
-  MyInfoChildAttributes,
   MyInfoField,
   RatingShape,
 } from '~shared/types/field'
@@ -216,10 +215,7 @@ export const getFieldCreationMeta = (fieldType: BasicField): FieldCreateDto => {
 }
 
 export const getMyInfoFieldCreationMeta = (
-  myInfoAttribute: Exclude<
-    MyInfoAttribute,
-    MyInfoChildAttributes[keyof MyInfoChildAttributes]
-  >,
+  myInfoAttribute: MyInfoAttribute,
 ): MyInfoField => {
   const baseMeta: Pick<
     MyInfoField,
@@ -295,6 +291,16 @@ export const getMyInfoFieldCreationMeta = (
         ...MYINFO_CHILDRENFIELD_META,
       }
     }
+
+    // Child attributes are sub-fields of ChildrenBirthRecords and cannot be created directly.
+    case MyInfoAttribute.ChildName:
+    case MyInfoAttribute.ChildBirthCertNo:
+    case MyInfoAttribute.ChildDateOfBirth:
+    case MyInfoAttribute.ChildVaxxStatus:
+    case MyInfoAttribute.ChildGender:
+    case MyInfoAttribute.ChildRace:
+    case MyInfoAttribute.ChildSecondaryRace:
+      throw new Error(`MyInfo type is not implemented: ${myInfoAttribute}`)
 
     default: {
       const exception: never = myInfoAttribute

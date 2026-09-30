@@ -22,10 +22,12 @@ jobs:
         with:
           filters: |
             frontend:
+              - .github/workflows/**
               - __tests__/**
               - shared/**
               - frontend/**
             backend:
+              - .github/workflows/**
               - __tests__/**
               - shared/**
               - src/**
@@ -73,7 +75,7 @@ jobs:
           key: ${{ runner.OS }}-node-modules-${{ hashFiles('**/package-lock.json') }}
       - run: npm run build
         env:
-          NODE_OPTIONS: '--max-old-space-size=4096 --openssl-legacy-provider'
+          NODE_OPTIONS: '--max-old-space-size=8192'
           AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE: 1
       - name: Upload build files
         uses: actions/upload-artifact@v4

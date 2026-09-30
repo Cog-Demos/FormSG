@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { FormAuthType } from '~shared/types'
 
@@ -31,22 +31,29 @@ export default {
   ],
 } as Meta
 
-const Template: Story = () => <PreviewFormBannerComponent />
+const Template: StoryFn = () => <PreviewFormBannerComponent />
 
-export const Desktop = Template.bind({})
+export const Desktop = {
+  render: Template,
+}
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
 
-export const WithAuthenticatedForm = Template.bind({})
-WithAuthenticatedForm.parameters = {
-  msw: [
-    getPreviewFormResponse({
-      overrides: {
-        form: {
-          authType: FormAuthType.SP,
+export const WithAuthenticatedForm = {
+  render: Template,
+
+  parameters: {
+    msw: [
+      getPreviewFormResponse({
+        overrides: {
+          form: {
+            authType: FormAuthType.SP,
+          },
         },
-      },
-    }),
-  ],
+      }),
+    ],
+  },
 }

@@ -101,7 +101,7 @@ const PaymentQuantityModal = ({
                 variant="clear"
                 aria-label="Decrement"
                 colorScheme="secondary"
-                isDisabled={quantity <= minQty}
+                isDisabled={Number(quantity) <= minQty}
                 onClick={() => {
                   setValue('quantity', quantity ? quantity - 1 : minQty)
                   trigger('quantity')
@@ -133,7 +133,7 @@ const PaymentQuantityModal = ({
                 variant="clear"
                 aria-label="Increment"
                 colorScheme="secondary"
-                isDisabled={quantity >= maxQty}
+                isDisabled={Number(quantity) >= maxQty}
                 onClick={() => {
                   setValue('quantity', quantity ? quantity + 1 : minQty)
                   trigger('quantity')
@@ -155,7 +155,7 @@ const PaymentQuantityModal = ({
               isDisabled={Boolean(errors.quantity)}
               loadingText="Saving"
               onClick={() => onSubmit(quantity || 1)}
-              isFullWidth={isMobile}
+              width={isMobile ? '100%' : undefined}
             >
               Update
             </Button>

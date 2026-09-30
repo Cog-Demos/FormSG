@@ -1,5 +1,5 @@
 import { useDisclosure } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { fullScreenDecorator, getMobileViewParameters } from '~utils/storybook'
 
@@ -19,7 +19,7 @@ export default {
   },
 } as Meta<ProgressModalProps>
 
-const Template: Story<ProgressModalProps> = (args) => {
+const Template: StoryFn<ProgressModalProps> = (args) => {
   const modalProps = useDisclosure({ defaultIsOpen: true })
   return (
     <ProgressModal
@@ -29,32 +29,48 @@ const Template: Story<ProgressModalProps> = (args) => {
     />
   )
 }
-export const Desktop = Template.bind({})
 
-export const Mobile = Template.bind({})
-Mobile.parameters = getMobileViewParameters()
+export const Desktop = {
+  render: Template,
+}
 
-export const CompleteStateDesktop = Template.bind({})
-CompleteStateDesktop.args = {
-  downloadMetadata: {
-    errorCount: 0,
-    expectedCount: 9001,
-    successCount: 9001,
+export const Mobile = {
+  render: Template,
+  parameters: getMobileViewParameters(),
+}
+
+export const CompleteStateDesktop = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      errorCount: 0,
+      expectedCount: 9001,
+      successCount: 9001,
+    },
   },
 }
 
-export const CompleteStateMobile = Template.bind({})
-CompleteStateMobile.args = CompleteStateDesktop.args
-CompleteStateMobile.parameters = getMobileViewParameters()
+export const CompleteStateMobile = {
+  render: Template,
+  args: CompleteStateDesktop.args,
+  parameters: getMobileViewParameters(),
+}
 
-export const PartialSuccessStateDesktop = Template.bind({})
-PartialSuccessStateDesktop.args = {
-  downloadMetadata: {
-    errorCount: 1,
-    expectedCount: 9001,
-    successCount: 9000,
+export const PartialSuccessStateDesktop = {
+  render: Template,
+
+  args: {
+    downloadMetadata: {
+      errorCount: 1,
+      expectedCount: 9001,
+      successCount: 9000,
+    },
   },
 }
-export const PartialSuccessStateMobile = Template.bind({})
-PartialSuccessStateMobile.args = PartialSuccessStateDesktop.args
-PartialSuccessStateMobile.parameters = getMobileViewParameters()
+
+export const PartialSuccessStateMobile = {
+  render: Template,
+  args: PartialSuccessStateDesktop.args,
+  parameters: getMobileViewParameters(),
+}

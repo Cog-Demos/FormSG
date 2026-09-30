@@ -4,6 +4,7 @@ import { SubmitHandler } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { datadogLogs } from '@datadog/browser-logs'
 import get from 'lodash/get'
+import noop from 'lodash/noop'
 import simplur from 'simplur'
 
 import { FormAuthType, FormResponseMode } from '~shared/types/form'
@@ -51,7 +52,7 @@ export const PreviewFormProvider = ({
     useCommonFormProvider(formId)
 
   const showErrorToast = useCallback(
-    (error) => {
+    (error: unknown) => {
       toast({
         status: 'danger',
         description:
@@ -123,7 +124,7 @@ export const PreviewFormProvider = ({
       const formData = {
         formFields: form.form_fields,
         formLogics: form.form_logics,
-        formInputs,
+        formInputs: formInputs as FormFieldValues,
       }
 
       const logMeta = {
@@ -328,6 +329,9 @@ export const PreviewFormProvider = ({
     <PublicFormContext.Provider
       value={{
         handleSubmitForm,
+        hasSingleSubmissionValidationError: false,
+        setHasSingleSubmissionValidationError: noop,
+        hasRespondentNotWhitelistedError: false,
         formId,
         error,
         submissionData,

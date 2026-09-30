@@ -1,6 +1,12 @@
 import { useMemo } from 'react'
-import { Controller, useFormContext, useFormState } from 'react-hook-form'
-import { UseTableCellProps } from 'react-table'
+import {
+  Controller,
+  FieldArrayWithId,
+  FieldErrors,
+  useFormContext,
+  useFormState,
+} from 'react-hook-form'
+import { CellProps } from 'react-table'
 import { FormControl, VisuallyHidden } from '@chakra-ui/react'
 import { get } from 'lodash'
 
@@ -27,7 +33,7 @@ import Input from '~components/Input'
 import { TableFieldInputs } from '../types'
 
 export interface ColumnCellProps
-  extends UseTableCellProps<TableFieldInputs, string> {
+  extends CellProps<FieldArrayWithId<TableFieldInputs, string, 'id'>, string> {
   schemaId: string
   isDisabled?: boolean
   disableRequiredValidation: boolean
@@ -180,7 +186,7 @@ export const ColumnCell = ({
         // be shown in the individual column cells.
         isMobile ? (
           <FormErrorMessage>
-            {get(errors, `${inputName}.message`)}
+            {get(errors as FieldErrors, `${inputName}.message`)}
           </FormErrorMessage>
         ) : null
       }
