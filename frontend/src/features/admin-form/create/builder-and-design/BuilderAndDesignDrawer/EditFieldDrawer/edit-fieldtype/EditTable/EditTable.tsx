@@ -181,7 +181,7 @@ export const EditTable = ({ field }: EditTableProps): JSX.Element => {
                 // Must be greater than minimum rows
                 validate: (value) =>
                   !value ||
-                  value > getValues('minimumRows') ||
+                  value > Number(getValues('minimumRows')) ||
                   'Maximum rows must be greater than minimum rows',
               }}
               control={control}
