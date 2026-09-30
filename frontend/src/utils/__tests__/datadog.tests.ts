@@ -1,3 +1,5 @@
+import type { Mock } from 'vitest'
+
 describe('datadogRum', () => {
   describe('DD_RUM is undefined', () => {
     beforeEach(() => {
@@ -5,14 +7,12 @@ describe('datadogRum', () => {
     })
 
     afterEach(() => {
-      jest.resetModules()
+      vi.resetModules()
     })
 
-    it('should return a noop function for addAction', () => {
+    it('should return a noop function for addAction', async () => {
       // Arrange
-
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const datadogRum = require('../datadog').datadogRum
+      const { datadogRum } = await import('../datadog')
       // Assert
       expect(window.DD_RUM).not.toBeDefined()
       expect(datadogRum.addAction).not.toThrow()
@@ -20,9 +20,9 @@ describe('datadogRum', () => {
   })
 
   describe('DD_RUM is defined', () => {
-    let addActionSpy: jest.Mock
+    let addActionSpy: Mock
     beforeEach(() => {
-      addActionSpy = jest.fn()
+      addActionSpy = vi.fn()
       // @ts-expect-error mocking undefined DD_RUM
       window.DD_RUM = {
         addAction: addActionSpy,
@@ -30,13 +30,12 @@ describe('datadogRum', () => {
     })
 
     afterEach(() => {
-      jest.resetModules()
+      vi.resetModules()
     })
 
-    it('should call addAction without throwing', () => {
+    it('should call addAction without throwing', async () => {
       // Arrange
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const datadogRum = require('../datadog').datadogRum
+      const { datadogRum } = await import('../datadog')
 
       // Assert
       expect(window.DD_RUM).toBeDefined()
@@ -45,5 +44,3 @@ describe('datadogRum', () => {
     })
   })
 })
-
-export {}

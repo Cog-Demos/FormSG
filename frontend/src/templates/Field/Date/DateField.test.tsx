@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { addDays, isBefore, lightFormat } from 'date-fns'
@@ -23,6 +23,7 @@ const { MOCKED_TODAY_DATE_STRING, MOCKED_TODAY_DATE } =
 describe('required field', () => {
   it('renders error when field is empty before submitting', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       // `defaultValue=undefined` so trigger does not run in the story.
       render(<ValidationRequired defaultValue={undefined} />)
@@ -30,7 +31,7 @@ describe('required field', () => {
     const submitButton = screen.getByRole('button', { name: /submit/i })
 
     // Act
-    await act(async () => userEvent.click(submitButton))
+    await user.click(submitButton)
 
     // Assert
     // Should show error message.
@@ -41,13 +42,14 @@ describe('required field', () => {
 describe('optional field', () => {
   it('renders success even when field is empty before submitting', async () => {
     // Arrange
+    const user = userEvent.setup()
     await act(async () => {
       render(<ValidationOptional defaultValue={undefined} />)
     })
     const submitButton = screen.getByRole('button', { name: /submit/i })
 
     // Act
-    await act(async () => userEvent.click(submitButton))
+    await user.click(submitButton)
 
     // Assert
     // Should show success message.
@@ -56,6 +58,7 @@ describe('optional field', () => {
 
   it('renders success when submitting with valid date input', async () => {
     // Arrange
+    const user = userEvent.setup()
     const schema = ValidationOptional.args?.schema
     await act(async () => {
       render(<ValidationOptional defaultValue={undefined} />)
@@ -69,8 +72,8 @@ describe('optional field', () => {
 
     // Act
     const validDate = '11/11/2011'
-    await act(async () => userEvent.type(input, validDate))
-    await act(async () => userEvent.click(submitButton))
+    await user.type(input, validDate)
+    await user.click(submitButton)
 
     // Assert
     // Should show success message.
@@ -85,6 +88,7 @@ describe('validation', () => {
   describe('ValidationNoFuture', () => {
     it('renders invalid date error when future date is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoFuture.args?.schema
       await act(async () => {
         render(<ValidationNoFuture defaultValue={undefined} />)
@@ -98,8 +102,8 @@ describe('validation', () => {
 
       // Act
       const invalidDate = '11/11/2031'
-      await act(async () => userEvent.type(input, invalidDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, invalidDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show error message.
@@ -109,6 +113,7 @@ describe('validation', () => {
 
     it('renders success when "today" is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoFuture.args?.schema
       await act(async () => {
         render(<ValidationNoFuture defaultValue={undefined} />)
@@ -121,8 +126,8 @@ describe('validation', () => {
       expect(input.value).toBe('')
 
       // Act
-      await act(async () => userEvent.type(input, MOCKED_TODAY_DATE_STRING))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, MOCKED_TODAY_DATE_STRING)
+      await user.click(submitButton)
 
       // Assert
       // Should show success message.
@@ -134,6 +139,7 @@ describe('validation', () => {
 
     it('renders success when non-future date is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoFuture.args?.schema
       await act(async () => {
         render(<ValidationNoFuture defaultValue={undefined} />)
@@ -150,8 +156,8 @@ describe('validation', () => {
         addDays(MOCKED_TODAY_DATE, -10),
         DATE_DISPLAY_FORMAT,
       )
-      await act(async () => userEvent.type(input, pastDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, pastDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show success message.
@@ -163,6 +169,7 @@ describe('validation', () => {
   describe('ValidationNoPast', () => {
     it('renders invalid date error when past date is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoPast.args?.schema
       await act(async () => {
         render(<ValidationNoPast defaultValue={undefined} />)
@@ -179,8 +186,8 @@ describe('validation', () => {
         addDays(MOCKED_TODAY_DATE, -10),
         DATE_DISPLAY_FORMAT,
       )
-      await act(async () => userEvent.type(input, pastDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, pastDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show error message.
@@ -190,6 +197,7 @@ describe('validation', () => {
 
     it('renders success when "today" is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoPast.args?.schema
       await act(async () => {
         render(<ValidationNoPast defaultValue={undefined} />)
@@ -202,8 +210,8 @@ describe('validation', () => {
       expect(input.value).toBe('')
 
       // Act
-      await act(async () => userEvent.type(input, MOCKED_TODAY_DATE_STRING))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, MOCKED_TODAY_DATE_STRING)
+      await user.click(submitButton)
 
       // Assert
       // Should show success message.
@@ -215,6 +223,7 @@ describe('validation', () => {
 
     it('renders success when future date is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationNoPast.args?.schema
       await act(async () => {
         render(<ValidationNoPast defaultValue={undefined} />)
@@ -231,8 +240,8 @@ describe('validation', () => {
         addDays(MOCKED_TODAY_DATE, 5),
         DATE_DISPLAY_FORMAT,
       )
-      await act(async () => userEvent.type(input, futureDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, futureDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show success message.
@@ -244,6 +253,7 @@ describe('validation', () => {
   describe('ValidationCustomRange', () => {
     it('renders invalid date error when date after max is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationCustomRange.args?.schema
       const { customMaxDate } = schema!.dateValidation
       await act(async () => {
@@ -261,8 +271,8 @@ describe('validation', () => {
         addDays(customMaxDate!, 10),
         DATE_DISPLAY_FORMAT,
       )
-      await act(async () => userEvent.type(input, afterMaxDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, afterMaxDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show error message.
@@ -274,6 +284,7 @@ describe('validation', () => {
 
     it('renders invalid date error when date before min is selected', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationCustomRange.args?.schema
       const { customMinDate } = schema!.dateValidation
       await act(async () => {
@@ -291,8 +302,8 @@ describe('validation', () => {
         addDays(customMinDate!, -10),
         DATE_DISPLAY_FORMAT,
       )
-      await act(async () => userEvent.type(input, beforeMinDate))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, beforeMinDate)
+      await user.click(submitButton)
 
       // Assert
       // Should show error message.
@@ -304,6 +315,7 @@ describe('validation', () => {
 
     it('renders success when selected date is in range', async () => {
       // Arrange
+      const user = userEvent.setup()
       const schema = ValidationCustomRange.args?.schema
       const { customMinDate, customMaxDate } = schema!.dateValidation
       await act(async () => {
@@ -322,8 +334,8 @@ describe('validation', () => {
       expect(isBefore(inRangeDate, customMaxDate!)).toEqual(true)
 
       // Act
-      await act(async () => userEvent.type(input, inRangeDateString))
-      await act(async () => userEvent.click(submitButton))
+      await user.type(input, inRangeDateString)
+      await user.click(submitButton)
 
       // Assert
       // Should show success message.

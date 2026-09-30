@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import JSZip from 'jszip'
@@ -50,6 +50,7 @@ describe('validation required', () => {
       type: 'image/png',
     })
     await user.upload(input, testFile)
+    await screen.findByText(testFile.name)
     await user.click(submitButton)
 
     // Assert
@@ -99,6 +100,7 @@ describe('validation optional', () => {
       },
     )
     await user.upload(input, testFile)
+    await screen.findByText(testFile.name)
     await user.click(submitButton)
 
     // Assert
@@ -174,8 +176,6 @@ describe('attachment validation', () => {
     // Arrange
     const user = userEvent.setup()
     const schema = ValidationRequired.args?.schema
-    render(<ValidationRequired />)
-    const input = screen.getByTestId(schema!._id) as HTMLInputElement
     const mockZip = async () => {
       const zip = new JSZip()
       zip.file(
@@ -195,6 +195,8 @@ describe('attachment validation', () => {
     // Act
     // Mack mock zip file
     const testFile = await mockZip()
+    render(<ValidationRequired />)
+    const input = screen.getByTestId(schema!._id) as HTMLInputElement
     await user.upload(input, testFile)
     // Don't need to submit, or the error message will be overridden.
 
@@ -212,11 +214,6 @@ describe('attachment validation', () => {
     // Arrange
     const user = userEvent.setup()
     const schema = ValidationRequired.args?.schema
-    render(<ValidationRequired />)
-    const input = screen.getByTestId(schema!._id) as HTMLInputElement
-    const submitButton = screen.getByRole('button', {
-      name: /submit/i,
-    })
     const mockZip = async () => {
       const zip = new JSZip()
       zip.file(
@@ -235,7 +232,13 @@ describe('attachment validation', () => {
     // Act
     // Mack mock zip file with all valid extensions.
     const testFile = await mockZip()
+    render(<ValidationRequired />)
+    const input = screen.getByTestId(schema!._id) as HTMLInputElement
+    const submitButton = screen.getByRole('button', {
+      name: /submit/i,
+    })
     await user.upload(input, testFile)
+    await screen.findByText(testFile.name)
     await user.click(submitButton)
 
     // Assert
