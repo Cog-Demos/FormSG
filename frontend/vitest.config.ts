@@ -8,19 +8,22 @@ import viteConfig from './vite.config'
 const isNodePolyfillsPlugin = (plugin: PluginOption) =>
   !!plugin && 'name' in plugin && plugin.name === 'vite-plugin-node-polyfills'
 
-export default mergeConfig(
-  {
-    ...viteConfig,
-    plugins: viteConfig.plugins?.filter((p) => !isNodePolyfillsPlugin(p)),
-  },
-  defineConfig({
-    test: {
-      environment: 'jsdom',
-      globals: true,
-      setupFiles: ['./src/vitest.setup.ts'],
-      include: ['src/**/*.test.{ts,tsx}', 'src/**/__tests__/**/*.{ts,tsx}'],
-      testTimeout: 20000,
-      css: false,
+export default defineConfig((env) => {
+  const baseConfig = viteConfig(env)
+  return mergeConfig(
+    {
+      ...baseConfig,
+      plugins: baseConfig.plugins?.filter((p) => !isNodePolyfillsPlugin(p)),
     },
-  }),
-)
+    defineConfig({
+      test: {
+        environment: 'jsdom',
+        globals: true,
+        setupFiles: ['./src/vitest.setup.ts'],
+        include: ['src/**/*.test.{ts,tsx}', 'src/**/__tests__/**/*.{ts,tsx}'],
+        testTimeout: 20000,
+        css: false,
+      },
+    }),
+  )
+})
