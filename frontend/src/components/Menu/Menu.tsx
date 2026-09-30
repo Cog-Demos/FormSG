@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from 'react'
 import {
+  forwardRef,
   Menu as ChakraMenu,
   MenuButton as ChakraMenuButton,
   MenuDivider as ChakraMenuDivider,
   MenuItem as ChakraMenuItem,
   MenuList as ChakraMenuList,
+  MenuListProps,
   MenuProps,
   useMultiStyleConfig,
 } from '@chakra-ui/react'
@@ -75,7 +77,17 @@ const MenuButton = ({
  *
  * Used to wrap MenuItem component
  */
-const MenuList = ChakraMenuList
+const MenuList = forwardRef<MenuListProps, 'div'>(
+  ({ rootProps, ...props }, ref) => (
+    <ChakraMenuList
+      ref={ref}
+      // Chakra v1's popper kept `minWidth: max-content` with `matchWidth`;
+      // v2 drops it, which shrinks lists to the trigger's width.
+      rootProps={{ minW: 'max-content', ...rootProps }}
+      {...props}
+    />
+  ),
+)
 
 /**
  * Item in MenuList
