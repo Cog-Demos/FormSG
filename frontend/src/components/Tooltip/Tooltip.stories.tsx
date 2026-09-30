@@ -1,5 +1,5 @@
 import { Box, Icon, Placement, TooltipProps, VStack } from '@chakra-ui/react'
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { BxsHelpCircle } from '~/assets/icons/BxsHelpCircle'
 
@@ -41,7 +41,7 @@ const TooltipStack = (
   )
 }
 
-const Template: Story<TooltipProps> = (args) => {
+const Template: StoryFn<TooltipProps> = (args) => {
   return (
     <TooltipStack
       {...args}
@@ -57,14 +57,20 @@ const Template: Story<TooltipProps> = (args) => {
     />
   )
 }
-export const TooltipOnHover = Template.bind({})
 
-export const OpenTooltip = Template.bind({})
-OpenTooltip.args = {
-  isOpen: true,
+export const TooltipOnHover = {
+  render: Template,
 }
 
-const MobileTemplate: Story<TooltipProps> = (args) => {
+export const OpenTooltip = {
+  render: Template,
+
+  args: {
+    isOpen: true,
+  },
+}
+
+const MobileTemplate: StoryFn<TooltipProps> = (args) => {
   return (
     <TooltipStack
       {...args}
@@ -87,10 +93,13 @@ const MobileTemplate: Story<TooltipProps> = (args) => {
   )
 }
 
-export const Mobile = MobileTemplate.bind({})
-Mobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
+export const Mobile = {
+  render: MobileTemplate,
+
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+    chromatic: { viewports: [viewports.xs] },
   },
-  chromatic: { viewports: [viewports.xs] },
 }
