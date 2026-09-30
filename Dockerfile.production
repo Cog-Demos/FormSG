@@ -49,6 +49,9 @@ RUN --mount=type=secret,id=dd_api_key \
     --minified-path-prefix=$APP_URL \
     --repository-url=$REPO_URL
 
+# Source maps are uploaded to Datadog above and must not be served publicly.
+RUN find ./dist/frontend -name '*.map' -delete
+
 RUN npm prune --production --legacy-peer-deps
 
 # This stage builds the final container

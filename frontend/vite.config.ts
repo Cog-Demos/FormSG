@@ -58,7 +58,7 @@ export default defineConfig(async () => {
     build: {
       outDir: '../dist/frontend',
       emptyOutDir: true,
-      sourcemap: true,
+      sourcemap: 'hidden',
     },
   }
 })
