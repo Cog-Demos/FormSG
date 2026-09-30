@@ -11,10 +11,11 @@
  */
 import type { TestRunnerConfig } from '@storybook/test-runner'
 import { getStoryContext } from '@storybook/test-runner'
-import type { ElementContext, Result, RunOptions, Spec } from 'axe-core'
-import { configureAxe, getViolations, injectAxe } from 'axe-playwright'
+import type AxeCore from 'axe-core'
+import type { Result, RunOptions, Spec } from 'axe-core'
+import { readFileSync } from 'fs'
 
-type Page = Parameters<typeof injectAxe>[0]
+type Page = Parameters<NonNullable<TestRunnerConfig['preVisit']>>[0]
 
 interface A11yParameters {
   disable?: boolean
@@ -26,14 +27,12 @@ interface A11yParameters {
 }
 
 const STORYBOOK_ROOT = '#storybook-root'
-const AXE_BUSY_RETRIES = 5
-const AXE_BUSY_DELAY_MS = 200
 const SETTLE_TIMEOUT_MS = 5000
 
 const toAxeContext = ({
   element = STORYBOOK_ROOT,
   exclude,
-}: A11yParameters): ElementContext =>
+}: A11yParameters): string | { include: string[]; exclude: string[] } =>
   exclude
     ? { include: [element], exclude: ([] as string[]).concat(exclude) }
     : element
@@ -66,21 +65,21 @@ const formatViolations = (violations: Result[]): string =>
     )
     .join('\n\n')
 
-// addon-a11y may still be running its own axe pass on the same window.
-const getViolationsWhenIdle = async (
-  ...[page, context, options]: Parameters<typeof getViolations>
-): Promise<Result[]> => {
-  for (let attempt = 1; ; attempt++) {
-    try {
-      return await getViolations(page, context, options)
-    } catch (e) {
-      const isBusy =
-        e instanceof Error && e.message.includes('Axe is already running')
-      if (!isBusy || attempt >= AXE_BUSY_RETRIES) throw e
-      await page.waitForTimeout(AXE_BUSY_DELAY_MS)
-    }
-  }
-}
+// addon-a11y lazily imports its own axe-core module, which overwrites
+// window.axe and runs its own pass after every story. Scans therefore use a
+// private instance injected per story rather than whatever window.axe is.
+type AxeWindow = { axe?: typeof AxeCore; __testRunnerAxe: typeof AxeCore }
+
+const AXE_SOURCE = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8')
+
+const injectPrivateAxe = (page: Page): Promise<void> =>
+  page.evaluate((source) => {
+    const w = window as unknown as AxeWindow
+    const previous = w.axe
+    window.eval(source)
+    w.__testRunnerAxe = w.axe
+    w.axe = previous
+  }, AXE_SOURCE)
 
 // Axe samples computed colours, so finite CSS transitions/animations (e.g.
 // Chakra background-color transitions) must finish before it runs.
@@ -104,25 +103,35 @@ const waitForStoryToSettle = (page: Page): Promise<void> =>
     )
   }, SETTLE_TIMEOUT_MS)
 
+const scanWithInjectedAxe = (
+  page: Page,
+  a11y: A11yParameters,
+): Promise<Result[]> =>
+  page.evaluate(
+    async ({ context, options, spec }) => {
+      const axe = (window as unknown as AxeWindow).__testRunnerAxe
+      if (spec) axe.configure(spec)
+      const { violations } = await axe.run(context, options)
+      return violations
+    },
+    {
+      context: toAxeContext(a11y),
+      options: toAxeOptions(a11y),
+      spec: a11y.config,
+    },
+  )
+
 const config: TestRunnerConfig = {
   async preVisit(page) {
-    await injectAxe(page)
+    await injectPrivateAxe(page)
   },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context)
     const a11y: A11yParameters = storyContext.parameters?.a11y ?? {}
     if (a11y.disable) return
 
-    if (a11y.config) {
-      await configureAxe(page, a11y.config)
-    }
-
     await waitForStoryToSettle(page)
-    const violations = await getViolationsWhenIdle(
-      page,
-      toAxeContext(a11y),
-      toAxeOptions(a11y),
-    )
+    const violations = await scanWithInjectedAxe(page, a11y)
     if (violations.length > 0) {
       throw new Error(
         `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} in ${context.title} › ${context.name}\n\n${formatViolations(violations)}`,
