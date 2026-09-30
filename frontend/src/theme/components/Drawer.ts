@@ -25,6 +25,8 @@ const baseStyleBody: SystemStyleObject = {
 
 const baseStyle: PartsStyleFunction<typeof parts> = (props) => ({
   overlay: baseStyleOverlay(props),
+  // See Modal: Chakra v2's default `colors.white` token does not resolve.
+  dialog: { bg: 'white' },
   header: baseStyleHeader,
   body: baseStyleBody,
 })

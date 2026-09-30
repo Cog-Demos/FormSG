@@ -16,6 +16,9 @@ const baseStyleOverlay: SystemStyleObject = {
 const baseStyleDialog: SystemStyleFunction = (props) => {
   const { scrollBehavior } = props
   return {
+    // `colours.white` is a palette, so Chakra v2's default `colors.white`
+    // dialog background token does not resolve.
+    bg: 'white',
     borderRadius: '0.25rem',
     my: '4rem',
     maxH: scrollBehavior === 'inside' ? 'calc(100% - 16rem)' : undefined,
