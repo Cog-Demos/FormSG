@@ -130,7 +130,10 @@ export const ProductModal = ({
   const watchMultiQtyEnabled = watch(MULTI_QTY_KEY, product?.multi_qty ?? false)
   const handleSaveProduct = handleSubmit((product) => {
     const { display_amount, ...rest } = product
-    onSaveProduct({ ...rest, amount_cents: dollarsToCents(display_amount) })
+    onSaveProduct({
+      ...rest,
+      amount_cents: dollarsToCents(display_amount),
+    } as Product)
     onClose()
   })
 

@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { useFieldArray, useFormContext, useFormState } from 'react-hook-form'
+import {
+  FieldArrayWithId,
+  useFieldArray,
+  useFormContext,
+  useFormState,
+} from 'react-hook-form'
 import { BiTrash } from 'react-icons/bi'
-import { useTable } from 'react-table'
+import { CellProps, Renderer, useTable } from 'react-table'
 import {
   Box,
   Table,
@@ -55,7 +60,9 @@ export const TableField = ({
         <ColumnHeader title={c.title} isRequired={c.required} id={c._id} />
       ),
       accessor: c._id,
-      Cell: ColumnCell,
+      Cell: ColumnCell as Renderer<
+        CellProps<FieldArrayWithId<TableFieldInputs, string, 'id'>, string>
+      >,
     }))
   }, [schema.columns])
 
@@ -88,13 +95,13 @@ export const TableField = ({
     // Update field array when min rows changes.
     if (hasMinRowsChanged) {
       const prevRowLength = fields.length
-      if (schema.minimumRows > prevRowLength) {
-        for (let i = prevRowLength; i < schema.minimumRows; i++) {
+      if (Number(schema.minimumRows) > prevRowLength) {
+        for (let i = prevRowLength; i < Number(schema.minimumRows); i++) {
           appendTableRow()
         }
       } else {
         // Remove rows from field array
-        for (let i = prevRowLength; i > schema.minimumRows; i--) {
+        for (let i = prevRowLength; i > Number(schema.minimumRows); i--) {
           remove(i - 1)
         }
       }
@@ -115,7 +122,10 @@ export const TableField = ({
 
   const handleRemoveRow = useCallback(
     (rowIndex: number) => {
-      if (fields.length <= schema.minimumRows || rowIndex >= fields.length) {
+      if (
+        fields.length <= Number(schema.minimumRows) ||
+        rowIndex >= fields.length
+      ) {
         return
       }
       return remove(rowIndex)
@@ -148,7 +158,7 @@ export const TableField = ({
   return (
     <TableFieldContainer schema={schema}>
       <Box
-        d="block"
+        display="block"
         w="100%"
         overflowX="auto"
         sx={{
@@ -228,7 +238,8 @@ export const TableField = ({
                     >
                       <IconButton
                         isDisabled={
-                          schema.disabled || fields.length <= schema.minimumRows
+                          schema.disabled ||
+                          fields.length <= Number(schema.minimumRows)
                         }
                         variant="clear"
                         colorScheme="danger"

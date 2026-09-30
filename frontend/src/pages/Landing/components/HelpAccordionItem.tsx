@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, PropsWithChildren } from 'react'
 import {
   AccordionButton,
   AccordionIcon,
@@ -11,10 +11,9 @@ interface HelpAccordionItemProps {
   title: string
 }
 
-export const HelpAccordionItem: FC<HelpAccordionItemProps> = ({
-  title,
-  children,
-}) => {
+export const HelpAccordionItem: FC<
+  PropsWithChildren<HelpAccordionItemProps>
+> = ({ title, children }) => {
   return (
     <AccordionItem>
       <AccordionButton>
