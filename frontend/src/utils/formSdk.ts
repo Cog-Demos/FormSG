@@ -15,13 +15,14 @@ const isPackageMode = (sdkMode?: string): sdkMode is PackageMode => {
   )
 }
 
+// Either the sdk mode is set in VITE_APP_FORMSG_SDK_MODE env var, or fall back to the Vite mode
+// MODE is set automatically to development (when using npm start),
+// test (when using npm test) or production (when using npm build)
+const sdkMode =
+  import.meta.env.VITE_APP_FORMSG_SDK_MODE || import.meta.env.MODE
+
 const formsgSdk = formsgPackage({
-  // Either the sdk mode is set in VITE_APP_FORMSG_SDK_MODE env var, or fall back to NODE_ENV
-  // NODE_ENV is set automatically to development (when using npm start),
-  // test (when using npm test) or production (when using npm build)
-  mode: isPackageMode(import.meta.env.VITE_APP_FORMSG_SDK_MODE)
-    ? import.meta.env.VITE_APP_FORMSG_SDK_MODE
-    : process.env.NODE_ENV,
+  mode: isPackageMode(sdkMode) ? sdkMode : undefined,
   verificationOptions: {
     transactionExpiry: TRANSACTION_EXPIRE_AFTER_SECONDS,
   },
