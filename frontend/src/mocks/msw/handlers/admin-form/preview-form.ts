@@ -1,5 +1,5 @@
 import { mergeWith } from 'lodash'
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 import { PartialDeep } from 'type-fest'
 
 import { FormId, PreviewFormViewDto } from '~shared/types/form/form'
@@ -13,29 +13,27 @@ export const getPreviewFormResponse = ({
   delay?: number | 'infinite'
   overrides?: PartialDeep<PreviewFormViewDto>
 } = {}) => {
-  return rest.get<PreviewFormViewDto>(
-    '/api/v3/admin/forms/:formId/preview',
-    (req, res, ctx) => {
-      const formId = req.params.formId ?? '61540ece3d4a6e50ac0cc6ff'
+  return http.get('/api/v3/admin/forms/:formId/preview', async ({ params }) => {
+    const formId = params.formId ?? '61540ece3d4a6e50ac0cc6ff'
 
-      const response = mergeWith(
-        {},
-        {
-          form: {
-            _id: formId as FormId,
-            ...BASE_FORM,
-          },
+    const response = mergeWith(
+      {},
+      {
+        form: {
+          _id: formId as FormId,
+          ...BASE_FORM,
         },
-        overrides,
-        (objValue, srcValue) => {
-          if (Array.isArray(objValue)) {
-            return [...srcValue, ...objValue]
-          }
-        },
-      ) as PreviewFormViewDto
-      return res(ctx.delay(delay), ctx.json(response))
-    },
-  )
+      },
+      overrides,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          return [...srcValue, ...objValue]
+        }
+      },
+    ) as PreviewFormViewDto
+    await mswDelay(delay)
+    return HttpResponse.json(response)
+  })
 }
 
 export const getPreviewFormErrorResponse = ({
@@ -47,12 +45,10 @@ export const getPreviewFormErrorResponse = ({
   status?: number
   message?: string
 } = {}) => {
-  return rest.get<PreviewFormViewDto>(
-    '/api/v3/admin/forms/:formId/preview',
-    (req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.status(status), ctx.json({ message }))
-    },
-  )
+  return http.get('/api/v3/admin/forms/:formId/preview', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json({ message }, { status })
+  })
 }
 
 export const publicFormHandlers = [getPreviewFormResponse()]

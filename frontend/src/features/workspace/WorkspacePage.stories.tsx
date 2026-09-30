@@ -1,12 +1,8 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { times } from 'lodash'
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
-import {
-  AdminDashboardFormMetaDto,
-  FormResponseMode,
-  FormStatus,
-} from '~shared/types/form/form'
+import { FormResponseMode, FormStatus } from '~shared/types/form/form'
 
 import { getUser, MOCK_USER } from '~/mocks/msw/handlers/user'
 import { getWorkspaces } from '~/mocks/msw/handlers/workspace'
@@ -75,12 +71,9 @@ export default {
     chromatic: { pauseAnimationAtEnd: true },
     mockdate: new Date('2021-12-01T06:22:27.219Z'),
     msw: [
-      rest.get<AdminDashboardFormMetaDto[]>(
-        '/api/v3/admin/forms',
-        (req, res, ctx) => {
-          return res(ctx.json(THIRTY_FORMS))
-        },
-      ),
+      http.get('/api/v3/admin/forms', async () => {
+        return HttpResponse.json(THIRTY_FORMS)
+      }),
       getWorkspaces(),
       getUser({
         delay: 0,
@@ -93,7 +86,7 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <WorkspacePage />
+const Template: StoryFn = () => <WorkspacePage />
 export const Desktop = Template.bind({})
 export const Mobile = Template.bind({})
 Mobile.parameters = {
@@ -110,12 +103,10 @@ Mobile.parameters = {
 export const LoadingDesktop = Template.bind({})
 LoadingDesktop.parameters = {
   msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(ctx.delay('infinite'), ctx.json({}))
-      },
-    ),
+    http.get('/api/v3/admin/forms', async () => {
+      await mswDelay('infinite')
+      return HttpResponse.json({})
+    }),
   ],
 }
 
@@ -128,12 +119,9 @@ LoadingMobile.parameters = {
 export const Empty = Template.bind({})
 Empty.parameters = {
   msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(ctx.json([]))
-      },
-    ),
+    http.get('/api/v3/admin/forms', async () => {
+      return HttpResponse.json([])
+    }),
   ],
 }
 
@@ -146,16 +134,11 @@ EmptyMobile.parameters = {
 export const AllOpenDesktop = Template.bind({})
 AllOpenDesktop.parameters = {
   msw: [
-    rest.get<AdminDashboardFormMetaDto[]>(
-      '/api/v3/admin/forms',
-      (req, res, ctx) => {
-        return res(
-          ctx.json(
-            THIRTY_FORMS.filter((form) => form.status === FormStatus.Public),
-          ),
-        )
-      },
-    ),
+    http.get('/api/v3/admin/forms', async () => {
+      return HttpResponse.json(
+        THIRTY_FORMS.filter((form) => form.status === FormStatus.Public),
+      )
+    }),
     getUser({
       delay: 0,
       mockUser: {

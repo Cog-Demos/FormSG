@@ -1,6 +1,6 @@
 import cuid from 'cuid'
 import { merge, mergeWith } from 'lodash'
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
 import { PaymentChannel } from '~shared/types'
 import { AgencyId } from '~shared/types/agency'
@@ -646,117 +646,119 @@ export const createFormBuilderMocks = (
 ) => {
   const { form } = createMockForm(props)
 
-  const getAdminFormResponse = (): ReturnType<(typeof rest)['get']> => {
-    return rest.get<AdminFormViewDto>(
-      '/api/v3/admin/forms/:formId',
-      (req, res, ctx) => {
-        return res(
-          ctx.delay(delay),
-          ctx.status(200),
-          ctx.json({ form: { ...form, _id: req.params.formId as FormId } }),
-        )
-      },
-    )
+  const getAdminFormResponse = (): ReturnType<(typeof http)['get']> => {
+    return http.get('/api/v3/admin/forms/:formId', async ({ params }) => {
+      await mswDelay(delay)
+      return HttpResponse.json(
+        { form: { ...form, _id: params.formId as FormId } },
+        { status: 200 },
+      )
+    })
   }
 
   const createSingleField = () => {
-    return rest.post<FieldCreateDto, { formId: string }, FormFieldDto>(
+    return http.post<{ formId: string }, FieldCreateDto, FormFieldDto>(
       '/api/v3/admin/forms/:formId/fields',
-      (req, res, ctx) => {
+      async ({ request }) => {
+        const reqBody = await request.json()
         const newField = {
-          ...req.body,
+          ...reqBody,
           _id: cuid(),
         } as FormFieldDto
-        if (req.body.fieldType === BasicField.Table) {
+        if (reqBody.fieldType === BasicField.Table) {
           // eslint-disable-next-line @typescript-eslint/no-extra-semi
-          ;(newField as TableFieldDto).columns = req.body.columns.map(
-            (col) => ({
-              ...col,
-              _id: cuid(),
-            }),
-          )
+          ;(newField as TableFieldDto).columns = reqBody.columns.map((col) => ({
+            ...col,
+            _id: cuid(),
+          }))
         }
         const newIndex = parseInt(
-          req.url.searchParams.get('to') ?? `${form.form_fields.length}`,
+          new URL(request.url).searchParams.get('to') ??
+            `${form.form_fields.length}`,
         )
         form.form_fields = insertAt(form.form_fields, newIndex, newField)
-        return res(ctx.delay(delay), ctx.status(200), ctx.json(newField))
+        await mswDelay(delay)
+        return HttpResponse.json(newField, { status: 200 })
       },
     )
   }
 
   const updateSingleField = () => {
-    return rest.put<
-      FormFieldDto,
+    return http.put<
       { formId: string; fieldId: string },
+      FormFieldDto,
       FormFieldDto
-    >('/api/v3/admin/forms/:formId/fields/:fieldId', (req, res, ctx) => {
-      const index = form.form_fields.findIndex(
-        (field) => field._id === req.params.fieldId,
-      )
-      form.form_fields.splice(index, 1, req.body)
-      return res(ctx.delay(delay), ctx.status(200), ctx.json(req.body))
-    })
+    >(
+      '/api/v3/admin/forms/:formId/fields/:fieldId',
+      async ({ request, params }) => {
+        const reqBody = await request.json()
+        const index = form.form_fields.findIndex(
+          (field) => field._id === params.fieldId,
+        )
+        form.form_fields.splice(index, 1, reqBody)
+        await mswDelay(delay)
+        return HttpResponse.json(reqBody, { status: 200 })
+      },
+    )
   }
 
   const reorderField = () => {
-    return rest.post<
-      Record<string, never>,
+    return http.post<
       { formId: string; fieldId: string },
+      Record<string, never>,
       FormFieldDto[]
     >(
       '/api/v3/admin/forms/:formId/fields/:fieldId/reorder',
-      (req, res, ctx) => {
+      async ({ request, params }) => {
         const fromIndex = form.form_fields.findIndex(
-          (field) => field._id === req.params.fieldId,
+          (field) => field._id === params.fieldId,
         )
         form.form_fields = reorder(
           form.form_fields,
           fromIndex,
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          parseInt(req.url.searchParams.get('to')!),
+          parseInt(new URL(request.url).searchParams.get('to')!),
         )
-        return res(
-          ctx.delay(delay),
-          ctx.status(200),
-          ctx.json(form.form_fields),
-        )
+        await mswDelay(delay)
+        return HttpResponse.json(form.form_fields, { status: 200 })
       },
     )
   }
 
   const duplicateField = () => {
-    return rest.post<
-      Record<string, never>,
+    return http.post<
       { formId: string; fieldId: string },
+      Record<string, never>,
       FormFieldDto
     >(
       '/api/v3/admin/forms/:formId/fields/:fieldId/duplicate',
-      (req, res, ctx) => {
+      async ({ params }) => {
         const fieldToCopyIndex = form.form_fields.findIndex(
-          (field) => field._id === req.params.fieldId,
+          (field) => field._id === params.fieldId,
         )
         const newField = {
           ...form.form_fields[fieldToCopyIndex],
           _id: cuid(),
         }
         form.form_fields.push(newField)
-        return res(ctx.delay(delay), ctx.status(200), ctx.json(newField))
+        await mswDelay(delay)
+        return HttpResponse.json(newField, { status: 200 })
       },
     )
   }
 
   const deleteField = () => {
-    return rest.delete<
-      Record<string, never>,
+    return http.delete<
       { formId: string; fieldId: string },
+      Record<string, never>,
       FormFieldDto
-    >('/api/v3/admin/forms/:formId/fields/:fieldId', (req, res, ctx) => {
+    >('/api/v3/admin/forms/:formId/fields/:fieldId', async ({ params }) => {
       const fieldToDeleteIndex = form.form_fields.findIndex(
-        (field) => field._id === req.params.fieldId,
+        (field) => field._id === params.fieldId,
       )
       form.form_fields.splice(fieldToDeleteIndex, 1)
-      return res(ctx.delay(delay), ctx.status(200))
+      await mswDelay(delay)
+      return new HttpResponse(null, { status: 200 })
     })
   }
 
@@ -774,45 +776,45 @@ export const getStorageSubmissionMetadataResponse = (
   props: Partial<SubmissionMetadataList> = {},
   delay: number | 'infinite' | 'real' = 0,
 ) => {
-  return rest.get<SubmissionMetadataList>(
+  return http.get(
     '/api/v3/admin/forms/:formId/submissions/metadata',
-    (req, res, ctx) => {
-      const pageNum = parseInt(req.url.searchParams.get('page') ?? '1')
-      return res(
-        ctx.delay(delay),
-        ctx.status(200),
-        ctx.json<SubmissionMetadataList>(
-          merge(
-            {
-              count: 39,
-              metadata: DEFAULT_STORAGE_METADATA[pageNum - 1],
-            },
-            props,
-          ),
+    async ({ request }) => {
+      const pageNum = parseInt(
+        new URL(request.url).searchParams.get('page') ?? '1',
+      )
+      await mswDelay(delay)
+      return HttpResponse.json<SubmissionMetadataList>(
+        merge(
+          {
+            count: 39,
+            metadata: DEFAULT_STORAGE_METADATA[pageNum - 1],
+          },
+          props,
         ),
+        { status: 200 },
       )
     },
   )
 }
 
 export const createLogic = (delay?: number | 'infinite') => {
-  return rest.post<FormLogic>(
+  return http.post<{ formId: string }, FormLogic>(
     '/api/v3/admin/forms/:formId/logic',
-    (req, res, ctx) => {
+    async ({ request }) => {
+      const reqBody = await request.json()
       const newLogic = {
-        ...req.body,
+        ...reqBody,
         _id: cuid(),
       }
-      return res(ctx.delay(delay), ctx.status(200), ctx.json(newLogic))
+      await mswDelay(delay)
+      return HttpResponse.json(newLogic, { status: 200 })
     },
   )
 }
 
 export const deleteLogic = (delay?: number | 'infinite') => {
-  return rest.delete(
-    '/api/v3/admin/forms/:formId/logic/:logicId',
-    (_req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.status(200))
-    },
-  )
+  return http.delete('/api/v3/admin/forms/:formId/logic/:logicId', async () => {
+    await mswDelay(delay)
+    return new HttpResponse(null, { status: 200 })
+  })
 }

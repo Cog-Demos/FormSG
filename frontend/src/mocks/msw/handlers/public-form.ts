@@ -1,6 +1,6 @@
 import { addMilliseconds } from 'date-fns'
 import { mergeWith } from 'lodash'
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 import { PartialDeep } from 'type-fest'
 
 import {
@@ -429,29 +429,27 @@ export const getPublicFormResponse = ({
   delay?: number | 'infinite'
   overrides?: PartialDeep<PublicFormViewDto>
 } = {}) => {
-  return rest.get<PublicFormViewDto>(
-    '/api/v3/forms/:formId',
-    (req, res, ctx) => {
-      const formId = req.params.formId ?? '61540ece3d4a6e50ac0cc6ff'
+  return http.get('/api/v3/forms/:formId', async ({ params }) => {
+    const formId = params.formId ?? '61540ece3d4a6e50ac0cc6ff'
 
-      const response = mergeWith(
-        {},
-        {
-          form: {
-            _id: formId as FormId,
-            ...BASE_FORM,
-          },
+    const response = mergeWith(
+      {},
+      {
+        form: {
+          _id: formId as FormId,
+          ...BASE_FORM,
         },
-        overrides,
-        (objValue, srcValue) => {
-          if (Array.isArray(objValue)) {
-            return [...srcValue, ...objValue]
-          }
-        },
-      ) as PublicFormViewDto
-      return res(ctx.delay(delay), ctx.json(response))
-    },
-  )
+      },
+      overrides,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          return [...srcValue, ...objValue]
+        }
+      },
+    ) as PublicFormViewDto
+    await mswDelay(delay)
+    return HttpResponse.json(response)
+  })
 }
 
 export const getPublicFormWithoutSectionsResponse = ({
@@ -461,29 +459,27 @@ export const getPublicFormWithoutSectionsResponse = ({
   delay?: number | 'infinite'
   overrides?: PartialDeep<PublicFormViewDto>
 } = {}) => {
-  return rest.get<PublicFormViewDto>(
-    '/api/v3/forms/:formId',
-    (req, res, ctx) => {
-      const formId = req.params.formId ?? '61540ece3d4a6e50ac0cc6ff'
+  return http.get('/api/v3/forms/:formId', async ({ params }) => {
+    const formId = params.formId ?? '61540ece3d4a6e50ac0cc6ff'
 
-      const response = mergeWith(
-        {},
-        {
-          form: {
-            _id: formId as FormId,
-            ...BASE_FORM_WITHOUT_SECTIONS,
-          },
+    const response = mergeWith(
+      {},
+      {
+        form: {
+          _id: formId as FormId,
+          ...BASE_FORM_WITHOUT_SECTIONS,
         },
-        overrides,
-        (objValue, srcValue) => {
-          if (Array.isArray(objValue)) {
-            return [...srcValue, ...objValue]
-          }
-        },
-      ) as PublicFormViewDto
-      return res(ctx.delay(delay), ctx.json(response))
-    },
-  )
+      },
+      overrides,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          return [...srcValue, ...objValue]
+        }
+      },
+    ) as PublicFormViewDto
+    await mswDelay(delay)
+    return HttpResponse.json(response)
+  })
 }
 
 export const getPublicFormErrorResponse = ({
@@ -495,26 +491,22 @@ export const getPublicFormErrorResponse = ({
   status?: number
   message?: string
 } = {}) => {
-  return rest.get<PublicFormViewDto>(
-    '/api/v3/forms/:formId',
-    (req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.status(status), ctx.json({ message }))
-    },
-  )
+  return http.get('/api/v3/forms/:formId', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json({ message }, { status })
+  })
 }
 
 export const getCustomLogoResponse = () => {
-  return rest.get(
-    `/${MOCK_ENVS.logoBucketUrl}/:fileId`,
-    async (_, res, ctx) => {
-      const image = await fetch(mockFormLogo).then((res) => res.arrayBuffer())
-      return res(
-        ctx.set('Content-Length', image.byteLength.toString()),
-        ctx.set('Content-Type', 'image/png'),
-        ctx.body(image),
-      )
-    },
-  )
+  return http.get(`/${MOCK_ENVS.logoBucketUrl}/:fileId`, async () => {
+    const image = await fetch(mockFormLogo).then((res) => res.arrayBuffer())
+    return new HttpResponse(image, {
+      headers: {
+        'Content-Length': image.byteLength.toString(),
+        'Content-Type': 'image/png',
+      },
+    })
+  })
 }
 
 export const postVfnTransactionResponse = ({
@@ -524,18 +516,13 @@ export const postVfnTransactionResponse = ({
   delay?: number | 'infinite'
   expiryMsOverride?: number
 } = {}) => {
-  return rest.post<FetchNewTransactionResponse>(
-    `/api/v3/forms/:formId/fieldverifications`,
-    (_req, res, ctx) => {
-      return res(
-        ctx.delay(delay),
-        ctx.json<FetchNewTransactionResponse>({
-          transactionId: `mock-transaction-id-${Math.random()}`,
-          expireAt: addMilliseconds(new Date(), expiryMsOverride),
-        }),
-      )
-    },
-  )
+  return http.post(`/api/v3/forms/:formId/fieldverifications`, async () => {
+    await mswDelay(delay)
+    return HttpResponse.json<FetchNewTransactionResponse>({
+      transactionId: `mock-transaction-id-${Math.random()}`,
+      expireAt: addMilliseconds(new Date(), expiryMsOverride),
+    })
+  })
 }
 
 export const postGenerateVfnOtpResponse = ({
@@ -543,10 +530,11 @@ export const postGenerateVfnOtpResponse = ({
 }: {
   delay?: number | 'infinite'
 } = {}) => {
-  return rest.post(
+  return http.post(
     `/api/v3/forms/:formId/fieldverifications/:transactionId/fields/:fieldId/otp/generate`,
-    (_req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.status(200))
+    async () => {
+      await mswDelay(delay)
+      return new HttpResponse(null, { status: 200 })
     },
   )
 }
@@ -556,10 +544,11 @@ export const postVerifyVfnOtpResponse = ({
 }: {
   delay?: number | 'infinite'
 } = {}) => {
-  return rest.post(
+  return http.post(
     `/api/v3/forms/:formId/fieldverifications/:transactionId/fields/:fieldId/otp/verify`,
-    (_req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.json('mock-signature-hehe'))
+    async () => {
+      await mswDelay(delay)
+      return HttpResponse.json('mock-signature-hehe')
     },
   )
 }
