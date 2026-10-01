@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import JSZip from 'jszip'
@@ -240,7 +240,7 @@ describe('attachment validation', () => {
 
     // Assert
     // Should show success message.
-    const success = screen.getByText(/you have submitted[\s\S]*lyrics/i)
+    const success = await screen.findByText(/you have submitted[\s\S]*lyrics/i)
     expect(success).not.toBeNull()
     const error = screen.queryByText(REQUIRED_ERROR)
     expect(error).toBeNull()

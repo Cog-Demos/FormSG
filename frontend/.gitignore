@@ -30,3 +30,6 @@ build-storybook.log
 
 #Datadog chunk files
 datadog-chunk.*.js
+
+# a11y test-runner report used to generate .storybook/a11y-baseline.json
+a11y-results.json
