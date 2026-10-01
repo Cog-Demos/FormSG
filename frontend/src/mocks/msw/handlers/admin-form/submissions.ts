@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
 export const getAdminFormSubmissions = ({
   delay = 0,
@@ -7,10 +7,8 @@ export const getAdminFormSubmissions = ({
   delay?: number | 'infinite'
   override?: number
 } = {}) => {
-  return rest.get(
-    '/api/v3/admin/forms/:formId/submissions/count',
-    (req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.status(200), ctx.json(override ?? 20))
-    },
-  )
+  return http.get('/api/v3/admin/forms/:formId/submissions/count', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json(override ?? 20, { status: 200 })
+  })
 }

@@ -36,7 +36,7 @@
       }
     }
   ],
-  "ignorePatterns": ["build/**/*", "!.storybook"],
+  "ignorePatterns": ["build/**/*", "public/mockServiceWorker.js", "!.storybook"],
   "env": { "es6": true },
   "parserOptions": {
     "ecmaVersion": 2018,

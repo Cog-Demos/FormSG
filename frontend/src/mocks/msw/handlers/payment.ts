@@ -1,7 +1,7 @@
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 import { PartialDeep } from 'type-fest'
 
-import { GetPaymentInfoDto, PaymentReceiptStatusDto } from '~shared/types'
+import { GetPaymentInfoDto } from '~shared/types'
 
 const BASE_PAYMENT_INFO = {
   client_secret: 'sample_client_secret',
@@ -17,18 +17,13 @@ export const getPaymentInfoResponse = ({
   delay?: number | 'infinite'
   overrides?: PartialDeep<GetPaymentInfoDto>
 } = {}) => {
-  return rest.get<GetPaymentInfoDto>(
-    '/api/v3/payments/:paymentId/getinfo',
-    (_req, res, ctx) => {
-      return res(
-        ctx.delay(delay),
-        ctx.json({
-          ...BASE_PAYMENT_INFO,
-          ...overrides,
-        }),
-      )
-    },
-  )
+  return http.get('/api/v3/payments/:paymentId/getinfo', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json({
+      ...BASE_PAYMENT_INFO,
+      ...overrides,
+    })
+  })
 }
 
 export const getPaymentReceiptStatusResponse = ({
@@ -36,10 +31,11 @@ export const getPaymentReceiptStatusResponse = ({
 }: {
   delay?: number | 'infinite'
 } = {}) => {
-  return rest.get<PaymentReceiptStatusDto>(
+  return http.get(
     '/api/v3/payments/:formId/:paymentId/receipt/status',
-    (_req, res, ctx) => {
-      return res(ctx.delay(delay), ctx.json({ isReady: true }))
+    async () => {
+      await mswDelay(delay)
+      return HttpResponse.json({ isReady: true })
     },
   )
 }

@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
 import { AdminFormViewDto, FormResponseMode, FormStatus } from '~shared/types'
 
@@ -10,16 +10,16 @@ export const transferAllFormsOwnership = ({
 }: {
   overrides?: { status?: number; body?: { email: string } }
   delay?: number | 'infinite'
-} = {}): ReturnType<(typeof rest)['get']> => {
-  return rest.post<{ email: string }>(
+} = {}): ReturnType<(typeof http)['get']> => {
+  return http.post<never, { email: string }>(
     '/api/v3/admin/forms/all-transfer-owner',
-    (req, res, ctx) => {
-      const email = req.body.email
-      return res(
-        ctx.delay(delay),
-        ctx.status(200),
-        ctx.json(overrides?.body ?? { email: email }),
-      )
+    async ({ request }) => {
+      const reqBody = await request.json()
+      const email = reqBody.email
+      await mswDelay(delay)
+      return HttpResponse.json(overrides?.body ?? { email: email }, {
+        status: 200,
+      })
     },
   )
 }
@@ -30,29 +30,27 @@ export const transferOwnership = ({
 }: {
   overrides?: { status?: number; body?: AdminFormViewDto }
   delay?: number | 'infinite'
-} = {}): ReturnType<(typeof rest)['get']> => {
-  return rest.post<AdminFormViewDto>(
+} = {}): ReturnType<(typeof http)['get']> => {
+  return http.post(
     '/api/v3/admin/forms/:formId/collaborators/transfer-owner',
-    (req, res, ctx) => {
-      const formId = req.params.formId
-      return res(
-        ctx.delay(delay),
-        ctx.status(overrides?.status ?? 200),
-        ctx.json(
-          overrides?.body ??
-            ({
-              form: {
-                _id: formId,
-                status: FormStatus.Public,
-                responseMode: FormResponseMode.Encrypt,
-                title: `Test form ${formId}`,
-                admin: {
-                  ...MOCK_USER,
-                },
-                lastModified: `2023-06-06T07:00:00.000Z`,
+    async ({ params }) => {
+      const formId = params.formId
+      await mswDelay(delay)
+      return HttpResponse.json(
+        overrides?.body ??
+          ({
+            form: {
+              _id: formId,
+              status: FormStatus.Public,
+              responseMode: FormResponseMode.Encrypt,
+              title: `Test form ${formId}`,
+              admin: {
+                ...MOCK_USER,
               },
-            } as AdminFormViewDto),
-        ),
+              lastModified: `2023-06-06T07:00:00.000Z`,
+            },
+          } as AdminFormViewDto),
+        { status: overrides?.status ?? 200 },
       )
     },
   )
