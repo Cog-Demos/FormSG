@@ -1,4 +1,4 @@
-import { composeStories } from '@storybook/testing-react'
+import { composeStories } from '@storybook/react'
 import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import parsePhoneNumber from 'libphonenumber-js'
@@ -14,6 +14,7 @@ describe('User has no verified contact number', () => {
   it('should render with empty contact number details', async () => {
     // Arrange
     await act(async () => {
+      await NoContact.load()
       render(<NoContact />)
     })
     // Wait until all async stuff has rendered
@@ -35,6 +36,7 @@ describe('User has no verified contact number', () => {
   it('should update user contact successfully', async () => {
     // Arrange
     await act(async () => {
+      await NoContact.load()
       render(<NoContact />)
     })
     // Wait until all async stuff has rendered
@@ -85,6 +87,7 @@ describe('User has verified contact number', () => {
   it('should render with verified contact number details', async () => {
     // Arrange
     await act(async () => {
+      await WithContact.load()
       render(<WithContact />)
     })
     // Wait until all async stuff has rendered
@@ -110,6 +113,7 @@ describe('User has verified contact number', () => {
   it('should render error if invalid phone number is entered', async () => {
     // Arrange
     await act(async () => {
+      await WithContact.load()
       render(<WithContact />)
     })
     // Wait until all async stuff has rendered

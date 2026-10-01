@@ -1,6 +1,6 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 import { merge } from 'lodash'
-import { rest } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 
 import { BasicField } from '~shared/types/field'
 
@@ -48,7 +48,7 @@ interface StoryImageFieldProps extends ImageFieldProps {
   defaultValue?: string
 }
 
-const Template: Story<StoryImageFieldProps> = ({ defaultValue, ...args }) => {
+const Template: StoryFn<StoryImageFieldProps> = ({ defaultValue, ...args }) => {
   return <ImageFieldComponent {...args} />
 }
 
@@ -84,8 +84,9 @@ Loading.args = {
 }
 Loading.parameters = {
   msw: [
-    rest.get('/mock/api', (_req, res, ctx) => {
-      return res(ctx.delay('infinite'))
+    http.get('/mock/api', async () => {
+      await delay('infinite')
+      return new HttpResponse(null)
     }),
   ],
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { Box, BoxProps, Center, useDisclosure } from '@chakra-ui/react'
-import { DecoratorFn } from '@storybook/react'
+import { Decorator } from '@storybook/react'
 import dayjs from 'dayjs'
 import mockdate from 'mockdate'
 
@@ -20,25 +20,25 @@ import { CreatePageSideBarLayoutProvider } from '~features/admin-form/create/com
 
 import { fillHeightCss } from './fillHeightCss'
 
-export const centerDecorator: DecoratorFn = (storyFn) => (
+export const centerDecorator: Decorator = (storyFn) => (
   <Center>{storyFn()}</Center>
 )
 
 export const fixedHeightDecorator =
-  (height: BoxProps['h']): DecoratorFn =>
+  (height: BoxProps['h']): Decorator =>
   (Story) => (
     <Box h={height}>
       <Story />
     </Box>
   )
 
-export const fullScreenDecorator: DecoratorFn = (storyFn) => (
+export const fullScreenDecorator: Decorator = (storyFn) => (
   <Box w="100vw" css={fillHeightCss}>
     {storyFn()}
   </Box>
 )
 
-export const LoggedOutDecorator: DecoratorFn = (storyFn) => {
+export const LoggedOutDecorator: Decorator = (storyFn) => {
   return (
     <AuthContext.Provider value={{ isAuthenticated: false }}>
       {storyFn()}
@@ -46,7 +46,7 @@ export const LoggedOutDecorator: DecoratorFn = (storyFn) => {
   )
 }
 
-export const LoggedInDecorator: DecoratorFn = (storyFn) => {
+export const LoggedInDecorator: Decorator = (storyFn) => {
   return (
     <AuthContext.Provider value={{ isAuthenticated: true }}>
       {storyFn()}
@@ -54,7 +54,7 @@ export const LoggedInDecorator: DecoratorFn = (storyFn) => {
   )
 }
 
-export const ViewedFeatureTourDecorator: DecoratorFn = (
+export const ViewedFeatureTourDecorator: Decorator = (
   storyFn,
   { parameters },
 ) => {
@@ -69,10 +69,7 @@ export const ViewedFeatureTourDecorator: DecoratorFn = (
   return storyFn()
 }
 
-export const ViewedRolloutDecorator: DecoratorFn = (
-  storyFn,
-  { parameters },
-) => {
+export const ViewedRolloutDecorator: Decorator = (storyFn, { parameters }) => {
   const userId = parameters.userId
   const rolloutKey = ROLLOUT_ANNOUNCEMENT_KEY_PREFIX + userId
   window.localStorage.setItem(rolloutKey, JSON.stringify(true))
@@ -84,7 +81,7 @@ export const ViewedRolloutDecorator: DecoratorFn = (
   return storyFn()
 }
 
-export const ViewedEmergencyContactDecorator: DecoratorFn = (
+export const ViewedEmergencyContactDecorator: Decorator = (
   storyFn,
   { parameters },
 ) => {
@@ -99,7 +96,7 @@ export const ViewedEmergencyContactDecorator: DecoratorFn = (
   return storyFn()
 }
 
-export const EditFieldDrawerDecorator: DecoratorFn = (storyFn) => {
+export const EditFieldDrawerDecorator: Decorator = (storyFn) => {
   const deleteFieldModalDisclosure = useDisclosure()
   return (
     <Box maxW="33.25rem">
@@ -116,7 +113,7 @@ export const EditFieldDrawerDecorator: DecoratorFn = (storyFn) => {
   )
 }
 
-export const AdminFormCreatePageDecorator: DecoratorFn = (storyFn) => {
+export const AdminFormCreatePageDecorator: Decorator = (storyFn) => {
   return (
     <MemoryRouter initialEntries={['/12345']}>
       <Routes>
@@ -128,7 +125,7 @@ export const AdminFormCreatePageDecorator: DecoratorFn = (storyFn) => {
   )
 }
 
-export const mockDateDecorator: DecoratorFn = (storyFn, { parameters }) => {
+export const mockDateDecorator: Decorator = (storyFn, { parameters }) => {
   mockdate.reset()
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -170,7 +167,7 @@ interface StoryRouterProps {
  * Decorator to instantiate a story with an initial route.
  */
 export const StoryRouter =
-  ({ path, initialEntries }: StoryRouterProps): DecoratorFn =>
+  ({ path, initialEntries }: StoryRouterProps): Decorator =>
   (storyFn) => {
     return (
       <MemoryRouter initialEntries={initialEntries}>

@@ -4,10 +4,10 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/vitest'
 
-import { setGlobalConfig } from '@storybook/testing-react'
+import { setProjectAnnotations } from '@storybook/react'
 import ResizeObserver from 'resize-observer-polyfill'
 
-import * as globalStorybookConfig from '../.storybook/preview'
+import * as projectAnnotations from '../.storybook/preview'
 
 // Required as the test environment will throw errors when attempting to call
 // media query related functions since jsdom may not contain the window object.
@@ -25,6 +25,6 @@ window.matchMedia =
     }
   }
 
-setGlobalConfig(globalStorybookConfig)
+setProjectAnnotations(projectAnnotations)
 
 global.ResizeObserver = ResizeObserver
