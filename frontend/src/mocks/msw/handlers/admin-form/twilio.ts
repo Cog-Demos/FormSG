@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
 import { SmsCountsDto } from '~shared/types/form'
 
@@ -7,12 +7,9 @@ export const putTwilioCredentials = ({
 }: {
   delay?: number | 'infinite' | 'real'
 } = {}) => {
-  return rest.put('/api/v3/admin/forms/:formId/twilio', (req, res, ctx) => {
-    return res(
-      ctx.delay(delay),
-      ctx.status(200),
-      ctx.json({ message: 'Success' }),
-    )
+  return http.put('/api/v3/admin/forms/:formId/twilio', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json({ message: 'Success' }, { status: 200 })
   })
 }
 
@@ -23,17 +20,17 @@ export const getFreeSmsQuota = ({
   delay?: number | 'infinite' | 'real'
   override?: Partial<SmsCountsDto>
 } = {}) => {
-  return rest.get(
+  return http.get(
     '/api/v3/admin/forms/:formId/verified-sms/count/free',
-    (_req, res, ctx) => {
-      return res(
-        ctx.delay(delay),
-        ctx.status(200),
-        ctx.json<SmsCountsDto>({
+    async () => {
+      await mswDelay(delay)
+      return HttpResponse.json<SmsCountsDto>(
+        {
           freeSmsCounts: 45,
           quota: 10000,
           ...override,
-        }),
+        },
+        { status: 200 },
       )
     },
   )

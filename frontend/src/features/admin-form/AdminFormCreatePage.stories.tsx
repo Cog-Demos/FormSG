@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react'
+import { Meta, StoryFn } from '@storybook/react'
 
 import { PaymentChannel, PaymentType, UserId } from '~shared/types'
 import {
@@ -80,7 +80,7 @@ export default {
   },
 } as Meta
 
-const Template: Story = () => <CreatePage />
+const Template: StoryFn = () => <CreatePage />
 export const DesktopEmpty = Template.bind({})
 export const DesktopAllFields = Template.bind({})
 DesktopAllFields.parameters = {

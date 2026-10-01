@@ -1,37 +1,28 @@
-import { rest } from 'msw'
+import { delay as mswDelay, http, HttpResponse } from 'msw'
 
 import { FormIssueMetaDto } from '~shared/types'
 
 export const getEmptyAdminFormIssue = () => {
-  return rest.get<FormIssueMetaDto>(
-    '/api/v3/admin/forms/:formId/issues',
-    (req, res, ctx) => {
-      return res(
-        ctx.delay(0),
-        ctx.status(200),
-        ctx.json<FormIssueMetaDto>({
-          count: 0,
-          issues: [],
-        }),
-      )
-    },
-  )
+  return http.get('/api/v3/admin/forms/:formId/issues', async () => {
+    await mswDelay(0)
+    return HttpResponse.json<FormIssueMetaDto>(
+      {
+        count: 0,
+        issues: [],
+      },
+      { status: 200 },
+    )
+  })
 }
 export const getAdminFormIssue = ({
   delay = 0,
 }: {
   delay?: number | 'infinite'
 } = {}) => {
-  return rest.get<FormIssueMetaDto>(
-    '/api/v3/admin/forms/:formId/issues',
-    (req, res, ctx) => {
-      return res(
-        ctx.delay(delay),
-        ctx.status(200),
-        ctx.json(generateFormIssueMeta()),
-      )
-    },
-  )
+  return http.get('/api/v3/admin/forms/:formId/issues', async () => {
+    await mswDelay(delay)
+    return HttpResponse.json(generateFormIssueMeta(), { status: 200 })
+  })
 }
 const generateFormIssueMeta = (): FormIssueMetaDto => {
   return {
