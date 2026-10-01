@@ -116,6 +116,7 @@
     "lint:fix": "eslint ./ --ignore-path .gitignore --fix && prettier . -c --write",
     "test:a11y": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && test-storybook --index-json --verbose --url http://127.0.0.1:6006\"",
     "test:a11y-dev": "test-storybook --index-json --verbose --url http://localhost:6006",
+    "test:a11y:baseline": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && (cross-env A11Y_STRICT=true test-storybook --index-json --url http://127.0.0.1:6006 --json --outputFile a11y-results.json || true) && node .storybook/generate-a11y-baseline.js a11y-results.json && prettier --write .storybook/a11y-baseline.json\"",
     "pre-commit": "lint-staged"
   },
   "browserslist": {

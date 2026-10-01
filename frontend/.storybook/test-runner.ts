@@ -8,12 +8,17 @@
  * `@storybook/addon-a11y` and the former storyshots `axeTest`:
  * `disable`, `element`, `exclude`, `disabledRules`, `options` (axe.run
  * options) and `config` (axe.configure spec).
+ *
+ * If `.storybook/a11y-baseline.json` exists (storyId -> axe rule IDs, generated
+ * by `npm run test:a11y:baseline`), baselined violations only warn and any
+ * other violation fails. Set `A11Y_STRICT=true` to ignore the baseline.
  */
 import type { TestRunnerConfig } from '@storybook/test-runner'
 import { getStoryContext } from '@storybook/test-runner'
 import type AxeCore from 'axe-core'
 import type { Result, RunOptions, Spec } from 'axe-core'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
+import { join } from 'path'
 
 type Page = Parameters<NonNullable<TestRunnerConfig['preVisit']>>[0]
 
@@ -28,6 +33,17 @@ interface A11yParameters {
 
 const STORYBOOK_ROOT = '#storybook-root'
 const SETTLE_TIMEOUT_MS = 5000
+
+type A11yBaseline = Record<string, string[]>
+
+const BASELINE_PATH = join(__dirname, 'a11y-baseline.json')
+
+const baseline: A11yBaseline =
+  process.env.A11Y_STRICT !== 'true' && existsSync(BASELINE_PATH)
+    ? JSON.parse(readFileSync(BASELINE_PATH, 'utf8'))
+    : {}
+
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
 
 const toAxeContext = ({
   element = STORYBOOK_ROOT,
@@ -132,9 +148,28 @@ const config: TestRunnerConfig = {
 
     await waitForStoryToSettle(page)
     const violations = await scanWithInjectedAxe(page, a11y)
-    if (violations.length > 0) {
+
+    const known = new Set(baseline[context.id] ?? [])
+    const unexpected = violations.filter(({ id }) => !known.has(id))
+    const tolerated = violations.filter(({ id }) => known.has(id))
+    const stale = [...known].filter(
+      (rule) => !violations.some(({ id }) => id === rule),
+    )
+    const story = `${context.title} › ${context.name} (${context.id})`
+
+    if (tolerated.length > 0) {
+      console.warn(
+        `${plural(tolerated.length, 'baselined accessibility violation')} in ${story}: ${tolerated.map(({ id, impact, nodes }) => `${id} [${impact ?? 'unknown'}, ${plural(nodes.length, 'node')}]`).join(', ')}`,
+      )
+    }
+    if (stale.length > 0) {
+      console.warn(
+        `Baselined rules no longer violated in ${story}; remove them from a11y-baseline.json: ${stale.join(', ')}`,
+      )
+    }
+    if (unexpected.length > 0) {
       throw new Error(
-        `${violations.length} accessibility violation${violations.length === 1 ? '' : 's'} in ${context.title} › ${context.name}\n\n${formatViolations(violations)}`,
+        `${plural(unexpected.length, 'accessibility violation')} in ${story}\n\n${formatViolations(unexpected)}`,
       )
     }
   },
