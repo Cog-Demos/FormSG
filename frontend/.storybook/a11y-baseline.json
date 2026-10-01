@@ -1,0 +1,790 @@
+{
+  "components-button--solid-subtle": ["color-contrast"],
+  "components-calendar-calendar--calendar-weekday-only": ["color-contrast"],
+  "components-calendar-calendar--calendar-with-value": ["color-contrast"],
+  "components-calendar-calendar--default": ["color-contrast"],
+  "components-field-attachment--disabled": ["color-contrast"],
+  "components-field-rating--mobile": ["aria-conditional-attr"],
+  "components-field-rating--playground": ["aria-conditional-attr"],
+  "components-field-rating--tablet": ["aria-conditional-attr"],
+  "components-field-rating--variant-heart": ["aria-conditional-attr"],
+  "components-field-rating--variant-number": ["aria-conditional-attr"],
+  "components-field-rating--variant-star": ["aria-conditional-attr"],
+  "components-field-yesno--default": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "components-field-yesno--disabled": ["aria-allowed-role"],
+  "components-field-yesno--mobile": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "components-field-yesno--playground": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "components-field-yesno--selected": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "components-field-yesno--tablet": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "components-moneyinput--disabled": ["label"],
+  "components-moneyinput--error": ["label"],
+  "components-moneyinput--success": ["label"],
+  "components-multiselect--disabled-with-selection": ["label"],
+  "components-multiselect--mobile-truncated-option": ["label"],
+  "components-multiselect--playground": ["aria-allowed-attr"],
+  "components-numberinput--disabled": ["label"],
+  "components-numberinput--error": ["label"],
+  "components-numberinput--success": ["label"],
+  "components-phonenumberinput-international--playground": [
+    "aria-allowed-attr"
+  ],
+  "components-singleselect--has-value-selected": ["label"],
+  "components-singleselect--with-icon-selected": ["label"],
+  "components-tabs--light-tab": ["color-contrast"],
+  "components-tabs--with-scrolling-light": ["color-contrast"],
+  "components-taginput--default": ["label"],
+  "components-taginput--disabled": ["label"],
+  "components-taginput--disabled-with-value": ["label"],
+  "components-taginput--invalid-field": ["label"],
+  "components-taginput--invalid-field-with-invalid-tags": ["label"],
+  "components-taginput--mobile": ["label"],
+  "components-taginput--with-value": ["label"],
+  "features-adminform-adminformnavbar--default-editor": ["aria-allowed-attr"],
+  "features-adminform-adminformnavbar--default-view-only": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-adminformnavbar--mobile": ["aria-allowed-attr"],
+  "features-adminform-adminformnavbar--skeleton": ["aria-allowed-attr"],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--deleted-approval-field-selected": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--deleted-step-1-respondent-selected": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--step-1-empty": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--step-1-respondent-selected": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--step-2-empty": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--step-3-all-selected-valid": [
+    "aria-allowed-attr",
+    "label"
+  ],
+  "features-adminform-create-workflow-components-workflowcontent-editstepblock-editstepblock--step-4-approval-field-not-in-edit-error-message": [
+    "aria-allowed-attr",
+    "label",
+    "label-title-only"
+  ],
+  "features-adminform-editfielddrawer-editdate--with-custom-date-range": [
+    "label"
+  ],
+  "features-adminform-editfielddrawer-editdate--with-no-future-dates": [
+    "label"
+  ],
+  "features-adminform-editfielddrawer-editimage--default": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-editfielddrawer-editimage--with-uploaded-image": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-editfielddrawer-editlongtext--with-custom-val": ["label"],
+  "features-adminform-editfielddrawer-editnumber--with-custom-val": ["label"],
+  "features-adminform-editfielddrawer-editshorttext--with-custom-val": [
+    "label"
+  ],
+  "features-adminform-logic-newlogicblock--all-logic-conditions": [
+    "aria-allowed-attr"
+  ],
+  "features-adminform-logic-newlogicblock--default": ["aria-allowed-attr"],
+  "features-adminform-logic-newlogicblock--mobile": ["aria-allowed-attr"],
+  "features-verifiablefield-verificationbox--email-verification-box": [
+    "color-contrast"
+  ],
+  "features-verifiablefield-verificationbox--email-verification-box-mobile": [
+    "color-contrast"
+  ],
+  "features-verifiablefield-verificationbox--mobile-verification-box": [
+    "color-contrast"
+  ],
+  "features-verifiablefield-verificationbox--mobile-verification-box-mobile": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--all-fields-fields-hidden-by-logic": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "button-name",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-adminformpage-create--desktop-all-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "button-name",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-adminformpage-create--desktop-empty": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--desktop-loading": ["aria-allowed-attr"],
+  "pages-adminformpage-create--form-with-payment": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--form-with-payment-mobile": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--form-with-webhook": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--form-with-webhook-mobile": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--mobile-all-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "button-name",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-adminformpage-create--mobile-empty": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--mobile-loading": ["aria-allowed-attr"],
+  "pages-adminformpage-create--tablet-all-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "button-name",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-adminformpage-create--tablet-empty": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-create--tablet-loading": ["aria-allowed-attr"],
+  "pages-adminformpage-create-logictab--error-all-deleted": ["color-contrast"],
+  "pages-adminformpage-create-logictab--error-if-deleted": ["color-contrast"],
+  "pages-adminformpage-create-logictab--error-show-all-deleted": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-create-workflowtab--step-1-respondent-deleted": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-create-workflowtab--step-2-all-fields-deleted": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-create-workflowtab--step-3-approval-field-deleted": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-results-feedbacktab--default": ["aria-allowed-attr"],
+  "pages-adminformpage-results-feedbacktab--empty-issue": ["aria-allowed-attr"],
+  "pages-adminformpage-results-feedbacktab--empty-review": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-feedbacktab--empty-review-and-issue": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-feedbacktab--loading-desktop": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-feedbacktab--loading-mobile": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-feedbacktab--mobile": ["aria-allowed-attr"],
+  "pages-adminformpage-results-feedbacktab--tablet": ["aria-allowed-attr"],
+  "pages-adminformpage-results-responsestab--email-form": ["aria-allowed-attr"],
+  "pages-adminformpage-results-responsestab--email-form-loading": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--email-form-mobile": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--email-form-tablet": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--empty-email-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--loading": ["aria-allowed-attr"],
+  "pages-adminformpage-results-responsestab--storage-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-loading": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-mobile": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-tablet": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-unlocked": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-unlocked-mobile": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-results-responsestab--storage-form-unlocked-tablet": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings--desktop": ["aria-allowed-attr"],
+  "pages-adminformpage-settings--mobile": ["aria-allowed-attr"],
+  "pages-adminformpage-settings--prevent-activation": ["aria-allowed-attr"],
+  "pages-adminformpage-settings--storage-mode-settings": ["aria-allowed-attr"],
+  "pages-adminformpage-settings--tablet": ["aria-allowed-attr"],
+  "pages-adminformpage-settings-authtab--mobile": ["aria-allowed-attr"],
+  "pages-adminformpage-settings-authtab--private-email-my-info-form-submitter-id-collection-enabled": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--private-email-myinfo-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-corppass-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-my-info-payment-enabled-form": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-my-info-update-whitelist-validation-error-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-sgid-payment-enabled-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-sgid-whitelist-enabled-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-authtab--private-storage-singpass-form-all-toggles-enabled": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-authtab--public-email-corppass-all-toggles-enabled-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-email-my-info-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-email-nil-auth-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-email-singpass-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-storage-my-info-payment-enabled-form": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-storage-nil-auth-form": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--public-storage-nil-auth-form-submitter-id-collection-enabled": [
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-authtab--tablet": ["aria-allowed-attr"],
+  "pages-adminformpage-settings-emails--mobile": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-emails--no-emails-added-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-emails--payment-form": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-emails--private-email-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-emails--private-multi-respondent-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-emails--private-storage-form": [
+    "aria-allowed-attr"
+  ],
+  "pages-adminformpage-settings-emails--public-form": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-emails--public-multi-respondent-form": [
+    "aria-allowed-attr",
+    "color-contrast",
+    "label"
+  ],
+  "pages-adminformpage-settings-emails--tablet": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "pages-adminformpage-settings-twilio--loading": ["color-contrast"],
+  "pages-billingpage--desktop-has-charges": ["color-contrast", "label"],
+  "pages-billingpage--desktop-loading": ["color-contrast", "label"],
+  "pages-billingpage--desktop-no-charges": ["label"],
+  "pages-billingpage--mobile-has-charges": ["color-contrast", "label"],
+  "pages-billingpage--mobile-loading": ["color-contrast", "label"],
+  "pages-billingpage--mobile-no-charges": ["label"],
+  "pages-billingpage--tablet-has-charges": ["color-contrast", "label"],
+  "pages-billingpage--tablet-loading": ["color-contrast", "label"],
+  "pages-billingpage--tablet-no-charges": ["label"],
+  "pages-featuretour-adminformbuilder--admin-form-builder-feature-tour": [
+    "aria-allowed-attr"
+  ],
+  "pages-landingpage--default": ["color-contrast"],
+  "pages-landingpage--loading": ["color-contrast"],
+  "pages-landingpage--mobile": ["color-contrast"],
+  "pages-landingpage--tablet": ["color-contrast"],
+  "pages-previewformpage--color-theme-brown": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--color-theme-green": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--color-theme-grey": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--color-theme-orange": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--color-theme-red": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--corppass-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--corppass-unauthorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--default": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--sgid-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--sgid-unauthorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--singpass-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--singpass-unauthorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--unauthed-mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--verified-fields-expiry": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-captcha": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-long-instructions": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-payment": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-prevent-submission-logic": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-short-instructions": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-previewformpage--with-show-field-logic": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-privacypolicypage--default": ["aria-required-children"],
+  "pages-publicformpage--color-theme-brown": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--color-theme-green": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--color-theme-grey": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--color-theme-orange": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--color-theme-red": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--corppass-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--cp-single-submission-failure-modal-after-submit": [
+    "color-contrast"
+  ],
+  "pages-publicformpage--default": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--sg-id-single-submission-failure-modal-after-submit": [
+    "color-contrast"
+  ],
+  "pages-publicformpage--sgid-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--singpass-authorized": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--verified-fields-expiry": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-captcha": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-long-instructions": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-my-info": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-payment": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-locked-and-normal-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-locked-and-normal-fields-mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-locked-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-locked-fields-mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-normal-fields": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prefilled-normal-fields-mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-prevent-submission-logic": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-short-instructions": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage--with-show-field-logic": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-publicformpage-formendpage--color-theme-brown": ["color-contrast"],
+  "pages-publicformpage-formendpage--color-theme-green": ["color-contrast"],
+  "pages-publicformpage-formendpage--color-theme-grey": ["color-contrast"],
+  "pages-publicformpage-formendpage--color-theme-orange": ["color-contrast"],
+  "pages-publicformpage-formendpage--color-theme-red": ["color-contrast"],
+  "pages-publicformpage-formendpage--default": ["color-contrast"],
+  "pages-publicformpage-formendpage--feedback-submitted": ["color-contrast"],
+  "pages-publicformpage-formendpage--mobile": ["color-contrast"],
+  "pages-publicformpage-formpaymentpage--complete-without-receipt": [
+    "color-contrast"
+  ],
+  "pages-publicformpage-formpaymentpage--generic-message": ["color-contrast"],
+  "pages-publicformpage-formpaymentpage--payment-failure": ["color-contrast"],
+  "pages-publicformpage-formpaymentpage--pending-payment-details": [
+    "color-contrast"
+  ],
+  "pages-templateformpage--default": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-templateformpage--mobile": [
+    "aria-allowed-attr",
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "aria-required-children",
+    "color-contrast",
+    "nested-interactive"
+  ],
+  "pages-workspacepage-workspacesearchbar--default": ["label"],
+  "templates-field-attachmentfield--download-enabled-with-disabled-upload": [
+    "aria-allowed-attr",
+    "color-contrast"
+  ],
+  "templates-field-attachmentfield--validation-required": ["aria-allowed-attr"],
+  "templates-field-checkboxfield--validation-optional": [
+    "aria-required-children"
+  ],
+  "templates-field-checkboxfield--validation-required": [
+    "aria-required-children"
+  ],
+  "templates-field-checkboxfield--without-others-option": [
+    "aria-required-children"
+  ],
+  "templates-field-childrencompoundfield--allow-multiple-children": [
+    "aria-required-children"
+  ],
+  "templates-field-imagefield--empty-src": ["color-contrast"],
+  "templates-field-imagefield--invalid-src": ["color-contrast"],
+  "templates-field-mobilefield--validation-allow-intl": ["aria-allowed-attr"],
+  "templates-field-yesnofield--validation-optional": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ],
+  "templates-field-yesnofield--validation-required": [
+    "aria-allowed-role",
+    "aria-hidden-focus",
+    "nested-interactive"
+  ]
+}

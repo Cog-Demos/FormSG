@@ -114,8 +114,9 @@
     "build-storybook": "storybook build",
     "lint": "eslint ./ --ignore-path .gitignore && prettier . -c",
     "lint:fix": "eslint ./ --ignore-path .gitignore --fix && prettier . -c --write",
-    "test:a11y": "npm run build-storybook && jest --config .storybook/storyshots/jest.config.js",
-    "test:a11y-dev": "cross-env USE_DEV_SERVER=true jest --config .storybook/storyshots/jest.config.js",
+    "test:a11y": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && test-storybook --index-json --verbose --url http://127.0.0.1:6006\"",
+    "test:a11y-dev": "test-storybook --index-json --verbose --url http://localhost:6006",
+    "test:a11y:baseline": "npm run build-storybook && concurrently -k -s first -n storybook,a11y \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:127.0.0.1:6006 && (cross-env A11Y_STRICT=true test-storybook --index-json --url http://127.0.0.1:6006 --json --outputFile a11y-results.json || true) && node .storybook/generate-a11y-baseline.js a11y-results.json && prettier --write .storybook/a11y-baseline.json\"",
     "pre-commit": "lint-staged"
   },
   "browserslist": {
@@ -136,8 +137,6 @@
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/addon-interactions": "^8.6.18",
     "@storybook/addon-links": "^8.6.18",
-    "@storybook/addon-storyshots": "^6.5.5",
-    "@storybook/addon-storyshots-puppeteer": "^6.5.5",
     "@storybook/blocks": "^8.6.18",
     "@storybook/manager-api": "^8.6.18",
     "@storybook/node-logger": "^8.6.18",
@@ -145,6 +144,7 @@
     "@storybook/react": "^8.6.18",
     "@storybook/react-vite": "^8.6.18",
     "@storybook/test": "^8.6.18",
+    "@storybook/test-runner": "^0.22.1",
     "@storybook/theming": "^8.6.18",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -169,7 +169,9 @@
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "@vitejs/plugin-react": "^4.7.0",
+    "axe-core": "^4.13.0",
     "chromatic": "^13.3.5",
+    "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
     "esbuild": "^0.25.12",
@@ -181,6 +183,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.0",
     "eslint-plugin-storybook": "^0.12.0",
     "eslint-plugin-testing-library": "^6.2.2",
+    "http-server": "^14.1.1",
     "jsdom": "^26.1.0",
     "lint-staged": "^12.1.2",
     "mockdate": "^3.0.5",
@@ -188,7 +191,6 @@
     "msw-storybook-addon": "^2.0.7",
     "patch-package": "^6.4.7",
     "prettier": "^3.2.5",
-    "puppeteer": "^13.0.0",
     "react-refresh": "^0.14.0",
     "resize-observer-polyfill": "^1.5.1",
     "rimraf": "^3.0.2",
@@ -197,7 +199,8 @@
     "vite": "^5.4.21",
     "vite-plugin-node-polyfills": "^0.28.0",
     "vite-plugin-svgr": "^4.5.0",
-    "vitest": "^3.2.7"
+    "vitest": "^3.2.7",
+    "wait-on": "^7.2.0"
   },
   "msw": {
     "workerDirectory": "public"
