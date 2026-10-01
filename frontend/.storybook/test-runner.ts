@@ -93,7 +93,7 @@ const injectPrivateAxe = (page: Page): Promise<void> =>
     const w = window as unknown as AxeWindow
     const previous = w.axe
     window.eval(source)
-    w.__testRunnerAxe = w.axe
+    w.__testRunnerAxe = w.axe as typeof AxeCore
     w.axe = previous
   }, AXE_SOURCE)
 
