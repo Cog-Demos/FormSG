@@ -18,7 +18,7 @@ describe('FeedbackCsvGenerator', () => {
   })
 
   afterAll(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
   })
 
   describe('Constructor', () => {
