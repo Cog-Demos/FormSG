@@ -13,6 +13,9 @@ import * as projectAnnotations from '../.storybook/preview'
 // media query related functions since jsdom may not contain the window object.
 vi.mock('@chakra-ui/media-query')
 
+// The addon's node build cannot be loaded on Node 18; see the module for details.
+vi.mock('msw-storybook-addon', () => import('./vitest/msw-storybook-addon'))
+
 // Fixes TypeError: window.matchMedia is not a function in jsdom
 // See https://github.com/ant-design/ant-design/issues/21096#issuecomment-725301551
 window.matchMedia =
