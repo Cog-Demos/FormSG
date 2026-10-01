@@ -48,6 +48,11 @@ export default defineConfig({
     format: 'es',
     plugins: () => [polyfills()],
   },
+  optimizeDeps: {
+    // Module workers are not crawled by the dep scanner; without this their
+    // bare imports are discovered lazily, triggering a full-page reload.
+    entries: ['index.html', 'src/**/*.worker.ts'],
+  },
   server: {
     port: 3000,
     proxy: {
