@@ -48,6 +48,13 @@ const loggingMiddleware = () => {
       if (propName === 'url' || propName === 'originalUrl') {
         return typeof value === 'string' ? redactUrl(value) : value
       }
+      if (propName === 'headers' && value && typeof value === 'object') {
+        const headers = { ...value }
+        if (typeof headers.referer === 'string') {
+          headers.referer = redactUrl(headers.referer)
+        }
+        return headers
+      }
       if (propName === 'query' && value && typeof value === 'object') {
         const query = { ...value }
         REDACTED_QUERY_PARAMS.forEach((param) => {
