@@ -26,7 +26,7 @@ describe('logging', () => {
     it('should not log the payer token from the url, query or referer', async () => {
       const writeSpy = jest
         .spyOn(winston.transports.Console.prototype, 'log')
-        .mockImplementation((_info, next) => next && next())
+        .mockImplementation((_info: unknown, next: () => void) => next())
       const app = express()
       app.use(loggingMiddleware())
       app.get('/api/v3/payments/:paymentId/getinfo', (_req, res) =>
