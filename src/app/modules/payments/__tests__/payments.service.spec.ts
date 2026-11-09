@@ -133,6 +133,12 @@ describe('payments.service', () => {
       },
     )
 
+    it('should not serialise the payer token', async () => {
+      const payment = await Payment.findById(paymentId)
+      expect(payment?.payerToken).toEqual(MOCK_PAYER_TOKEN)
+      expect(JSON.stringify(payment)).not.toContain(MOCK_PAYER_TOKEN)
+    })
+
     it('should return PaymentNotFoundError when the form id does not match', async () => {
       const result = await PaymentsService.findPaymentForPayer({
         paymentId,

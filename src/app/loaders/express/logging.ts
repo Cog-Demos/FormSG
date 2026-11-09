@@ -8,6 +8,15 @@ import { getRequestIp, getTrace } from '../../utils/request'
 
 const LOGGER_LABEL = 'network'
 
+const REDACTED_QUERY_PARAMS = ['token']
+
+export const redactUrl = (url: string): string =>
+  REDACTED_QUERY_PARAMS.reduce(
+    (acc, param) =>
+      acc.replace(new RegExp(`([?&]${param}=)[^&#]*`, 'gi'), '$1[REDACTED]'),
+    url,
+  )
+
 type LogMeta = {
   clientIp: string
   userId: string
@@ -30,7 +39,24 @@ const loggingMiddleware = () => {
         ? winston.format.combine(winston.format.colorize(), customFormat)
         : winston.format.json(),
     ),
-    expressFormat: true,
+    msg: (req, res) =>
+      `${req.method} ${redactUrl(req.originalUrl || req.url)} ${
+        res.statusCode
+      } ${(res as typeof res & { responseTime?: number }).responseTime}ms`,
+    requestFilter: (req, propName) => {
+      const value = get(req, propName)
+      if (propName === 'url' || propName === 'originalUrl') {
+        return typeof value === 'string' ? redactUrl(value) : value
+      }
+      if (propName === 'query' && value && typeof value === 'object') {
+        const query = { ...value }
+        REDACTED_QUERY_PARAMS.forEach((param) => {
+          if (param in query) query[param] = '[REDACTED]'
+        })
+        return query
+      }
+      return value
+    },
     // Set dynamic log level according to status codes
     level: function (req, res) {
       let level = ''

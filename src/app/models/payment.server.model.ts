@@ -124,6 +124,13 @@ const PaymentSchema = new Schema<IPaymentSchema, IPaymentModel>(
       updatedAt: 'lastModified',
     },
     read: 'secondary',
+    // payerToken is a bearer secret; keep it out of serialised documents (e.g. logs)
+    toJSON: {
+      transform: (_doc, ret) => {
+        delete ret.payerToken
+        return ret
+      },
+    },
   },
 )
 

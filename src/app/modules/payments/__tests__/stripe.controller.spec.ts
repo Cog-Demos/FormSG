@@ -10,7 +10,11 @@ import { MarkRequired } from 'ts-essentials'
 
 import getPaymentModel from 'src/app/models/payment.server.model'
 import { getEncryptPendingSubmissionModel } from 'src/app/models/pending_submission.server.model'
-import { IPopulatedEncryptedForm, IPopulatedForm } from 'src/types'
+import {
+  IPaymentSchema,
+  IPopulatedEncryptedForm,
+  IPopulatedForm,
+} from 'src/types'
 
 import config from '../../../config/config'
 import { stripe } from '../../../loaders/stripe'
@@ -201,7 +205,7 @@ describe('stripe.controller', () => {
   })
 
   describe('payer-authorised public payment endpoints', () => {
-    let payment: Awaited<ReturnType<typeof Payment.create>>
+    let payment: IPaymentSchema
     const mockForm = {
       _id: MOCK_FORM_ID,
       payments_channel: {

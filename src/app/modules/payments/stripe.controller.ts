@@ -72,7 +72,8 @@ export const checkPaymentReceiptStatus: ControllerHandler<
         message: 'Found paymentId in payment document',
         meta: {
           action: 'checkPaymentReceiptStatus',
-          payment,
+          formId,
+          paymentId,
         },
       })
 
