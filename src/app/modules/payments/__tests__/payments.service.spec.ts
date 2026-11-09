@@ -3,6 +3,7 @@ import { ObjectId } from 'bson'
 import moment from 'moment-timezone'
 import mongoose, { Query } from 'mongoose'
 import { PaymentStatus, Product, ProductId, ProductItem } from 'shared/types'
+import util from 'util'
 
 import getAgencyModel from 'src/app/models/agency.server.model'
 import getPaymentModel from 'src/app/models/payment.server.model'
@@ -137,6 +138,7 @@ describe('payments.service', () => {
       const payment = await Payment.findById(paymentId)
       expect(payment?.payerToken).toEqual(MOCK_PAYER_TOKEN)
       expect(JSON.stringify(payment)).not.toContain(MOCK_PAYER_TOKEN)
+      expect(util.inspect(payment)).not.toContain(MOCK_PAYER_TOKEN)
     })
 
     it('should return PaymentNotFoundError when the form id does not match', async () => {

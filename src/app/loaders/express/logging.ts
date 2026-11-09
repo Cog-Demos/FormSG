@@ -4,18 +4,15 @@ import winston from 'winston'
 
 import config from '../../config/config'
 import { customFormat } from '../../config/logger'
-import { getRequestIp, getTrace } from '../../utils/request'
+import {
+  getRequestIp,
+  getTrace,
+  REDACTED_QUERY_PARAMS,
+  redactHeaders,
+  redactUrl,
+} from '../../utils/request'
 
 const LOGGER_LABEL = 'network'
-
-const REDACTED_QUERY_PARAMS = ['token']
-
-export const redactUrl = (url: string): string =>
-  REDACTED_QUERY_PARAMS.reduce(
-    (acc, param) =>
-      acc.replace(new RegExp(`([?&]${param}=)[^&#]*`, 'gi'), '$1[REDACTED]'),
-    url,
-  )
 
 type LogMeta = {
   clientIp: string
@@ -49,11 +46,7 @@ const loggingMiddleware = () => {
         return typeof value === 'string' ? redactUrl(value) : value
       }
       if (propName === 'headers' && value && typeof value === 'object') {
-        const headers = { ...value }
-        if (typeof headers.referer === 'string') {
-          headers.referer = redactUrl(headers.referer)
-        }
-        return headers
+        return redactHeaders(value)
       }
       if (propName === 'query' && value && typeof value === 'object') {
         const query = { ...value }

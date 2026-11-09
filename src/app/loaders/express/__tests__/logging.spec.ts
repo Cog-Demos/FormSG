@@ -2,7 +2,8 @@ import express from 'express'
 import supertest from 'supertest'
 import winston from 'winston'
 
-import loggingMiddleware, { redactUrl } from '../logging'
+import { redactUrl } from '../../../utils/request'
+import loggingMiddleware from '../logging'
 
 describe('logging', () => {
   describe('redactUrl', () => {

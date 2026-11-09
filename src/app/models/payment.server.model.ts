@@ -10,6 +10,11 @@ import { SUBMISSION_SCHEMA_ID } from './submission.server.model'
 
 export const PAYMENT_SCHEMA_ID = 'Payment'
 
+const omitPayerToken = (_doc: unknown, ret: Record<string, unknown>) => {
+  delete ret.payerToken
+  return ret
+}
+
 const PaymentSchema = new Schema<IPaymentSchema, IPaymentModel>(
   {
     pendingSubmissionId: {
@@ -125,12 +130,8 @@ const PaymentSchema = new Schema<IPaymentSchema, IPaymentModel>(
     },
     read: 'secondary',
     // payerToken is a bearer secret; keep it out of serialised documents (e.g. logs)
-    toJSON: {
-      transform: (_doc, ret) => {
-        delete ret.payerToken
-        return ret
-      },
-    },
+    toJSON: { transform: omitPayerToken },
+    toObject: { transform: omitPayerToken },
   },
 )
 
