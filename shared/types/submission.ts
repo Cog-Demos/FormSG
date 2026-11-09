@@ -107,6 +107,7 @@ export type StorageModeChartsDto = StorageModeSubmissionBase & {
 
 export const SubmissionPaymentDto = z.object({
   id: z.string(),
+  payerToken: z.string().optional(),
   paymentIntentId: z.string(),
   email: z.string(),
   products: z
@@ -295,4 +296,5 @@ export type StorageModeSubmissionContentDto = {
 
 export type PaymentSubmissionData = {
   paymentId: string
+  payerToken: string
 }

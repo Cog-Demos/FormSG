@@ -19,6 +19,7 @@ export const StripeReceiptContainer = ({
   formId,
   submissionId,
   paymentId,
+  payerToken,
   amount,
   products,
   paymentFieldsSnapshot,
@@ -26,6 +27,7 @@ export const StripeReceiptContainer = ({
   formId: string
   submissionId: string
   paymentId: string
+  payerToken: string
   amount: number
   products: ProductItemForReceipt[]
   paymentFieldsSnapshot: FormPaymentsField
@@ -34,7 +36,7 @@ export const StripeReceiptContainer = ({
     data: paymentReceiptStatus,
     isLoading,
     error,
-  } = useGetPaymentReceiptStatus(formId, paymentId)
+  } = useGetPaymentReceiptStatus(formId, paymentId, payerToken)
 
   const { form } = usePublicFormContext()
   const toast = useToast()
@@ -89,6 +91,7 @@ export const StripeReceiptContainer = ({
           formId={formId}
           submissionId={submissionId}
           paymentId={paymentId}
+          payerToken={payerToken}
           amount={amount}
           products={products}
           paymentType={paymentFieldsSnapshot.payment_type}

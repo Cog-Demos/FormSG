@@ -897,6 +897,7 @@ export const getSubmissionPaymentDto = (
 
     return okAsync({
       id: payment._id,
+      payerToken: payment.payerToken,
       paymentIntentId: payment.paymentIntentId,
       email: payment.email,
       products: payment.products

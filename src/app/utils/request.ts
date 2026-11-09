@@ -35,12 +35,29 @@ export const getTrace = <R extends LooseRequest>(
   return req.get('cf-ray') ?? req.id // trace using cloudflare cf-ray header, with x-request-id header as backup
 }
 
+// Query params carrying bearer secrets (e.g. payment payer tokens) that must not be logged
+export const REDACTED_QUERY_PARAMS = ['token']
+
+export const redactUrl = (url: string): string =>
+  REDACTED_QUERY_PARAMS.reduce(
+    (acc, param) =>
+      acc.replace(new RegExp(`([?&]${param}=)[^&#]*`, 'gi'), '$1[REDACTED]'),
+    url,
+  )
+
+export const redactHeaders = (
+  headers: Request['headers'],
+): Request['headers'] =>
+  typeof headers?.referer === 'string'
+    ? { ...headers, referer: redactUrl(headers.referer) }
+    : headers
+
 export const createReqMeta = <R extends LooseRequest>(req: R): ReqMeta => {
   return {
     ip: getRequestIp(req),
     trace: getTrace(req), // trace using cloudflare cf-ray header, with x-request-id header as backup
     url: req.baseUrl + req.path,
-    urlWithQueryParams: req.originalUrl,
-    headers: req.headers,
+    urlWithQueryParams: req.originalUrl && redactUrl(req.originalUrl),
+    headers: redactHeaders(req.headers),
   }
 }

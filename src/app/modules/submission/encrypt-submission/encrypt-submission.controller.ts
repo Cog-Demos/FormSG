@@ -51,6 +51,7 @@ import {
 import * as FormService from '../../form/form.service'
 import { MyInfoService } from '../../myinfo/myinfo.service'
 import { extractMyInfoLoginJwt } from '../../myinfo/myinfo.util'
+import * as PaymentsService from '../../payments/payments.service'
 import { SgidService } from '../../sgid/sgid.service'
 import { getOidcService } from '../../spcp/spcp.oidc.service'
 import { getPopulatedUserById } from '../../user/user.service'
@@ -535,6 +536,7 @@ const _createPaymentSubmission = async ({
   const targetAccountId = form.payments_channel.target_account_id
 
   // Step 1: Create payment without payment intent id and pending submission id.
+  const payerToken = PaymentsService.generatePayerToken()
   const payment = new Payment({
     formId,
     targetAccountId,
@@ -544,6 +546,7 @@ const _createPaymentSubmission = async ({
     ...(isPaymentTypeProducts ? { products: paymentProducts } : {}),
     gstEnabled: form.payments_field.gst_enabled,
     payment_fields_snapshot: form.payments_field,
+    payerToken,
   })
   const paymentId = payment.id
 
@@ -687,7 +690,7 @@ const _createPaymentSubmission = async ({
     message: 'Form submission successful',
     submissionId: pendingSubmissionId,
     timestamp: (pendingSubmission.created || new Date()).getTime(),
-    paymentData: { paymentId },
+    paymentData: { paymentId, payerToken },
   })
 }
 

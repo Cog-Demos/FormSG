@@ -1,7 +1,6 @@
 import { MouseEvent, MouseEventHandler } from 'react'
 import {
   Button,
-  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -16,25 +15,17 @@ import { useIsMobile } from '~hooks/useIsMobile'
 import ButtonGroup from '~components/ButtonGroup'
 import { ModalCloseButton } from '~components/Modal'
 
-import { getPaymentPageUrl } from '~features/public-form/utils/urls'
-
 type DuplicatePaymentModalProps = {
   onSubmit: MouseEventHandler<HTMLButtonElement> | undefined
   onClose: () => void
   isSubmitting: boolean
-  formId: string
-  paymentId: string
 }
 
 export const DuplicatePaymentModal = ({
   onSubmit,
   onClose,
   isSubmitting,
-  formId,
-  paymentId,
 }: DuplicatePaymentModalProps): JSX.Element => {
-  const paymentUrl = getPaymentPageUrl(formId, paymentId)
-
   // We need to dismiss the Modal to release the scroll lock that affects the captcha
   const closeAndSubmit = (event: MouseEvent<HTMLButtonElement>) => {
     onClose()
@@ -57,8 +48,8 @@ export const DuplicatePaymentModal = ({
             <Stack>
               <Text>
                 We noticed a successful payment made on this form by your email
-                address.&nbsp;
-                <Link href={paymentUrl}>View your previous payment ↪</Link>
+                address. You can find the proof of payment in the confirmation
+                email sent to you.
               </Text>
               <br />
               <Text>Do you wish to proceed to make another payment?</Text>

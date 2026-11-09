@@ -3,13 +3,17 @@ import { ObjectId } from 'bson'
 import moment from 'moment-timezone'
 import mongoose, { Query } from 'mongoose'
 import { PaymentStatus, Product, ProductId, ProductItem } from 'shared/types'
+import util from 'util'
 
 import getAgencyModel from 'src/app/models/agency.server.model'
 import getPaymentModel from 'src/app/models/payment.server.model'
 
 import { InvalidDomainError } from '../../auth/auth.errors'
 import { DatabaseError } from '../../core/core.errors'
-import { InvalidPaymentProductsError } from '../payments.errors'
+import {
+  InvalidPaymentProductsError,
+  PaymentNotFoundError,
+} from '../payments.errors'
 import * as PaymentsService from '../payments.service'
 
 const Payment = getPaymentModel(mongoose)
@@ -71,6 +75,89 @@ describe('payments.service', () => {
         new ObjectId().toHexString(),
       )
       expect(result.isErr()).toBeTrue()
+    })
+  })
+
+  describe('findPaymentForPayer', () => {
+    const MOCK_PAYER_TOKEN = PaymentsService.generatePayerToken()
+    let paymentId: string
+
+    beforeEach(async () => {
+      await dbHandler.clearCollection(Payment.collection.name)
+      const payment = await Payment.create({
+        formId: MOCK_FORM_ID,
+        targetAccountId: 'acct_MOCK_ACCOUNT_ID',
+        pendingSubmissionId: new ObjectId(),
+        amount: 12345,
+        status: PaymentStatus.Pending,
+        paymentIntentId: 'pi_MOCK_PAYMENT_INTENT',
+        email: 'formsg@tech.gov.sg',
+        gstEnabled: false,
+        payerToken: MOCK_PAYER_TOKEN,
+      })
+      paymentId = payment._id.toString()
+    })
+
+    it('should generate distinct 256-bit hex payer tokens', () => {
+      const tokens = new Set(
+        Array.from({ length: 10 }, () => PaymentsService.generatePayerToken()),
+      )
+      expect(tokens.size).toBe(10)
+      tokens.forEach((t) => expect(t).toMatch(/^[0-9a-f]{64}$/))
+    })
+
+    it('should return the payment when the payer token and form id match', async () => {
+      const result = await PaymentsService.findPaymentForPayer({
+        paymentId,
+        payerToken: MOCK_PAYER_TOKEN,
+        formId: MOCK_FORM_ID,
+      })
+      expect(result.isOk()).toBe(true)
+      expect(result._unsafeUnwrap()._id.toString()).toEqual(paymentId)
+    })
+
+    it.each([
+      ['missing', undefined],
+      ['empty', ''],
+      ['incorrect', 'f'.repeat(64)],
+      ['a different length', 'abc'],
+      ['an array', [MOCK_PAYER_TOKEN]],
+    ])(
+      'should return PaymentNotFoundError when the payer token is %s',
+      async (_desc, payerToken) => {
+        const result = await PaymentsService.findPaymentForPayer({
+          paymentId,
+          payerToken,
+          formId: MOCK_FORM_ID,
+        })
+        expect(result._unsafeUnwrapErr()).toBeInstanceOf(PaymentNotFoundError)
+      },
+    )
+
+    it('should not serialise the payer token', async () => {
+      const payment = await Payment.findById(paymentId)
+      expect(payment?.payerToken).toEqual(MOCK_PAYER_TOKEN)
+      expect(JSON.stringify(payment)).not.toContain(MOCK_PAYER_TOKEN)
+      expect(util.inspect(payment)).not.toContain(MOCK_PAYER_TOKEN)
+    })
+
+    it('should return PaymentNotFoundError when the form id does not match', async () => {
+      const result = await PaymentsService.findPaymentForPayer({
+        paymentId,
+        payerToken: MOCK_PAYER_TOKEN,
+        formId: new ObjectId().toHexString(),
+      })
+      expect(result._unsafeUnwrapErr()).toBeInstanceOf(PaymentNotFoundError)
+    })
+
+    it('should return PaymentNotFoundError for legacy payments without a payer token', async () => {
+      await Payment.updateOne({ _id: paymentId }, { $unset: { payerToken: 1 } })
+      const result = await PaymentsService.findPaymentForPayer({
+        paymentId,
+        payerToken: '',
+        formId: MOCK_FORM_ID,
+      })
+      expect(result._unsafeUnwrapErr()).toBeInstanceOf(PaymentNotFoundError)
     })
   })
 

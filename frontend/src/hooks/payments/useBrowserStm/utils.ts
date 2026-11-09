@@ -3,6 +3,7 @@ import throttle from 'lodash/throttle'
 
 export type StmEntryDto = {
   paymentId: string
+  payerToken?: string
   dateCreated: number
 }
 export type BrowserStmDto = {
@@ -50,12 +51,17 @@ export const serialize = (entryObj: BrowserStmDto) => {
 
 export const addEntry = (
   entryObj: BrowserStmDto,
-  { formId, paymentId }: { formId: string; paymentId: string },
+  {
+    formId,
+    paymentId,
+    payerToken,
+  }: { formId: string; paymentId: string; payerToken?: string },
 ): BrowserStmDto => {
   return {
     ...entryObj,
     [formId]: {
       paymentId,
+      payerToken,
       dateCreated: Date.now(),
     },
   }

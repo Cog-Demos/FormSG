@@ -11,19 +11,20 @@ export const PaymentsRouter = Router()
 
 /**
  * Checks if the payment receipt is ready
- * @route GET /payments/:formId/:paymentId/receipt/status
+ * @route GET /payments/:formId/:paymentId/receipt/status?token=<payerToken>
  *
  * @returns 200 if receipt URL exists
  * @returns 404 if receipt URL does not exist or payment does not exist
  */
 PaymentsRouter.get(
   '/:formId([a-fA-F0-9]{24})/:paymentId([a-fA-F0-9]{24})/receipt/status',
+  limitRate({ max: rateLimitConfig.publicPaymentInfo }),
   StripeController.checkPaymentReceiptStatus,
 )
 
 /**
  * Downloads the invoice pdf
- * @route GET /payments/:formId/:paymentId/invoice/download
+ * @route GET /payments/:formId/:paymentId/invoice/download?token=<payerToken>
  *
  * @returns 200 with receipt attachment as content in PDF
  * @returns 404 if receipt url doesn't exist or payment does not exist
@@ -41,7 +42,7 @@ PaymentsRouter.get(
 
 /**
  * returns clientSecret and publishableKey from paymentId
- * @route GET /payments/:paymentId/getinfo
+ * @route GET /payments/:paymentId/getinfo?token=<payerToken>
  *
  * @returns 200 with payment information if payment id exist
  * @returns 404 when no pending submission is associated with the payment id
@@ -51,6 +52,7 @@ PaymentsRouter.get(
  */
 PaymentsRouter.get(
   '/:paymentId([a-fA-F0-9]{24})/getinfo',
+  limitRate({ max: rateLimitConfig.publicPaymentInfo }),
   StripeController.getPaymentInfo,
 )
 

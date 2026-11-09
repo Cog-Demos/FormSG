@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import { isEqual, omit } from 'lodash'
 import moment from 'moment-timezone'
 import mongoose, { Types } from 'mongoose'
@@ -33,6 +34,66 @@ import {
 
 const logger = createLoggerWithLabel(module)
 const PaymentModel = getPaymentModel(mongoose)
+
+/**
+ * Generates a random secret that binds a payment to its payer. It is returned
+ * to the respondent at submission time and must be presented to access the
+ * public payment endpoints for that payment.
+ */
+export const generatePayerToken = (): string =>
+  crypto.randomBytes(32).toString('hex')
+
+/**
+ * Verifies that the given token matches the payer token of the payment.
+ * Payments without a payer token can never be accessed through the public
+ * payment endpoints.
+ * @returns ok(payment) if the token matches
+ * @returns err(PaymentNotFoundError) otherwise, so that callers cannot
+ * distinguish between a missing payment and a wrong token
+ */
+export const verifyPayerToken = (
+  payment: IPaymentSchema,
+  token: unknown,
+): Result<IPaymentSchema, PaymentNotFoundError> => {
+  const expected = payment.payerToken
+  if (!expected || typeof token !== 'string' || !token) {
+    return err(new PaymentNotFoundError())
+  }
+  const expectedBuf = Buffer.from(expected)
+  const tokenBuf = Buffer.from(token)
+  if (
+    expectedBuf.length !== tokenBuf.length ||
+    !crypto.timingSafeEqual(expectedBuf, tokenBuf)
+  ) {
+    return err(new PaymentNotFoundError())
+  }
+  return ok(payment)
+}
+
+/**
+ * Retrieves a payment for a public (unauthenticated) request, ensuring that
+ * the requester holds the payment's payer token and, if given, that the
+ * payment belongs to the given form.
+ * @returns ok(payment) if the payment exists and the request is bound to it
+ * @returns err(PaymentNotFoundError) if the payment does not exist, belongs to
+ * another form, or the payer token does not match
+ * @returns err(DatabaseError) if error occurs whilst querying the database
+ */
+export const findPaymentForPayer = ({
+  paymentId,
+  payerToken,
+  formId,
+}: {
+  paymentId: string
+  payerToken: unknown
+  formId?: string
+}): ResultAsync<IPaymentSchema, PaymentNotFoundError | DatabaseError> =>
+  findPaymentById(paymentId).andThen((payment) => {
+    if (formId !== undefined && String(payment.formId) !== formId) {
+      return errAsync(new PaymentNotFoundError())
+    }
+    return verifyPayerToken(payment, payerToken)
+  })
 
 /**
  * Retrieves payment by Id.
@@ -272,32 +333,43 @@ export const performPaymentPostSubmissionActions = (
             submissionId,
             email: payment.email,
             paymentAmount: payment.amount,
+            payerToken: payment.payerToken,
           }))
       )
     })
-    .andThen(({ formTitle, formId, submissionId, email, paymentAmount }) => {
-      logger.info({
-        message: 'Sending payment confirmation email',
-        meta: { ...logMeta, submissionId, email },
-      })
-      // Step 5: Send payment confirmation email
-      return MailService.sendPaymentConfirmationEmail({
-        email,
+    .andThen(
+      ({
         formTitle,
-        submissionId,
         formId,
-        paymentId,
+        submissionId,
+        email,
         paymentAmount,
-      })
-        .andThen(() => okAsync(undefined))
-        .orElse(() => {
-          logger.error({
-            message: 'Failed to send payment confirmation email',
-            meta: { ...logMeta, submissionId, email },
-          })
-          return okAsync(undefined)
+        payerToken,
+      }) => {
+        logger.info({
+          message: 'Sending payment confirmation email',
+          meta: { ...logMeta, submissionId, email },
         })
-    })
+        // Step 5: Send payment confirmation email
+        return MailService.sendPaymentConfirmationEmail({
+          email,
+          formTitle,
+          submissionId,
+          formId,
+          paymentId,
+          paymentAmount,
+          payerToken,
+        })
+          .andThen(() => okAsync(undefined))
+          .orElse(() => {
+            logger.error({
+              message: 'Failed to send payment confirmation email',
+              meta: { ...logMeta, submissionId, email },
+            })
+            return okAsync(undefined)
+          })
+      },
+    )
 }
 
 /**

@@ -27,7 +27,11 @@ import { useGetPaymentInfo } from '../queries'
 import { GenericMessageBlock, StripePaymentBlock } from './components'
 import { useGetPaymentStatusFromStripe } from './queries'
 import { StripeReceiptContainer } from './StripeReceiptContainer'
-import { getPaymentViewStates, PaymentViewStates } from './utils'
+import {
+  getPaymentViewStates,
+  getPaymentViewStatesFromPaymentStatus,
+  PaymentViewStates,
+} from './utils'
 
 const PaymentFormWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -45,8 +49,14 @@ const PaymentFormWrapper = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const StripePaymentElement = ({ paymentId }: { paymentId: string }) => {
-  const { data: paymentInfoData } = useGetPaymentInfo(paymentId)
+const StripePaymentElement = ({
+  paymentId,
+  payerToken,
+}: {
+  paymentId: string
+  payerToken: string
+}) => {
+  const { data: paymentInfoData } = useGetPaymentInfo(paymentId, payerToken)
 
   if (!paymentInfoData) {
     throw new Error('useGetPaymentInfo not ready')
@@ -58,9 +68,16 @@ const StripePaymentElement = ({ paymentId }: { paymentId: string }) => {
   return (
     <Elements
       stripe={stripePromise}
-      options={{ clientSecret: paymentInfoData.client_secret }}
+      options={
+        paymentInfoData.client_secret
+          ? { clientSecret: paymentInfoData.client_secret }
+          : undefined
+      }
     >
-      <StripePaymentContainer paymentInfoData={paymentInfoData} />
+      <StripePaymentContainer
+        paymentInfoData={paymentInfoData}
+        payerToken={payerToken}
+      />
     </Elements>
   )
 }
@@ -72,8 +89,10 @@ const StripePaymentElement = ({ paymentId }: { paymentId: string }) => {
  */
 const StripePaymentContainer = ({
   paymentInfoData,
+  payerToken,
 }: {
   paymentInfoData: GetPaymentInfoDto
+  payerToken: string
 }) => {
   const { formId, paymentId } = useParams()
   if (!formId) throw new Error('No formId provided')
@@ -113,9 +132,11 @@ const StripePaymentContainer = ({
       ? productsVariableType
       : productsProductsType
 
-  const viewStates = getPaymentViewStates(
-    stripePaymentStatusResponse?.paymentIntent?.status,
-  )
+  // The client secret is only issued while the payment is awaiting payment,
+  // otherwise the view is derived from the payment status stored in FormSG.
+  const viewStates = paymentInfoData.client_secret
+    ? getPaymentViewStates(stripePaymentStatusResponse?.paymentIntent?.status)
+    : getPaymentViewStatesFromPaymentStatus(paymentInfoData.payment_status)
 
   const renderViewState = () => {
     switch (viewStates) {
@@ -213,6 +234,7 @@ const StripePaymentContainer = ({
               <StripeReceiptContainer
                 formId={formId}
                 paymentId={paymentId}
+                payerToken={payerToken}
                 submissionId={paymentInfoData.submissionId}
                 amount={paymentInfoData.amount}
                 products={paymentProducts || []}

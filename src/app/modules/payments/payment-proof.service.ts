@@ -211,7 +211,7 @@ const _generatePaymentInvoiceAsPdf = (
           'Some business info not available during invoice generation. Expecting either agency or form to have business info',
         meta: {
           action: 'downloadPaymentInvoice',
-          payment,
+          paymentId: payment._id,
           agencyName: populatedForm.admin.agency.fullName,
           agencyBusinessInfo,
           formBusinessInfo,

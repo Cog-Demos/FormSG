@@ -35,7 +35,7 @@ export default {
   decorators: [
     StoryRouter({
       initialEntries: [
-        `/61540ece3d4a6e50ac0cc6ff/payment/61540ece3d4a6e50ac0cc700`,
+        `/61540ece3d4a6e50ac0cc6ff/payment/61540ece3d4a6e50ac0cc700?token=sample_payer_token`,
       ],
       path: '/:formId/payment/:paymentId',
     }),

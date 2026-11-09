@@ -27,8 +27,9 @@ const getFullInvoiceDownloadUrl = (
   hostOrigin: string,
   formId: string,
   paymentId: string,
+  payerToken?: string,
 ): string => {
-  const pathName = getPaymentInvoiceDownloadUrl(formId, paymentId)
+  const pathName = getPaymentInvoiceDownloadUrl(formId, paymentId, payerToken)
   const url = new URL(pathName, hostOrigin)
   return url.toString()
 }
@@ -56,7 +57,12 @@ export const getPaymentDataView = (
     {
       key: 'receiptUrl',
       name: 'Proof of Payment',
-      value: getFullInvoiceDownloadUrl(hostOrigin, formId, payment.id),
+      value: getFullInvoiceDownloadUrl(
+        hostOrigin,
+        formId,
+        payment.id,
+        payment.payerToken,
+      ),
     },
 
     {

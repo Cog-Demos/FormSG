@@ -22,7 +22,7 @@ const PAYMENT_STM_KEY = 'PAYMENT_STM_KEY'
  * - `lastPaymentMemory` returns the previous value. It will be an empty string if
  * there's no previous value in memory
  *
- * - `storePaymentMemory` expects the paymentId that will be stored. Replacing
+ * - `storePaymentMemory` expects the paymentId and payerToken that will be stored. Replacing
  * the previous value, if any.
  *
  * - `clearPaymentMemory` sets the memory to be an empty string
@@ -33,7 +33,7 @@ export const useBrowserStm = (
   formId: string,
 ): [
   lastPaymentMemory: StmEntryDto | undefined,
-  storePaymentMemory: (paymentId: string) => void,
+  storePaymentMemory: (paymentId: string, payerToken: string) => void,
   clearPaymentMemory: () => void,
 ] => {
   const [paymentMemory, setPaymentMemory] = useLocalStorage(
@@ -45,8 +45,8 @@ export const useBrowserStm = (
   processEviction(entryObj, (obj) => setPaymentMemory(serialize(obj)))
 
   const lastPaymentMemory = getEntry(entryObj, formId)
-  const storePaymentMemory = (paymentId: string) => {
-    const updatedMemory = addEntry(entryObj, { formId, paymentId })
+  const storePaymentMemory = (paymentId: string, payerToken: string) => {
+    const updatedMemory = addEntry(entryObj, { formId, paymentId, payerToken })
     setPaymentMemory(serialize(updatedMemory))
   }
   const clearPaymentMemory = () => {

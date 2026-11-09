@@ -719,8 +719,17 @@ export const PublicFormProvider = ({
                     trackSubmitForm(form)
 
                     if (paymentData) {
-                      navigate(getPaymentPageUrl(formId, paymentData.paymentId))
-                      storePaymentMemory(paymentData.paymentId)
+                      navigate(
+                        getPaymentPageUrl(
+                          formId,
+                          paymentData.paymentId,
+                          paymentData.payerToken,
+                        ),
+                      )
+                      storePaymentMemory(
+                        paymentData.paymentId,
+                        paymentData.payerToken,
+                      )
                       return
                     }
                     if (
@@ -782,8 +791,17 @@ export const PublicFormProvider = ({
                 }) => {
                   trackSubmitForm(form)
                   if (paymentData) {
-                    navigate(getPaymentPageUrl(formId, paymentData.paymentId))
-                    storePaymentMemory(paymentData.paymentId)
+                    navigate(
+                      getPaymentPageUrl(
+                        formId,
+                        paymentData.paymentId,
+                        paymentData.payerToken,
+                      ),
+                    )
+                    storePaymentMemory(
+                      paymentData.paymentId,
+                      paymentData.payerToken,
+                    )
                     return
                   }
                   if (

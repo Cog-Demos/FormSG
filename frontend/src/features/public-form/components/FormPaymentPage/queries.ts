@@ -17,20 +17,22 @@ export const paymentSettingKeys = {
 export const useGetPaymentReceiptStatus = (
   formId: string,
   paymentId: string,
+  payerToken: string,
 ): UseQueryResult<PaymentReceiptStatusDto, ApiError> => {
   return useQuery<PaymentReceiptStatusDto, ApiError>(
     paymentSettingKeys.receiptStatus(paymentId, formId),
-    () => getPaymentReceiptStatus(formId, paymentId),
+    () => getPaymentReceiptStatus(formId, paymentId, payerToken),
     { retry: true },
   )
 }
 
 export const useGetPaymentInfo = (
   paymentId: string,
+  payerToken: string,
 ): UseQueryResult<GetPaymentInfoDto, ApiError> => {
   return useQuery<GetPaymentInfoDto, ApiError>(
     paymentSettingKeys.paymentInfo(paymentId),
-    () => getPaymentInfo(paymentId),
+    () => getPaymentInfo(paymentId, payerToken),
     { suspense: true },
   )
 }
