@@ -368,6 +368,12 @@ export const optionalVarsSchema: Schema<IOptionalVarsSchema> = {
       default: 10,
       env: 'DOWNLOAD_PAYMENT_RECEIPT_RATE_LIMIT',
     },
+    publicPaymentInfo: {
+      doc: 'Per-minute, per-IP request limit for the public payment info and payment receipt status endpoints',
+      format: 'int',
+      default: 30,
+      env: 'PUBLIC_PAYMENT_INFO_RATE_LIMIT',
+    },
     downloadFormWhitelist: {
       doc: 'Per-minute, per-IP request limit to download the form whitelist',
       format: 'int',

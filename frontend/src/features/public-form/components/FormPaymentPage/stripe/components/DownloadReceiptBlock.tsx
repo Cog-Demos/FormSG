@@ -15,6 +15,7 @@ type DownloadReceiptBlockProps = {
   formId: string
   submissionId: string
   paymentId: string
+  payerToken?: string
   amount: number
   products: ProductItemForReceipt[]
   paymentType?: PaymentType
@@ -108,6 +109,7 @@ export const DownloadReceiptBlock = ({
   formId,
   submissionId,
   paymentId,
+  payerToken,
   amount,
   products,
   paymentDate,
@@ -130,7 +132,11 @@ export const DownloadReceiptBlock = ({
     toast({
       description: 'Proof of payment download started',
     })
-    window.location.href = getPaymentInvoiceDownloadUrl(formId, paymentId)
+    window.location.href = getPaymentInvoiceDownloadUrl(
+      formId,
+      paymentId,
+      payerToken,
+    )
   }
   return (
     <>

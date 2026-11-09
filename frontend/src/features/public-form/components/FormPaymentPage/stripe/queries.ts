@@ -15,6 +15,6 @@ export const useGetPaymentStatusFromStripe = ({
   return useQuery<PaymentIntentResult, ApiError>(
     [clientSecret, refetchKey],
     () => stripe.retrievePaymentIntent(clientSecret),
-    { suspense: true },
+    { suspense: true, enabled: !!clientSecret },
   )
 }

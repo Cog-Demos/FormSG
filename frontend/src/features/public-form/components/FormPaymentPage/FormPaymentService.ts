@@ -8,27 +8,31 @@ const PAYMENTS_ENDPOINT = '/payments'
  * Obtain payment receipt status for a given submission.
  * @param formId the id of the form
  * @param paymentId the id of the payment submission
+ * @param payerToken the payer token issued at submission time
  * @returns PaymentReceiptStatusDto on success
  */
 export const getPaymentReceiptStatus = async (
   formId: string,
   paymentId: string,
+  payerToken: string,
 ): Promise<PaymentReceiptStatusDto> => {
   return ApiService.get<PaymentReceiptStatusDto>(
     `${PAYMENTS_ENDPOINT}/${formId}/${paymentId}/receipt/status`,
+    { params: { token: payerToken } },
   ).then(({ data }) => data)
 }
 
 /**
  * Obtain payment information neccessary to do a subsequent
  * for a given paymentId.
- * @param formId the id of the form
- * @param submissionId the id of the payment submission
- * @returns PaymentReceiptStatusDto on success
+ * @param paymentId the id of the payment
+ * @param payerToken the payer token issued at submission time
+ * @returns GetPaymentInfoDto on success
  */
-export const getPaymentInfo = async (paymentId: string) => {
+export const getPaymentInfo = async (paymentId: string, payerToken: string) => {
   return ApiService.get<GetPaymentInfoDto>(
     `${PAYMENTS_ENDPOINT}/${paymentId}/getinfo`,
+    { params: { token: payerToken } },
   ).then(({ data }) => data)
 }
 

@@ -1,13 +1,18 @@
 import { rest } from 'msw'
 import { PartialDeep } from 'type-fest'
 
-import { GetPaymentInfoDto, PaymentReceiptStatusDto } from '~shared/types'
+import {
+  GetPaymentInfoDto,
+  PaymentReceiptStatusDto,
+  PaymentStatus,
+} from '~shared/types'
 
 const BASE_PAYMENT_INFO = {
   client_secret: 'sample_client_secret',
   publishableKey: 'sample_pub_key',
   payment_intent_id: 'sample_piid',
   submissionId: 'sample_responseid',
+  payment_status: PaymentStatus.Pending,
 }
 
 export const getPaymentInfoResponse = ({

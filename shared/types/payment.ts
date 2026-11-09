@@ -51,6 +51,9 @@ export type Payment = {
   amount: number
   paymentIntentId: string
   gstEnabled: boolean
+  // Random secret issued to the payer at submission time, required to access
+  // the public payment info and receipt endpoints for this payment
+  payerToken?: string
 
   // Payment status tracking
   webhookLog: Stripe.Event[]
@@ -81,7 +84,9 @@ export type PaymentReceiptStatusDto = {
 }
 
 export type GetPaymentInfoDto = {
+  // Only populated while the payment is still awaiting payment
   client_secret: string
+  payment_status: PaymentStatus
   publishableKey: string
   payment_intent_id: string
   submissionId: string

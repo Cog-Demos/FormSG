@@ -14,6 +14,7 @@ import {
   ErrorDto,
   GetPaymentInfoDto,
   IncompletePaymentsDto,
+  PaymentStatus,
   ReconciliationEventsReportLine,
   ReconciliationReport,
 } from '../../../../shared/types'
@@ -39,10 +40,18 @@ import { mapRouteError } from './stripe.utils'
 
 const logger = createLoggerWithLabel(module)
 
-export const checkPaymentReceiptStatus: ControllerHandler<{
-  formId: string
-  paymentId: string
-}> = async (req, res) => {
+/**
+ * Handler for GET /api/v3/payments/:formId/:paymentId/receipt/status?token=<payerToken>
+ */
+export const checkPaymentReceiptStatus: ControllerHandler<
+  {
+    formId: string
+    paymentId: string
+  },
+  unknown,
+  unknown,
+  { token?: unknown }
+> = async (req, res) => {
   const { formId, paymentId } = req.params
   logger.info({
     message: 'getPaymentStatus endpoint called',
@@ -53,7 +62,11 @@ export const checkPaymentReceiptStatus: ControllerHandler<{
     },
   })
 
-  return PaymentService.findPaymentById(paymentId)
+  return PaymentService.findPaymentForPayer({
+    paymentId,
+    payerToken: req.query.token,
+    formId,
+  })
     .map((payment) => {
       logger.info({
         message: 'Found paymentId in payment document',
@@ -153,9 +166,21 @@ export const handleConnectOauthCallback = [
   _handleConnectOauthCallback,
 ] as ControllerHandler[]
 
+const PAYMENT_STATUSES_AWAITING_PAYMENT = [
+  PaymentStatus.Pending,
+  PaymentStatus.Failed,
+]
+
+/**
+ * Handler for GET /api/v3/payments/:paymentId/getinfo?token=<payerToken>
+ * The Stripe client secret is only returned while the payment is still
+ * awaiting payment.
+ */
 export const getPaymentInfo: ControllerHandler<
   { paymentId: string },
-  GetPaymentInfoDto | ErrorDto
+  GetPaymentInfoDto | ErrorDto,
+  unknown,
+  { token?: unknown }
 > = async (req, res) => {
   const { paymentId } = req.params
 
@@ -169,7 +194,10 @@ export const getPaymentInfo: ControllerHandler<
     meta: logMeta,
   })
 
-  return PaymentService.findPaymentById(paymentId)
+  return PaymentService.findPaymentForPayer({
+    paymentId,
+    payerToken: req.query.token,
+  })
     .andThen((payment) => {
       return PendingSubmissionModel.findPendingSubmissionById(
         payment.pendingSubmissionId,
@@ -179,6 +207,29 @@ export const getPaymentInfo: ControllerHandler<
         )
         .andThen(checkFormIsEncryptMode) // Payment forms are encrypted
         .andThen((form) => {
+          const paymentInfo = {
+            publishableKey: form.payments_channel.publishable_key,
+            payment_intent_id: payment.paymentIntentId,
+            submissionId: payment.pendingSubmissionId,
+            products: payment.products,
+            amount: payment.amount,
+            payment_status: payment.status,
+            // Empty {} is returned for backwards compatibility during migration.
+            // Can be removed after set-payment-fields-snapshot.js script has been completely executed
+            payment_fields_snapshot: payment.payment_fields_snapshot || {},
+          }
+
+          if (
+            payment.completedPayment ||
+            !PAYMENT_STATUSES_AWAITING_PAYMENT.includes(payment.status)
+          ) {
+            return okAsync(
+              res
+                .status(StatusCodes.OK)
+                .json({ ...paymentInfo, client_secret: '' }),
+            )
+          }
+
           const stripeAccount = payment.targetAccountId
           // Early termination to prevent consumption of QPS limit to stripe
           if (stripeAccount !== form.payments_channel.target_account_id) {
@@ -208,15 +259,8 @@ export const getPaymentInfo: ControllerHandler<
             },
           ).map((paymentIntent) => {
             return res.status(StatusCodes.OK).json({
+              ...paymentInfo,
               client_secret: paymentIntent.client_secret || '',
-              publishableKey: form.payments_channel.publishable_key,
-              payment_intent_id: payment.paymentIntentId,
-              submissionId: payment.pendingSubmissionId,
-              products: payment.products,
-              amount: payment.amount,
-              // Empty {} is returned for backwards compatibility during migration.
-              // Can be removed after set-payment-fields-snapshot.js script has been completely executed
-              payment_fields_snapshot: payment.payment_fields_snapshot || {},
             })
           })
         })

@@ -1,8 +1,13 @@
 export const getPaymentInvoiceDownloadUrlPath = (
   formId: string,
   paymentId: string,
+  payerToken?: string,
 ) => {
-  return `payments/${formId}/${paymentId}/invoice/download` as const
+  const path = `payments/${formId}/${paymentId}/invoice/download`
+  if (payerToken) {
+    return `${path}?token=${encodeURIComponent(payerToken)}`
+  }
+  return path
 }
 
 /**

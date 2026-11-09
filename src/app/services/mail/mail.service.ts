@@ -836,6 +836,7 @@ export class MailService {
    * @param submissionId the response ID
    * @param formId the payment form ID
    * @param paymentId the payment ID
+   * @param payerToken the payer token that grants access to the invoice
    * @returns err(MailSendError) when there was an error in sending the mail
    */
   sendPaymentConfirmationEmail = ({
@@ -845,6 +846,7 @@ export class MailService {
     formId,
     paymentId,
     paymentAmount,
+    payerToken,
   }: {
     email: string
     formTitle: string
@@ -852,6 +854,7 @@ export class MailService {
     formId: string
     paymentId: string
     paymentAmount: number
+    payerToken?: string
   }): ResultAsync<true, MailSendError> => {
     const htmlData: PaymentConfirmationData = {
       formTitle: formTitle,
@@ -860,6 +863,7 @@ export class MailService {
       invoiceUrl: `${this.#appUrl}/api/v3/${getPaymentInvoiceDownloadUrlPath(
         formId,
         paymentId,
+        payerToken,
       )}`,
       amountPaid: centsToDollars(paymentAmount),
     }

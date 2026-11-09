@@ -1,5 +1,4 @@
 import { StatusCodes } from 'http-status-codes'
-import { ResultAsync } from 'neverthrow'
 
 import { createLoggerWithLabel } from '../../config/logger'
 import { ControllerHandler } from '../core/core.types'
@@ -11,18 +10,24 @@ import * as PaymentService from './payments.service'
 
 const logger = createLoggerWithLabel(module)
 /**
- * Handler for GET /api/v3/payments/:formId/:paymentId/invoice/download
- * Receives Stripe webhooks and updates the database with transaction details.
+ * Handler for GET /api/v3/payments/:formId/:paymentId/invoice/download?token=<payerToken>
+ * Redirects the payer to the invoice PDF of the payment.
  *
- * @returns 200 if webhook is successfully processed
- * @returns 404 if the PaymentId is not found
+ * @returns 302 redirect to the invoice PDF
+ * @returns 404 if the PaymentId is not found, does not belong to the FormId,
+ * or the payer token does not match
  * @returns 404 if the FormId is not found
  * @returns 404 if payment.completedPayment?.receiptUrl is not found
  */
-export const downloadPaymentInvoice: ControllerHandler<{
-  formId: string
-  paymentId: string
-}> = (req, res) => {
+export const downloadPaymentInvoice: ControllerHandler<
+  {
+    formId: string
+    paymentId: string
+  },
+  unknown,
+  unknown,
+  { token?: unknown }
+> = (req, res) => {
   const { formId, paymentId } = req.params
   logger.info({
     message: 'downloadPaymentInvoice endpoint called',
@@ -33,10 +38,16 @@ export const downloadPaymentInvoice: ControllerHandler<{
     },
   })
 
-  return ResultAsync.combine([
-    PaymentService.findPaymentById(paymentId),
-    FormService.retrieveFullFormById(formId).andThen(checkFormIsEncryptMode),
-  ])
+  return PaymentService.findPaymentForPayer({
+    paymentId,
+    payerToken: req.query.token,
+    formId,
+  })
+    .andThen((payment) =>
+      FormService.retrieveFullFormById(String(payment.formId))
+        .andThen(checkFormIsEncryptMode)
+        .map((populatedForm) => [payment, populatedForm] as const),
+    )
     .andThen(([payment, populatedForm]) => {
       logger.info({
         message: 'Found paymentId in payment document',

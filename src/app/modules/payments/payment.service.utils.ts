@@ -22,6 +22,7 @@ export const getPaymentWebhookEventObject = (
     url: `${config.app.appUrl}/api/v3/${getPaymentInvoiceDownloadUrlPath(
       payment.formId,
       payment._id,
+      payment.payerToken,
     )}`,
     paymentIntent: payment.paymentIntentId,
     amount: centsToDollars(payment.amount),

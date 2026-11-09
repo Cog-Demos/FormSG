@@ -1,5 +1,7 @@
 import { PaymentIntent } from '@stripe/stripe-js'
 
+import { PaymentStatus } from '~shared/types'
+
 export enum PaymentViewStates {
   Invalid,
   Succeeded,
@@ -15,4 +17,20 @@ export const getPaymentViewStates = (
   if (['canceled'].includes(status)) return PaymentViewStates.Canceled
   if (['processing'].includes(status)) return PaymentViewStates.Processing
   return PaymentViewStates.PendingPayment
+}
+
+export const getPaymentViewStatesFromPaymentStatus = (
+  status: PaymentStatus | undefined,
+): PaymentViewStates => {
+  switch (status) {
+    case PaymentStatus.Succeeded:
+    case PaymentStatus.PartiallyRefunded:
+    case PaymentStatus.FullyRefunded:
+    case PaymentStatus.Disputed:
+      return PaymentViewStates.Succeeded
+    case PaymentStatus.Canceled:
+      return PaymentViewStates.Canceled
+    default:
+      return PaymentViewStates.Invalid
+  }
 }

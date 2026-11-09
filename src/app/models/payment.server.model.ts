@@ -43,6 +43,9 @@ const PaymentSchema = new Schema<IPaymentSchema, IPaymentModel>(
       type: Boolean,
       required: true,
     },
+    payerToken: {
+      type: String,
+    },
     responses: [],
 
     webhookLog: [],

@@ -103,8 +103,6 @@ export const PublicFormSubmitButton = ({
             onSubmit={onSubmit}
             onClose={onPaymentsModalClose}
             isSubmitting={isSubmitting}
-            formId={formId}
-            paymentId={prevPaymentId}
           />
         ) : (
           <FormPaymentModal

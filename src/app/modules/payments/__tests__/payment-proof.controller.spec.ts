@@ -26,6 +26,7 @@ const Payment = getPaymentModel(mongoose)
 const EncryptPendingSubmission = getEncryptPendingSubmissionModel(mongoose)
 
 const MOCK_FORM_ID = new Types.ObjectId().toHexString()
+const MOCK_PAYER_TOKEN = 'a'.repeat(64)
 
 jest.mock('axios')
 jest.mock('src/app/modules/payments/stripe.utils')
@@ -88,7 +89,91 @@ describe('stripe.controller', () => {
           paymentDate: new Date(),
         },
         gstEnabled: false,
+        payerToken: MOCK_PAYER_TOKEN,
       })
+    })
+
+    it.each([
+      ['missing', {}],
+      ['incorrect', { token: 'b'.repeat(64) }],
+      ['non-string', { token: [MOCK_PAYER_TOKEN] }],
+    ])('should return 404 when the payer token is %s', async (_desc, query) => {
+      // Arrange
+      const generateInvoiceSpy = jest.spyOn(
+        PaymentProofService,
+        'generatePaymentInvoiceUrl',
+      )
+      const mockReq = expressHandler.mockRequest({
+        params: { formId: mockForm._id, paymentId: payment._id },
+        query,
+      })
+      const mockRes = expressHandler.mockResponse()
+
+      // Act
+      await PaymentProofController.downloadPaymentInvoice(
+        mockReq,
+        mockRes,
+        jest.fn(),
+      )
+
+      // Assert
+      expect(mockRes.status).toHaveBeenCalledWith(404)
+      expect(mockRes.redirect).not.toHaveBeenCalled()
+      expect(generateInvoiceSpy).not.toHaveBeenCalled()
+      expect(MockFormService.retrieveFullFormById).not.toHaveBeenCalled()
+    })
+
+    it('should return 404 when the payment does not belong to the form in the url', async () => {
+      // Arrange
+      const generateInvoiceSpy = jest.spyOn(
+        PaymentProofService,
+        'generatePaymentInvoiceUrl',
+      )
+      const mockReq = expressHandler.mockRequest({
+        params: {
+          formId: new Types.ObjectId().toHexString(),
+          paymentId: payment._id,
+        },
+        query: { token: MOCK_PAYER_TOKEN },
+      })
+      const mockRes = expressHandler.mockResponse()
+
+      // Act
+      await PaymentProofController.downloadPaymentInvoice(
+        mockReq,
+        mockRes,
+        jest.fn(),
+      )
+
+      // Assert
+      expect(mockRes.status).toHaveBeenCalledWith(404)
+      expect(mockRes.redirect).not.toHaveBeenCalled()
+      expect(generateInvoiceSpy).not.toHaveBeenCalled()
+      expect(MockFormService.retrieveFullFormById).not.toHaveBeenCalled()
+    })
+
+    it('should return 404 for legacy payments without a payer token', async () => {
+      // Arrange
+      await Payment.updateOne(
+        { _id: payment._id },
+        { $unset: { payerToken: 1 } },
+      )
+      const mockReq = expressHandler.mockRequest({
+        params: { formId: mockForm._id, paymentId: payment._id },
+        query: { token: '' },
+      })
+      const mockRes = expressHandler.mockResponse()
+
+      // Act
+      await PaymentProofController.downloadPaymentInvoice(
+        mockReq,
+        mockRes,
+        jest.fn(),
+      )
+
+      // Assert
+      expect(mockRes.status).toHaveBeenCalledWith(404)
+      expect(mockRes.redirect).not.toHaveBeenCalled()
     })
 
     it('should reject when receipt url is not present', async () => {
@@ -99,6 +184,7 @@ describe('stripe.controller', () => {
       )
       const mockReq = expressHandler.mockRequest({
         params: { formId: mockForm._id, paymentId: payment._id },
+        query: { token: MOCK_PAYER_TOKEN },
       })
       const mockRes = expressHandler.mockResponse()
       const checkStripeReceiptIsReadySpy = jest
@@ -127,6 +213,7 @@ describe('stripe.controller', () => {
       )
       const mockReq = expressHandler.mockRequest({
         params: { formId: mockForm._id, paymentId: payment._id },
+        query: { token: MOCK_PAYER_TOKEN },
       })
       const mockRes = expressHandler.mockResponse()
       const axiosSpy = jest
@@ -162,6 +249,7 @@ describe('stripe.controller', () => {
 
       const mockReq = expressHandler.mockRequest({
         params: { formId: mockForm._id, paymentId: payment._id },
+        query: { token: MOCK_PAYER_TOKEN },
       })
       const mockRes = expressHandler.mockResponse()
       const axiosSpy = jest
@@ -218,6 +306,7 @@ describe('stripe.controller', () => {
 
       const mockReq = expressHandler.mockRequest({
         params: { formId: mockForm._id, paymentId: payment._id },
+        query: { token: MOCK_PAYER_TOKEN },
       })
       const mockRes = expressHandler.mockResponse()
       const axiosSpy = jest

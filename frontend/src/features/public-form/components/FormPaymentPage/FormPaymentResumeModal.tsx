@@ -43,7 +43,13 @@ export const PublicFormPaymentResumeModal = (): JSX.Element => {
       onClose()
       return
     }
-    navigate(getPaymentPageUrl(formId, lastPaymentMemory.paymentId))
+    navigate(
+      getPaymentPageUrl(
+        formId,
+        lastPaymentMemory.paymentId,
+        lastPaymentMemory.payerToken,
+      ),
+    )
   }
 
   const handleStartOver = () => {
